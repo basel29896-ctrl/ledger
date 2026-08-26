@@ -144,10 +144,37 @@ async function main(): Promise<void> {
             SET name = EXCLUDED.name, name_ar = EXCLUDED.name_ar, subtype = EXCLUDED.subtype`;
       }
 
-      await tx`
-        INSERT INTO number_sequences (tenant_id, doc_type, scope_key, prefix, padding)
-        VALUES (${tenantId}, 'journal_entry', ${yearId}, ${`JE-${FISCAL_YEAR}-`}, 5)
-        ON CONFLICT (tenant_id, doc_type, scope_key) DO NOTHING`;
+      for (const [docType, prefix] of [
+        ['journal_entry', `JE-${FISCAL_YEAR}-`],
+        ['sales_invoice', `INV-${FISCAL_YEAR}-`],
+        ['credit_note', `CN-${FISCAL_YEAR}-`],
+        ['customer_receipt', `RCT-${FISCAL_YEAR}-`],
+        ['vendor_bill', `BILL-${FISCAL_YEAR}-`],
+        ['vendor_payment', `PAY-${FISCAL_YEAR}-`],
+        ['purchase_order', `PO-${FISCAL_YEAR}-`],
+      ] as const) {
+        await tx`
+          INSERT INTO number_sequences (tenant_id, doc_type, scope_key, prefix, padding)
+          VALUES (${tenantId}, ${docType}, ${docType === 'journal_entry' ? yearId : ''}, ${prefix}, 5)
+          ON CONFLICT (tenant_id, doc_type, scope_key) DO NOTHING`;
+      }
+
+      // Generic tax codes; the Jordan set with its rates and rules is seeded in M7.
+      const [outputTax] = await tx<{ id: string }[]>`
+        SELECT id FROM accounts WHERE tenant_id = ${tenantId} AND code = '2130'`;
+      const [inputTax] = await tx<{ id: string }[]>`
+        SELECT id FROM accounts WHERE tenant_id = ${tenantId} AND code = '1170'`;
+      for (const code of [
+        { code: 'GST16', name: 'General Sales Tax 16%', nameAr: 'ضريبة المبيعات العامة ١٦٪', rate: '16' },
+        { code: 'GST0', name: 'Zero rated', nameAr: 'معفى بنسبة صفر', rate: '0' },
+      ]) {
+        await tx`
+          INSERT INTO tax_codes (tenant_id, code, name, name_ar, kind, rate_percent,
+                                 output_account_id, input_account_id)
+          VALUES (${tenantId}, ${code.code}, ${code.name}, ${code.nameAr}, 'both', ${code.rate},
+                  ${outputTax?.id ?? null}, ${inputTax?.id ?? null})
+          ON CONFLICT (tenant_id, code) DO UPDATE SET rate_percent = EXCLUDED.rate_percent`;
+      }
 
       const [counts] = await tx<{ accounts: string; periods: string }[]>`
         SELECT (SELECT count(*) FROM accounts WHERE tenant_id = ${tenantId})::text AS accounts,

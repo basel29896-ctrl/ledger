@@ -314,6 +314,269 @@
         ]
       }
     },
+    "/api/v1/customers": {
+      "get": {
+        "operationId": "CustomersController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List customers with their outstanding balance",
+        "tags": [
+          "ar"
+        ]
+      },
+      "post": {
+        "operationId": "CustomersController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a customer",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/customers/{id}/statement": {
+      "get": {
+        "operationId": "CustomersController_statement",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Statement of account for one customer",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/sales-documents": {
+      "post": {
+        "description": "Set post=true to issue it immediately; the journal entry is written in the same transaction.",
+        "operationId": "SalesDocumentsController_create",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create an invoice or credit note",
+        "tags": [
+          "ar"
+        ]
+      },
+      "get": {
+        "operationId": "SalesDocumentsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List sales documents",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/sales-documents/{id}": {
+      "get": {
+        "operationId": "SalesDocumentsController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Fetch one sales document with its lines and allocations",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/sales-documents/{id}/post": {
+      "post": {
+        "operationId": "SalesDocumentsController_post",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Issue a draft document to the ledger",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/sales-documents/{id}/void": {
+      "post": {
+        "operationId": "SalesDocumentsController_void",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Void a document that has no payments against it",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/sales-documents/{id}/pdf": {
+      "get": {
+        "operationId": "SalesDocumentsController_invoicePdf",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Invoice as a PDF, with the fields Jordan requires",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/customer-receipts": {
+      "post": {
+        "description": "Omit allocations to settle the oldest open invoices first. Any surplus stays unapplied.",
+        "operationId": "CustomerReceiptsController_create",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Record a customer receipt",
+        "tags": [
+          "ar"
+        ]
+      },
+      "get": {
+        "operationId": "CustomerReceiptsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List customer receipts with their unapplied balance",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/customer-receipts/{id}/allocate": {
+      "post": {
+        "operationId": "CustomerReceiptsController_allocate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Apply an unapplied receipt to open invoices",
+        "tags": [
+          "ar"
+        ]
+      }
+    },
+    "/api/v1/reports/ar-aging": {
+      "get": {
+        "operationId": "ArReportsController_aging",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "AR aging: current, 1-30, 31-60, 61-90, 91-120, 120+",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
     "/api/v1/admin/users": {
       "get": {
         "operationId": "AdminController_listUsers",
