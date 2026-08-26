@@ -180,3 +180,23 @@ export const problemSchema = z.object({
   errors: z.array(z.object({ path: z.string(), message: z.string() })).optional(),
 });
 export type ProblemDto = z.infer<typeof problemSchema>;
+
+/* Financial statements (M8). A statement is always asked for over a window;
+ * the balance sheet takes the window end as its as-of date. */
+export const statementPeriodQuerySchema = z.object({
+  fromDate: isoDateSchema,
+  toDate: isoDateSchema,
+  /* When set, the same statement is built for the prior window and reported
+   * alongside, with the variance. Both windows must be in the base currency. */
+  compareFromDate: isoDateSchema.optional(),
+  compareToDate: isoDateSchema.optional(),
+  format: z.enum(['json', 'csv']).default('json'),
+});
+export type StatementPeriodQuery = z.infer<typeof statementPeriodQuerySchema>;
+
+export const balanceSheetQuerySchema = z.object({
+  asOfDate: isoDateSchema,
+  compareAsOfDate: isoDateSchema.optional(),
+  format: z.enum(['json', 'csv']).default('json'),
+});
+export type BalanceSheetQuery = z.infer<typeof balanceSheetQuerySchema>;

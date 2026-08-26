@@ -10,6 +10,9 @@ const NAV = [
   { href: '/accounts', label: 'Chart of Accounts', permission: 'ledger.account.read' },
   { href: '/journal', label: 'Journal', permission: 'ledger.entry.read' },
   { href: '/reports/trial-balance', label: 'Trial Balance', permission: 'report.read' },
+  { href: '/reports/income-statement', label: 'P&L', permission: 'report.read' },
+  { href: '/reports/balance-sheet', label: 'Balance Sheet', permission: 'report.read' },
+  { href: '/reports/cash-flow', label: 'Cash Flow', permission: 'report.read' },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {
