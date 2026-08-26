@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
    */
   return (
     <html lang="en" dir="ltr">
-      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
+      <body className="min-h-screen bg-canvas text-ink-800 antialiased">
         <Providers>
           <Shell>{children}</Shell>
         </Providers>

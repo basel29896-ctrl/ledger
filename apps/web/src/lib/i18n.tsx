@@ -16,6 +16,9 @@ export type Locale = 'en' | 'ar';
 
 const DICTIONARY: Record<string, { en: string; ar: string }> = {
   'app.name': { en: 'Accounting', ar: 'المحاسبة' },
+  'nav.group.ledger': { en: 'Ledger', ar: 'الدفاتر' },
+  'nav.group.operations': { en: 'Operations', ar: 'العمليات' },
+  'nav.group.reports': { en: 'Reports', ar: 'التقارير' },
   'nav.accounts': { en: 'Chart of Accounts', ar: 'دليل الحسابات' },
   'nav.journal': { en: 'Journal', ar: 'القيود' },
   'nav.inventory': { en: 'Inventory', ar: 'المخزون' },

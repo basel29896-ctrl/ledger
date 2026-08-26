@@ -6,7 +6,21 @@ import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import type { AccountDto, MoneyDto } from '@acct/shared';
 import { api } from '../../../lib/api';
-import { Card, Money, Select } from '../../../components/ui';
+import {
+  Card,
+  DataTable,
+  EmptyState,
+  Money,
+  PageHeader,
+  Select,
+  Stat,
+  TFoot,
+  THead,
+  Td,
+  Th,
+  Toolbar,
+  Tr,
+} from '../../../components/ui';
 import { useRouter } from 'next/navigation';
 
 interface GeneralLedgerRow {
@@ -59,17 +73,24 @@ function GeneralLedgerContent() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-lg font-semibold">General Ledger</h1>
-        <Link href="/reports/trial-balance" className="ml-auto text-sm underline">
-          back to trial balance
-        </Link>
-      </div>
+    <>
+      <PageHeader
+        title="General Ledger"
+        subtitle="Every posted line hitting one account, in date order, with a running balance."
+        actions={
+          <Link
+            href="/reports/trial-balance"
+            className="text-sm text-ink-600 underline decoration-ice-300 underline-offset-2 hover:decoration-ink-400"
+          >
+            back to trial balance
+          </Link>
+        }
+      />
 
-      <Card>
-        <div className="max-w-md">
+      <Toolbar>
+        <div className="sm:col-span-2">
           <Select
+            aria-label="Account"
             value={accountId}
             onChange={(e) => router.push(`/reports/general-ledger?accountId=${e.target.value}`)}
           >
@@ -83,98 +104,109 @@ function GeneralLedgerContent() {
               ))}
           </Select>
         </div>
-      </Card>
+      </Toolbar>
 
       {!accountId ? (
-        <p className="text-sm text-slate-500">Choose an account to see its detail.</p>
+        <EmptyState>Choose an account to see its detail.</EmptyState>
       ) : isLoading ? (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <EmptyState>Loading…</EmptyState>
       ) : data ? (
         <>
-          <div className="flex gap-6 text-sm">
-            <div>
-              <span className="text-xs text-slate-500">Account</span>
-              <div className="font-medium">
-                <span className="font-mono text-xs">{data.accountCode}</span> {data.accountName}
-              </div>
+          <Card>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Stat
+                label="Account"
+                value={
+                  <span className="text-base">
+                    <span className="font-mono text-xs text-ink-400">{data.accountCode}</span>{' '}
+                    {data.accountName}
+                  </span>
+                }
+              />
+              <Stat label="Opening balance" value={<Money value={data.openingBalance} />} />
+              <Stat label="Closing balance" value={<Money value={data.closingBalance} bold />} />
             </div>
-            <div>
-              <span className="text-xs text-slate-500">Opening</span>
-              <div><Money value={data.openingBalance} /></div>
-            </div>
-            <div>
-              <span className="text-xs text-slate-500">Closing</span>
-              <div><Money value={data.closingBalance} bold /></div>
-            </div>
-          </div>
+          </Card>
 
-          <div className="overflow-x-auto rounded border border-slate-200 bg-white">
-            <table className="w-full text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase text-slate-600">
-                <tr>
-                  <th className="px-3 py-2 font-medium">Date</th>
-                  <th className="px-3 py-2 font-medium">Reference</th>
-                  <th className="px-3 py-2 font-medium">Description</th>
-                  <th className="px-3 py-2 font-medium">Source</th>
-                  <th className="px-3 py-2 text-right font-medium">Debit</th>
-                  <th className="px-3 py-2 text-right font-medium">Credit</th>
-                  <th className="px-3 py-2 text-right font-medium">Balance</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-slate-100 bg-slate-50/50">
-                  <td colSpan={6} className="px-3 py-1.5 text-xs uppercase text-slate-500">
-                    Opening balance
-                  </td>
-                  <td className="px-3 py-1.5 text-right"><Money value={data.openingBalance} /></td>
-                </tr>
-                {data.rows.map((row, index) => (
-                  <tr
-                    key={`${row.entryId}-${index}`}
-                    className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
-                  >
-                    <td className="px-3 py-1.5">{row.entryDate}</td>
-                    <td className="px-3 py-1.5 font-mono text-xs">
-                      {/* One click from a report figure to its source document. */}
-                      <Link href={`/journal/${row.entryId}`} className="underline">
-                        {row.entryRef ?? 'view'}
-                      </Link>
-                    </td>
-                    <td className="px-3 py-1.5 text-slate-700">
-                      {row.lineDescription ?? row.memo ?? ''}
-                    </td>
-                    <td className="px-3 py-1.5 text-slate-500">{row.sourceModule}</td>
-                    <td className="px-3 py-1.5 text-right">
-                      {row.debit.minor === '0' ? null : <Money value={row.debit} />}
-                    </td>
-                    <td className="px-3 py-1.5 text-right">
-                      {row.credit.minor === '0' ? null : <Money value={row.credit} />}
-                    </td>
-                    <td className="px-3 py-1.5 text-right"><Money value={row.runningBalance} /></td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot className="border-t border-slate-300 bg-slate-50">
-                <tr>
-                  <td colSpan={4} className="px-3 py-2 text-right text-xs uppercase text-slate-600">
-                    Totals ({data.currency})
-                  </td>
-                  <td className="px-3 py-2 text-right"><Money value={data.totalDebit} bold /></td>
-                  <td className="px-3 py-2 text-right"><Money value={data.totalCredit} bold /></td>
-                  <td className="px-3 py-2 text-right"><Money value={data.closingBalance} bold /></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+          <DataTable scroll>
+            <THead>
+              <tr>
+                <Th className="w-28">Date</Th>
+                <Th className="w-32">Reference</Th>
+                <Th>Description</Th>
+                <Th className="w-28">Source</Th>
+                <Th numeric className="w-36">
+                  Debit
+                </Th>
+                <Th numeric className="w-36">
+                  Credit
+                </Th>
+                <Th numeric className="w-40">
+                  Balance
+                </Th>
+              </tr>
+            </THead>
+            <tbody>
+              <tr className="border-b border-ice-200 bg-ice-50">
+                <Td colSpan={6} className="text-[11px] uppercase tracking-wider text-ink-500">
+                  Opening balance
+                </Td>
+                <Td numeric>
+                  <Money value={data.openingBalance} />
+                </Td>
+              </tr>
+              {data.rows.map((row, index) => (
+                <Tr key={`${row.entryId}-${index}`}>
+                  <Td mono muted>
+                    {row.entryDate}
+                  </Td>
+                  <Td mono>
+                    {/* One click from a report figure to its source document. */}
+                    <Link
+                      href={`/journal/${row.entryId}`}
+                      className="text-ink-700 underline decoration-ice-300 underline-offset-2 hover:decoration-ink-400"
+                    >
+                      {row.entryRef ?? 'view'}
+                    </Link>
+                  </Td>
+                  <Td>{row.lineDescription ?? row.memo ?? ''}</Td>
+                  <Td muted className="text-xs capitalize">
+                    {row.sourceModule}
+                  </Td>
+                  <Td numeric>{row.debit.minor === '0' ? null : <Money value={row.debit} />}</Td>
+                  <Td numeric>{row.credit.minor === '0' ? null : <Money value={row.credit} />}</Td>
+                  <Td numeric>
+                    <Money value={row.runningBalance} />
+                  </Td>
+                </Tr>
+              ))}
+            </tbody>
+            <TFoot>
+              <tr>
+                <Td colSpan={4} className="text-end text-[11px] uppercase tracking-wider text-ink-500">
+                  Totals ({data.currency})
+                </Td>
+                <Td numeric>
+                  <Money value={data.totalDebit} bold />
+                </Td>
+                <Td numeric>
+                  <Money value={data.totalCredit} bold />
+                </Td>
+                <Td numeric>
+                  <Money value={data.closingBalance} bold />
+                </Td>
+              </tr>
+            </TFoot>
+          </DataTable>
         </>
       ) : null}
-    </div>
+    </>
   );
 }
 
 export default function GeneralLedgerPage() {
   return (
-    <Suspense fallback={<p className="text-sm text-slate-500">Loading…</p>}>
+    <Suspense fallback={<EmptyState>Loading…</EmptyState>}>
       <GeneralLedgerContent />
     </Suspense>
   );

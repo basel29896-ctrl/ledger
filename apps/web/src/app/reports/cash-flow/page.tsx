@@ -4,7 +4,19 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { CashFlowStatement, EquityStatement } from '@acct/domain';
 import { api, API_URL } from '../../../lib/api';
-import { Button, Card, ErrorBanner, Field, Input, Money } from '../../../components/ui';
+import {
+  Button,
+  Card,
+  EmptyState,
+  ErrorBanner,
+  Field,
+  Input,
+  Money,
+  PageHeader,
+  Stat,
+  StatusNote,
+  Toolbar,
+} from '../../../components/ui';
 import { SectionRows, StatementTable, TotalRow } from '../../../components/statement-table';
 
 export default function CashFlowPage() {
@@ -27,38 +39,52 @@ export default function CashFlowPage() {
   const data = cashFlow.data;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-lg font-semibold">Cash Flow and Equity</h1>
-        <Button
-          variant="secondary"
-          className="ml-auto"
-          disabled={!ready}
-          onClick={() => {
-            window.location.href = `${API_URL}/api/v1/reports/cash-flow?${range}&format=csv`;
-          }}
-        >
-          Export CSV
-        </Button>
-      </div>
+    <>
+      <PageHeader
+        title="Cash Flow and Equity"
+        subtitle="Indirect method. The three sections must sum to the movement in cash."
+        actions={
+          <Button
+            variant="secondary"
+            disabled={!ready}
+            onClick={() => {
+              window.location.href = `${API_URL}/api/v1/reports/cash-flow?${range}&format=csv`;
+            }}
+          >
+            Export CSV
+          </Button>
+        }
+      />
 
-      <Card>
-        <div className="grid items-end gap-3 sm:grid-cols-4">
-          <Field label="From date">
-            <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-          </Field>
-          <Field label="To date">
-            <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
-          </Field>
-        </div>
-      </Card>
+      <Toolbar>
+        <Field label="From date">
+          <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+        </Field>
+        <Field label="To date">
+          <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+        </Field>
+      </Toolbar>
 
       <ErrorBanner error={cashFlow.error ?? equity.error} />
 
       {!ready ? (
-        <p className="text-sm text-slate-500">Choose a date range.</p>
+        <EmptyState>Choose a date range.</EmptyState>
       ) : data ? (
         <>
+          <Card title="Reconciliation to the bank">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Stat label="Opening cash" value={<Money value={data.openingCash} />} />
+              <Stat label="Net movement" value={<Money value={data.netMovement} />} />
+              <Stat label="Closing cash" value={<Money value={data.closingCash} bold />} />
+            </div>
+          </Card>
+
+          <StatusNote tone={data.reconciles ? 'good' : 'bad'}>
+            {data.reconciles
+              ? 'Operating, investing and financing tie to the movement in the cash and bank accounts.'
+              : 'The statement does not tie to the bank — investigate before relying on it.'}
+          </StatusNote>
+
           <StatementTable>
             <TotalRow label="Profit for the period" value={data.operating.netProfit} />
             <SectionRows section={data.operating.nonCashAdjustments} fromDate={fromDate} toDate={toDate} />
@@ -66,40 +92,27 @@ export default function CashFlowPage() {
             <TotalRow label="Cash from operating activities" value={data.operating.total} />
             <SectionRows section={data.investing} fromDate={fromDate} toDate={toDate} />
             <SectionRows section={data.financing} fromDate={fromDate} toDate={toDate} />
-            <TotalRow label={`Net movement in cash (${data.currency})`} value={data.netMovement} />
+            <TotalRow
+              label={`Net movement in cash (${data.currency})`}
+              value={data.netMovement}
+              emphasis="strong"
+            />
           </StatementTable>
 
-          <Card title="Reconciliation to the bank">
-            <dl className="grid grid-cols-3 gap-3 text-sm">
-              <div>
-                <dt className="text-xs uppercase text-slate-600">Opening cash</dt>
-                <dd><Money value={data.openingCash} /></dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase text-slate-600">Net movement</dt>
-                <dd><Money value={data.netMovement} /></dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase text-slate-600">Closing cash</dt>
-                <dd><Money value={data.closingCash} bold /></dd>
-              </div>
-            </dl>
-          </Card>
-
           {equity.data ? (
-            <Card title="Changes in equity">
+            <Card title="Changes in equity" padded={false}>
               <StatementTable>
                 <TotalRow label="Opening equity" value={equity.data.openingEquity} />
                 <SectionRows section={equity.data.movements} fromDate={fromDate} toDate={toDate} />
                 <TotalRow label="Profit for the period" value={equity.data.profitForPeriod} />
-                <TotalRow label="Closing equity" value={equity.data.closingEquity} />
+                <TotalRow label="Closing equity" value={equity.data.closingEquity} emphasis="strong" />
               </StatementTable>
             </Card>
           ) : null}
         </>
       ) : (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <EmptyState>Loading…</EmptyState>
       )}
-    </div>
+    </>
   );
 }

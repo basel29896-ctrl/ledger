@@ -3,7 +3,23 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
-import { Button, Card, ErrorBanner, Field, Input, Money } from '../../components/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  DataTable,
+  ErrorBanner,
+  Field,
+  Input,
+  Money,
+  PageHeader,
+  TFoot,
+  THead,
+  Td,
+  Th,
+  Toolbar,
+  Tr,
+} from '../../components/ui';
 
 interface Asset {
   id: string;
@@ -60,98 +76,138 @@ export default function AssetsPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-lg font-semibold">Fixed Assets</h1>
+    <>
+      <PageHeader
+        title="Fixed Assets"
+        subtitle="Charged once per asset per period — the database refuses a second run."
+      />
 
-      <Card title="Depreciation run">
-        <div className="grid items-end gap-3 sm:grid-cols-3">
-          <Field label="Period end" hint="The last day of the month being charged">
-            <Input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} />
-          </Field>
+      <Toolbar
+        actions={
           <Button disabled={!periodEnd || run.isPending} onClick={() => run.mutate()}>
-            Run depreciation
+            {run.isPending ? 'Running…' : 'Run depreciation'}
           </Button>
-          {run.data ? (
-            <p className="text-sm text-slate-700">
-              Charged {run.data.totalCharge.amount} across {run.data.charges.length} asset(s).
-            </p>
-          ) : null}
-        </div>
-      </Card>
+        }
+      >
+        <Field label="Period end" hint="The last day of the month being charged">
+          <Input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} />
+        </Field>
+        {run.data ? (
+          <p className="self-end pb-1.5 text-sm text-ink-500">
+            Charged {run.data.totalCharge.amount} across {run.data.charges.length} asset(s).
+          </p>
+        ) : null}
+      </Toolbar>
 
       <ErrorBanner error={register.error ?? run.error ?? schedule.error} />
 
       {register.data ? (
-        <div className="overflow-x-auto rounded border border-slate-200 bg-white">
-          <table className="w-full text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase text-slate-600">
-              <tr>
-                <th className="px-3 py-2 font-medium">No.</th>
-                <th className="px-3 py-2 font-medium">Asset</th>
-                <th className="px-3 py-2 font-medium">Method</th>
-                <th className="px-3 py-2 font-medium">In service</th>
-                <th className="px-3 py-2 font-medium">Status</th>
-                <th className="px-3 py-2 text-right font-medium">Cost</th>
-                <th className="px-3 py-2 text-right font-medium">Accumulated</th>
-                <th className="px-3 py-2 text-right font-medium">Net book value</th>
-              </tr>
-            </thead>
-            <tbody>
-              {register.data.assets.map((asset) => (
-                <tr
-                  key={asset.id}
-                  className="cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50"
-                  onClick={() => setAssetId(asset.id)}
-                >
-                  <td className="px-3 py-1.5 font-mono text-xs">{asset.assetNo}</td>
-                  <td className="px-3 py-1.5 underline">{asset.name}</td>
-                  <td className="px-3 py-1.5 text-slate-500">{asset.method}</td>
-                  <td className="px-3 py-1.5 font-mono text-xs">{asset.inServiceOn}</td>
-                  <td className="px-3 py-1.5">{asset.status}</td>
-                  <td className="px-3 py-1.5 text-right"><Money value={asset.cost} /></td>
-                  <td className="px-3 py-1.5 text-right"><Money value={asset.accumulated} /></td>
-                  <td className="px-3 py-1.5 text-right"><Money value={asset.netBookValue} /></td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot className="border-t border-slate-300 bg-slate-50">
-              <tr>
-                <td colSpan={5} className="px-3 py-2 text-right text-xs uppercase text-slate-600">
-                  Totals ({register.data.currency})
-                </td>
-                <td className="px-3 py-2 text-right"><Money value={register.data.totalCost} bold /></td>
-                <td className="px-3 py-2 text-right"><Money value={register.data.totalAccumulated} bold /></td>
-                <td className="px-3 py-2 text-right"><Money value={register.data.totalNetBookValue} bold /></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+        <DataTable scroll>
+          <THead>
+            <tr>
+              <Th className="w-24">No.</Th>
+              <Th>Asset</Th>
+              <Th className="w-36">Method</Th>
+              <Th className="w-28">In service</Th>
+              <Th className="w-28">Status</Th>
+              <Th numeric className="w-36">
+                Cost
+              </Th>
+              <Th numeric className="w-36">
+                Accumulated
+              </Th>
+              <Th numeric className="w-40">
+                Net book value
+              </Th>
+            </tr>
+          </THead>
+          <tbody>
+            {register.data.assets.map((asset) => (
+              <Tr key={asset.id} interactive onClick={() => setAssetId(asset.id)}>
+                <Td mono muted>
+                  {asset.assetNo}
+                </Td>
+                <Td className="text-ink-700 underline decoration-ice-300 underline-offset-2">
+                  {asset.name}
+                </Td>
+                <Td muted className="text-xs">
+                  {asset.method.replace(/_/g, ' ')}
+                </Td>
+                <Td mono muted>
+                  {asset.inServiceOn}
+                </Td>
+                <Td>
+                  <Badge tone={asset.status === 'in_service' ? 'good' : 'neutral'}>
+                    {asset.status.replace(/_/g, ' ')}
+                  </Badge>
+                </Td>
+                <Td numeric>
+                  <Money value={asset.cost} />
+                </Td>
+                <Td numeric>
+                  <Money value={asset.accumulated} />
+                </Td>
+                <Td numeric>
+                  <Money value={asset.netBookValue} />
+                </Td>
+              </Tr>
+            ))}
+          </tbody>
+          <TFoot>
+            <tr>
+              <Td colSpan={5} className="text-end text-[11px] uppercase tracking-wider text-ink-500">
+                Totals ({register.data.currency})
+              </Td>
+              <Td numeric>
+                <Money value={register.data.totalCost} bold />
+              </Td>
+              <Td numeric>
+                <Money value={register.data.totalAccumulated} bold />
+              </Td>
+              <Td numeric>
+                <Money value={register.data.totalNetBookValue} bold />
+              </Td>
+            </tr>
+          </TFoot>
+        </DataTable>
       ) : null}
 
       {schedule.data ? (
-        <Card title="Depreciation schedule">
-          <table className="w-full text-sm">
-            <thead className="text-left text-xs uppercase text-slate-600">
+        <Card title="Depreciation schedule" padded={false}>
+          <DataTable className="rounded-none border-0" scroll>
+            <THead>
               <tr>
-                <th className="px-2 py-1.5 font-medium">Period</th>
-                <th className="px-2 py-1.5 font-medium">Ends</th>
-                <th className="px-2 py-1.5 text-right font-medium">Charge</th>
-                <th className="px-2 py-1.5 text-right font-medium">Net book value</th>
+                <Th className="w-20">Period</Th>
+                <Th className="w-32">Ends</Th>
+                <Th numeric className="w-40">
+                  Charge
+                </Th>
+                <Th numeric className="w-44">
+                  Net book value
+                </Th>
               </tr>
-            </thead>
+            </THead>
             <tbody>
               {schedule.data.rows.map((row) => (
-                <tr key={row.periodNo} className="border-t border-slate-100">
-                  <td className="px-2 py-1 font-mono text-xs">{row.periodNo}</td>
-                  <td className="px-2 py-1 font-mono text-xs">{row.periodEnd}</td>
-                  <td className="px-2 py-1 text-right font-mono text-xs">{row.chargeMinor}</td>
-                  <td className="px-2 py-1 text-right font-mono text-xs">{row.closingNetBookValueMinor}</td>
-                </tr>
+                <Tr key={row.periodNo}>
+                  <Td mono muted>
+                    {row.periodNo}
+                  </Td>
+                  <Td mono muted>
+                    {row.periodEnd}
+                  </Td>
+                  <Td numeric mono>
+                    {row.chargeMinor}
+                  </Td>
+                  <Td numeric mono>
+                    {row.closingNetBookValueMinor}
+                  </Td>
+                </Tr>
               ))}
             </tbody>
-          </table>
+          </DataTable>
         </Card>
       ) : null}
-    </div>
+    </>
   );
 }

@@ -7,7 +7,19 @@ import type { AccountDto, JournalEntryDto } from '@acct/shared';
 import { api } from '../../../lib/api';
 import { useSession, can } from '../../../lib/session';
 import { formatMoney, fromMinorUnits, sumMinor, toMinorUnits } from '../../../lib/money';
-import { Button, Card, ErrorBanner, Field, Input, Select } from '../../../components/ui';
+import {
+  Button,
+  Card,
+  DataTable,
+  ErrorBanner,
+  Field,
+  Input,
+  PageHeader,
+  Select,
+  THead,
+  Td,
+  Th,
+} from '../../../components/ui';
 
 interface DraftLine {
   key: string;
@@ -73,6 +85,8 @@ export default function NewJournalEntryPage() {
   const balanced =
     !totals.invalid && totals.difference === 0n && totals.debit > 0n && filledLines.length >= 2;
 
+  const [idempotencyKey] = useState(() => crypto.randomUUID());
+
   const save = useMutation({
     mutationFn: (status: 'draft' | 'posted') =>
       api.post<JournalEntryDto>(
@@ -93,8 +107,6 @@ export default function NewJournalEntryPage() {
       ),
     onSuccess: (entry) => router.push(`/journal/${entry.id}`),
   });
-
-  const [idempotencyKey] = useState(() => crypto.randomUUID());
 
   const addLine = (side: 'debit' | 'credit' = 'debit'): void => {
     const line = newLine(side);
@@ -130,14 +142,15 @@ export default function NewJournalEntryPage() {
     }
   };
 
+  const money = (minor: bigint): string =>
+    formatMoney({ amount: fromMinorUnits(minor.toString(), currency), minor: '', currency });
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-lg font-semibold">New journal entry</h1>
-        <span className="text-xs text-slate-500">
-          Enter: new line · Ctrl+D: duplicate · Ctrl+S: save draft · Ctrl+Enter: post
-        </span>
-      </div>
+    <>
+      <PageHeader
+        title="New journal entry"
+        subtitle="Enter: new line · Ctrl+D: duplicate · Ctrl+S: save draft · Ctrl+Enter: post"
+      />
 
       <ErrorBanner error={save.error} />
 
@@ -148,132 +161,138 @@ export default function NewJournalEntryPage() {
           </Field>
           <div className="sm:col-span-3">
             <Field label="Memo">
-              <Input value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="What is this entry for?" />
+              <Input
+                value={memo}
+                onChange={(e) => setMemo(e.target.value)}
+                placeholder="What is this entry for?"
+              />
             </Field>
           </div>
         </div>
       </Card>
 
-      <div className="overflow-x-auto rounded border border-slate-200 bg-white">
-        <table className="w-full text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase text-slate-600">
-            <tr>
-              <th className="w-8 px-2 py-2 font-medium">#</th>
-              <th className="px-2 py-2 font-medium">Account</th>
-              <th className="w-24 px-2 py-2 font-medium">Side</th>
-              <th className="w-40 px-2 py-2 text-right font-medium">Amount</th>
-              <th className="px-2 py-2 font-medium">Description</th>
-              <th className="w-16 px-2 py-2" />
-            </tr>
-          </thead>
-          <tbody>
-            {lines.map((line, index) => {
-              const parsed = line.amount.trim() ? toMinorUnits(line.amount, currency) : '';
-              const bad = line.amount.trim() !== '' && parsed === null;
-              return (
-                <tr key={line.key} className="border-b border-slate-100 last:border-0">
-                  <td className="px-2 py-1 text-xs text-slate-400">{index + 1}</td>
-                  <td className="px-2 py-1">
-                    <Select
-                      value={line.accountId}
-                      onChange={(e) => update(line.key, { accountId: e.target.value })}
-                      onKeyDown={(e) => onKeyDown(e, index)}
-                    >
-                      <option value="">— select account —</option>
-                      {postable.map((a) => (
-                        <option key={a.id} value={a.id}>
-                          {a.code} — {a.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </td>
-                  <td className="px-2 py-1">
-                    <Select
-                      value={line.side}
-                      onChange={(e) => update(line.key, { side: e.target.value as 'debit' | 'credit' })}
-                      onKeyDown={(e) => onKeyDown(e, index)}
-                    >
-                      <option value="debit">Debit</option>
-                      <option value="credit">Credit</option>
-                    </Select>
-                  </td>
-                  <td className="px-2 py-1">
-                    <Input
-                      ref={(el: HTMLInputElement | null) => {
-                        rowRefs.current[line.key] = el;
-                      }}
-                      inputMode="decimal"
-                      value={line.amount}
-                      onChange={(e) => update(line.key, { amount: e.target.value })}
-                      onKeyDown={(e) => onKeyDown(e, index)}
-                      className={`text-right tabular-nums ${bad ? 'border-red-500' : ''}`}
-                      placeholder={`0.${'0'.repeat(3)}`}
-                    />
-                  </td>
-                  <td className="px-2 py-1">
-                    <Input
-                      value={line.description}
-                      onChange={(e) => update(line.key, { description: e.target.value })}
-                      onKeyDown={(e) => onKeyDown(e, index)}
-                    />
-                  </td>
-                  <td className="px-2 py-1 text-right">
-                    <button
-                      type="button"
-                      onClick={() => setLines((prev) => prev.filter((l) => l.key !== line.key))}
-                      className="text-xs text-slate-500 hover:text-red-700"
-                      disabled={lines.length <= 2}
-                    >
-                      remove
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-          <tfoot className="border-t border-slate-300 bg-slate-50">
-            <tr>
-              <td colSpan={3} className="px-2 py-2 text-right text-xs font-medium uppercase text-slate-600">
-                Totals
-              </td>
-              <td className="px-2 py-2 text-right">
-                <div className="tabular-nums">
-                  <div>Dr {formatMoney({ amount: fromMinorUnits(totals.debit.toString(), currency), minor: '', currency })}</div>
-                  <div>Cr {formatMoney({ amount: fromMinorUnits(totals.credit.toString(), currency), minor: '', currency })}</div>
-                </div>
-              </td>
-              <td colSpan={2} className="px-2 py-2">
-                {totals.invalid ? (
-                  <span className="text-sm font-medium text-red-700">
-                    An amount has more decimals than {currency} allows.
-                  </span>
-                ) : totals.difference === 0n ? (
-                  <span className="text-sm font-medium text-green-700">Balanced</span>
-                ) : (
-                  <span className="text-sm font-medium text-red-700">
-                    Out of balance by{' '}
-                    {formatMoney({
-                      amount: fromMinorUnits(
-                        (totals.difference < 0n ? -totals.difference : totals.difference).toString(),
-                        currency,
-                      ),
-                      minor: '',
-                      currency,
-                    })}{' '}
-                    ({totals.difference > 0n ? 'debits exceed credits' : 'credits exceed debits'})
-                  </span>
-                )}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+      <DataTable>
+        <THead>
+          <tr>
+            <Th className="w-10">#</Th>
+            <Th>Account</Th>
+            <Th className="w-28">Side</Th>
+            <Th numeric className="w-40">
+              Amount
+            </Th>
+            <Th>Description</Th>
+            <Th className="w-16" />
+          </tr>
+        </THead>
+        <tbody>
+          {lines.map((line, index) => {
+            const parsed = line.amount.trim() ? toMinorUnits(line.amount, currency) : '';
+            const bad = line.amount.trim() !== '' && parsed === null;
+            return (
+              <tr key={line.key} className="border-b border-ice-100 last:border-0 hover:bg-ice-50/60">
+                <Td muted className="text-xs">
+                  {index + 1}
+                </Td>
+                <Td className="py-1">
+                  <Select
+                    value={line.accountId}
+                    onChange={(e) => update(line.key, { accountId: e.target.value })}
+                    onKeyDown={(e) => onKeyDown(e, index)}
+                  >
+                    <option value="">— select account —</option>
+                    {postable.map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.code} — {a.name}
+                      </option>
+                    ))}
+                  </Select>
+                </Td>
+                <Td className="py-1">
+                  <Select
+                    value={line.side}
+                    onChange={(e) => update(line.key, { side: e.target.value as 'debit' | 'credit' })}
+                    onKeyDown={(e) => onKeyDown(e, index)}
+                  >
+                    <option value="debit">Debit</option>
+                    <option value="credit">Credit</option>
+                  </Select>
+                </Td>
+                <Td className="py-1">
+                  <Input
+                    ref={(el: HTMLInputElement | null) => {
+                      rowRefs.current[line.key] = el;
+                    }}
+                    inputMode="decimal"
+                    aria-label={`Amount, line ${index + 1}`}
+                    value={line.amount}
+                    onChange={(e) => update(line.key, { amount: e.target.value })}
+                    onKeyDown={(e) => onKeyDown(e, index)}
+                    className={`text-end amount ${bad ? 'border-flag-500 focus:ring-flag-200' : ''}`}
+                    placeholder="0.000"
+                  />
+                </Td>
+                <Td className="py-1">
+                  <Input
+                    aria-label={`Description, line ${index + 1}`}
+                    value={line.description}
+                    onChange={(e) => update(line.key, { description: e.target.value })}
+                    onKeyDown={(e) => onKeyDown(e, index)}
+                  />
+                </Td>
+                <Td className="py-1 text-end">
+                  <button
+                    type="button"
+                    onClick={() => setLines((prev) => prev.filter((l) => l.key !== line.key))}
+                    className="text-xs text-ink-400 transition-colors hover:text-flag-500 disabled:opacity-40 disabled:hover:text-ink-400"
+                    disabled={lines.length <= 2}
+                  >
+                    remove
+                  </button>
+                </Td>
+              </tr>
+            );
+          })}
+        </tbody>
+        <tfoot className="border-t-2 border-ink-200 bg-ice-50">
+          <tr>
+            <td colSpan={3} className="px-3 py-2 text-end text-[11px] font-medium uppercase tracking-wider text-ink-500">
+              Totals
+            </td>
+            <td className="amount px-3 py-2 text-end">
+              <div className="text-xs text-ink-500">Dr {money(totals.debit)}</div>
+              <div className="text-xs text-ink-500">Cr {money(totals.credit)}</div>
+            </td>
+            <td colSpan={2} className="px-3 py-2">
+              {totals.invalid ? (
+                <span className="text-sm font-medium text-flag-500">
+                  An amount has more decimals than {currency} allows.
+                </span>
+              ) : totals.difference === 0n ? (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-mint-200 px-2 py-0.5 text-sm font-medium text-mint-700">
+                  Balanced
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-flag-100 px-2 py-0.5 text-sm font-medium text-flag-600">
+                  Out of balance by{' '}
+                  {money(totals.difference < 0n ? -totals.difference : totals.difference)} (
+                  {totals.difference > 0n ? 'debits exceed credits' : 'credits exceed debits'})
+                </span>
+              )}
+            </td>
+          </tr>
+        </tfoot>
+      </DataTable>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Button variant="secondary" onClick={() => addLine()} type="button">
           Add line
         </Button>
-        <div className="ml-auto flex gap-2">
+        <div className="ms-auto flex items-center gap-2">
+          {!can(session, 'ledger.entry.post') ? (
+            <span className="text-xs text-ink-400">
+              You may save drafts. Posting requires the ledger.entry.post permission.
+            </span>
+          ) : null}
           <Button
             variant="secondary"
             onClick={() => save.mutate('draft')}
@@ -290,11 +309,6 @@ export default function NewJournalEntryPage() {
           </Button>
         </div>
       </div>
-      {!can(session, 'ledger.entry.post') ? (
-        <p className="text-right text-xs text-slate-500">
-          You may save drafts. Posting requires the ledger.entry.post permission.
-        </p>
-      ) : null}
-    </div>
+    </>
   );
 }

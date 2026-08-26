@@ -7,7 +7,39 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { JournalEntryDto } from '@acct/shared';
 import { api } from '../../../lib/api';
 import { useSession, can } from '../../../lib/session';
-import { Button, Card, ErrorBanner, Field, Input, Money } from '../../../components/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  DataTable,
+  EmptyState,
+  ErrorBanner,
+  Field,
+  Input,
+  Money,
+  PageHeader,
+  TFoot,
+  THead,
+  Td,
+  Th,
+  Tr,
+} from '../../../components/ui';
+
+const STATUS_TONE = {
+  draft: 'warn',
+  posted: 'good',
+  reversed: 'neutral',
+  void: 'bad',
+} as const;
+
+function Detail({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="text-xs font-medium tracking-wide text-ink-400">{label}</dt>
+      <dd className="mt-0.5 text-ink-800">{children}</dd>
+    </div>
+  );
+}
 
 export default function JournalEntryPage() {
   const params = useParams<{ id: string }>();
@@ -34,35 +66,38 @@ export default function JournalEntryPage() {
     },
   });
 
-  if (isLoading) return <p className="text-sm text-slate-500">Loading…</p>;
-  if (!entry) return <p className="text-sm text-slate-500">Not found.</p>;
+  if (isLoading) return <EmptyState>Loading…</EmptyState>;
+  if (!entry) return <EmptyState>Not found.</EmptyState>;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-lg font-semibold">
-          {entry.entryRef ?? 'Draft entry'}{' '}
-          <span className="ml-1 text-sm font-normal text-slate-500">{entry.status}</span>
-        </h1>
-        <div className="ml-auto flex gap-2">
-          {entry.status === 'draft' && can(session, 'ledger.entry.post') ? (
-            <Button onClick={() => post.mutate()} disabled={post.isPending}>
-              {post.isPending ? 'Posting…' : 'Post entry'}
-            </Button>
-          ) : null}
-          {entry.status === 'posted' && can(session, 'ledger.entry.reverse') ? (
-            <Button variant="danger" onClick={() => setShowReverse((v) => !v)}>
-              Reverse
-            </Button>
-          ) : null}
-        </div>
-      </div>
+    <>
+      <PageHeader
+        title={entry.entryRef ?? 'Draft entry'}
+        subtitle={`${entry.entryDate} · ${entry.sourceModule}`}
+        actions={
+          <>
+            <Badge tone={STATUS_TONE[entry.status as keyof typeof STATUS_TONE] ?? 'neutral'}>
+              {entry.status}
+            </Badge>
+            {entry.status === 'draft' && can(session, 'ledger.entry.post') ? (
+              <Button onClick={() => post.mutate()} disabled={post.isPending}>
+                {post.isPending ? 'Posting…' : 'Post entry'}
+              </Button>
+            ) : null}
+            {entry.status === 'posted' && can(session, 'ledger.entry.reverse') ? (
+              <Button variant="danger" onClick={() => setShowReverse((v) => !v)}>
+                Reverse
+              </Button>
+            ) : null}
+          </>
+        }
+      />
 
       <ErrorBanner error={post.error ?? reverse.error} />
 
       {showReverse ? (
         <Card title="Reverse this entry">
-          <p className="mb-2 text-sm text-slate-600">
+          <p className="mb-3 text-sm text-ink-500">
             A posted entry is never edited. Reversing posts the mirror image and links the two.
           </p>
           <div className="flex items-end gap-2">
@@ -83,91 +118,89 @@ export default function JournalEntryPage() {
       ) : null}
 
       <Card>
-        <dl className="grid gap-3 text-sm sm:grid-cols-4">
-          <div>
-            <dt className="text-xs text-slate-500">Date</dt>
-            <dd>{entry.entryDate}</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">Source</dt>
-            <dd>{entry.sourceModule}</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">Posted at</dt>
-            <dd>{entry.postedAt ?? '—'}</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-slate-500">Memo</dt>
-            <dd>{entry.memo ?? '—'}</dd>
-          </div>
+        <dl className="grid gap-4 text-sm sm:grid-cols-4">
+          <Detail label="Date">{entry.entryDate}</Detail>
+          <Detail label="Source">
+            <span className="capitalize">{entry.sourceModule}</span>
+          </Detail>
+          <Detail label="Posted at">{entry.postedAt ?? '—'}</Detail>
+          <Detail label="Memo">{entry.memo ?? '—'}</Detail>
           {entry.reversedByEntryId ? (
             <div className="sm:col-span-4">
-              <dt className="text-xs text-slate-500">Reversed by</dt>
-              <dd>
-                <Link href={`/journal/${entry.reversedByEntryId}`} className="underline">
+              <Detail label="Reversed by">
+                <Link
+                  href={`/journal/${entry.reversedByEntryId}`}
+                  className="text-ink-700 underline decoration-ice-300 underline-offset-2 hover:decoration-ink-400"
+                >
                   view reversing entry
                 </Link>
-              </dd>
+              </Detail>
             </div>
           ) : null}
           {entry.reversesEntryId ? (
             <div className="sm:col-span-4">
-              <dt className="text-xs text-slate-500">Reverses</dt>
-              <dd>
-                <Link href={`/journal/${entry.reversesEntryId}`} className="underline">
+              <Detail label="Reverses">
+                <Link
+                  href={`/journal/${entry.reversesEntryId}`}
+                  className="text-ink-700 underline decoration-ice-300 underline-offset-2 hover:decoration-ink-400"
+                >
                   view original entry
                 </Link>
-              </dd>
+              </Detail>
             </div>
           ) : null}
         </dl>
       </Card>
 
-      <div className="overflow-x-auto rounded border border-slate-200 bg-white">
-        <table className="w-full text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase text-slate-600">
-            <tr>
-              <th className="px-3 py-2 font-medium">#</th>
-              <th className="px-3 py-2 font-medium">Account</th>
-              <th className="px-3 py-2 font-medium">Description</th>
-              <th className="px-3 py-2 text-right font-medium">Debit</th>
-              <th className="px-3 py-2 text-right font-medium">Credit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entry.lines.map((line) => (
-              <tr key={line.id} className="border-b border-slate-100 last:border-0">
-                <td className="px-3 py-1.5 text-xs text-slate-400">{line.lineNo}</td>
-                <td className="px-3 py-1.5">
-                  <Link href={`/reports/general-ledger?accountId=${line.accountId}`} className="underline">
-                    <span className="font-mono text-xs">{line.accountCode}</span> {line.accountName}
-                  </Link>
-                </td>
-                <td className="px-3 py-1.5 text-slate-600">{line.description ?? ''}</td>
-                <td className="px-3 py-1.5 text-right">
-                  {line.side === 'debit' ? <Money value={line.amount} /> : null}
-                </td>
-                <td className="px-3 py-1.5 text-right">
-                  {line.side === 'credit' ? <Money value={line.amount} /> : null}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot className="border-t border-slate-300 bg-slate-50">
-            <tr>
-              <td colSpan={3} className="px-3 py-2 text-right text-xs uppercase text-slate-600">
-                Totals
-              </td>
-              <td className="px-3 py-2 text-right">
-                <Money value={entry.totalDebit} bold />
-              </td>
-              <td className="px-3 py-2 text-right">
-                <Money value={entry.totalCredit} bold />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
+      <DataTable>
+        <THead>
+          <tr>
+            <Th className="w-10">#</Th>
+            <Th>Account</Th>
+            <Th>Description</Th>
+            <Th numeric className="w-40">
+              Debit
+            </Th>
+            <Th numeric className="w-40">
+              Credit
+            </Th>
+          </tr>
+        </THead>
+        <tbody>
+          {entry.lines.map((line) => (
+            <Tr key={line.id}>
+              <Td muted className="text-xs">
+                {line.lineNo}
+              </Td>
+              <Td>
+                <Link
+                  href={`/reports/general-ledger?accountId=${line.accountId}`}
+                  className="text-ink-700 underline decoration-ice-300 underline-offset-2 hover:decoration-ink-400"
+                >
+                  <span className="font-mono text-xs text-ink-400">{line.accountCode}</span>{' '}
+                  {line.accountName}
+                </Link>
+              </Td>
+              <Td muted>{line.description ?? ''}</Td>
+              <Td numeric>{line.side === 'debit' ? <Money value={line.amount} /> : null}</Td>
+              <Td numeric>{line.side === 'credit' ? <Money value={line.amount} /> : null}</Td>
+            </Tr>
+          ))}
+        </tbody>
+        <TFoot>
+          <tr>
+            <Td colSpan={3} className="text-end text-[11px] uppercase tracking-wider text-ink-500">
+              Totals
+            </Td>
+            <Td numeric>
+              <Money value={entry.totalDebit} bold />
+            </Td>
+            <Td numeric>
+              <Money value={entry.totalCredit} bold />
+            </Td>
+          </tr>
+        </TFoot>
+      </DataTable>
+    </>
   );
 }

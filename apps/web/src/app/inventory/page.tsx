@@ -3,7 +3,23 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../lib/api';
-import { Card, ErrorBanner, Field, Input, Money } from '../../components/ui';
+import {
+  Card,
+  DataTable,
+  EmptyState,
+  ErrorBanner,
+  Field,
+  Input,
+  Money,
+  PageHeader,
+  StatusNote,
+  TFoot,
+  THead,
+  Td,
+  Th,
+  Toolbar,
+  Tr,
+} from '../../components/ui';
 
 interface ValuationRow {
   itemId: string;
@@ -51,109 +67,141 @@ export default function InventoryPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-lg font-semibold">Inventory</h1>
+    <>
+      <PageHeader
+        title="Inventory"
+        subtitle="Stock valuation, and whether it agrees with the inventory accounts."
+      />
 
-      <Card>
-        <div className="grid items-end gap-3 sm:grid-cols-4">
-          <Field label="Valuation as at" hint="Leave blank for today">
-            <Input type="date" value={asOfDate} onChange={(e) => setAsOfDate(e.target.value)} />
-          </Field>
-        </div>
-      </Card>
+      <Toolbar>
+        <Field label="Valuation as at" hint="Leave blank for today">
+          <Input type="date" value={asOfDate} onChange={(e) => setAsOfDate(e.target.value)} />
+        </Field>
+      </Toolbar>
 
       <ErrorBanner error={valuation.error ?? movements.error} />
 
       {valuation.data ? (
         <>
-          <div className="overflow-x-auto rounded border border-slate-200 bg-white">
-            <table className="w-full text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase text-slate-600">
-                <tr>
-                  <th className="px-3 py-2 font-medium">SKU</th>
-                  <th className="px-3 py-2 font-medium">Item</th>
-                  <th className="px-3 py-2 font-medium">Warehouse</th>
-                  <th className="px-3 py-2 font-medium">Method</th>
-                  <th className="px-3 py-2 text-right font-medium">Quantity</th>
-                  <th className="px-3 py-2 text-right font-medium">Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {valuation.data.items.map((row) => (
-                  <tr
-                    key={`${row.itemId}-${row.warehouse}`}
-                    className="cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50"
-                    onClick={() => setItemId(row.itemId)}
-                  >
-                    <td className="px-3 py-1.5 font-mono text-xs">{row.sku}</td>
-                    <td className="px-3 py-1.5 underline">{row.name}</td>
-                    <td className="px-3 py-1.5">{row.warehouse}</td>
-                    <td className="px-3 py-1.5 text-slate-500">{row.costingMethod}</td>
-                    <td className="px-3 py-1.5 text-right font-mono">{row.quantity}</td>
-                    <td className="px-3 py-1.5 text-right"><Money value={row.value} /></td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot className="border-t border-slate-300 bg-slate-50">
-                <tr>
-                  <td colSpan={5} className="px-3 py-2 text-right text-xs uppercase text-slate-600">
-                    Total ({valuation.data.currency})
-                  </td>
-                  <td className="px-3 py-2 text-right"><Money value={valuation.data.totalValue} bold /></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+          <DataTable scroll>
+            <THead>
+              <tr>
+                <Th className="w-28">SKU</Th>
+                <Th>Item</Th>
+                <Th className="w-28">Warehouse</Th>
+                <Th className="w-36">Method</Th>
+                <Th numeric className="w-32">
+                  Quantity
+                </Th>
+                <Th numeric className="w-40">
+                  Value
+                </Th>
+              </tr>
+            </THead>
+            <tbody>
+              {valuation.data.items.map((row) => (
+                <Tr
+                  key={`${row.itemId}-${row.warehouse}`}
+                  interactive
+                  onClick={() => setItemId(row.itemId)}
+                >
+                  <Td mono muted>
+                    {row.sku}
+                  </Td>
+                  <Td className="text-ink-700 underline decoration-ice-300 underline-offset-2">
+                    {row.name}
+                  </Td>
+                  <Td>{row.warehouse}</Td>
+                  <Td muted className="text-xs">
+                    {row.costingMethod.replace(/_/g, ' ')}
+                  </Td>
+                  <Td numeric mono>
+                    {row.quantity}
+                  </Td>
+                  <Td numeric>
+                    <Money value={row.value} />
+                  </Td>
+                </Tr>
+              ))}
+            </tbody>
+            <TFoot>
+              <tr>
+                <Td colSpan={5} className="text-end text-[11px] uppercase tracking-wider text-ink-500">
+                  Total ({valuation.data.currency})
+                </Td>
+                <Td numeric>
+                  <Money value={valuation.data.totalValue} bold />
+                </Td>
+              </tr>
+            </TFoot>
+          </DataTable>
 
-          <p className={`text-sm ${valuation.data.agreesWithLedger ? 'text-green-700' : 'text-red-700'}`}>
+          <StatusNote tone={valuation.data.agreesWithLedger ? 'good' : 'bad'}>
             {valuation.data.agreesWithLedger
               ? 'Stock valuation agrees with the inventory accounts in the ledger.'
               : `Stock says ${valuation.data.totalValue.amount} but the ledger carries ` +
-                `${valuation.data.ledgerInventoryValue.amount}. Stock and ledger have drifted — investigate ` +
-                `before relying on either.`}
-          </p>
+                `${valuation.data.ledgerInventoryValue.amount}. Stock and ledger have drifted — ` +
+                `investigate before relying on either.`}
+          </StatusNote>
         </>
       ) : null}
 
       {movements.data ? (
-        <Card title="Movements">
-          <table className="w-full text-sm">
-            <thead className="text-left text-xs uppercase text-slate-600">
+        <Card title="Movements" padded={false}>
+          <DataTable className="rounded-none border-0">
+            <THead>
               <tr>
-                <th className="px-2 py-1.5 font-medium">Date</th>
-                <th className="px-2 py-1.5 font-medium">Kind</th>
-                <th className="px-2 py-1.5 font-medium">Warehouse</th>
-                <th className="px-2 py-1.5 text-right font-medium">Quantity</th>
-                <th className="px-2 py-1.5 text-right font-medium">Unit cost</th>
-                <th className="px-2 py-1.5 text-right font-medium">Value</th>
-                <th className="px-2 py-1.5 font-medium">Entry</th>
+                <Th className="w-28">Date</Th>
+                <Th className="w-32">Kind</Th>
+                <Th className="w-28">Warehouse</Th>
+                <Th numeric className="w-32">
+                  Quantity
+                </Th>
+                <Th numeric className="w-36">
+                  Unit cost
+                </Th>
+                <Th numeric className="w-36">
+                  Value
+                </Th>
+                <Th className="w-20">Entry</Th>
               </tr>
-            </thead>
+            </THead>
             <tbody>
               {movements.data.map((m) => (
-                <tr key={m.id} className="border-t border-slate-100">
-                  <td className="px-2 py-1.5 font-mono text-xs">{m.movementDate}</td>
-                  <td className="px-2 py-1.5">{m.kind}</td>
-                  <td className="px-2 py-1.5">{m.warehouse}</td>
-                  <td className="px-2 py-1.5 text-right font-mono">{m.quantity}</td>
-                  <td className="px-2 py-1.5 text-right"><Money value={m.unitCost} /></td>
-                  <td className="px-2 py-1.5 text-right"><Money value={m.value} /></td>
-                  <td className="px-2 py-1.5">
+                <Tr key={m.id}>
+                  <Td mono muted>
+                    {m.movementDate}
+                  </Td>
+                  <Td className="capitalize">{m.kind.replace(/_/g, ' ')}</Td>
+                  <Td>{m.warehouse}</Td>
+                  <Td numeric mono>
+                    {m.quantity}
+                  </Td>
+                  <Td numeric>
+                    <Money value={m.unitCost} />
+                  </Td>
+                  <Td numeric>
+                    <Money value={m.value} />
+                  </Td>
+                  <Td>
                     {/* Every movement reaches the entry it posted. */}
                     {m.entryId ? (
-                      <a href={`/journal/${m.entryId}`} className="underline">
+                      <a
+                        href={`/journal/${m.entryId}`}
+                        className="text-ink-700 underline decoration-ice-300 underline-offset-2 hover:decoration-ink-400"
+                      >
                         view
                       </a>
                     ) : (
-                      <span className="text-slate-400">transfer</span>
+                      <span className="text-ink-300">transfer</span>
                     )}
-                  </td>
-                </tr>
+                  </Td>
+                </Tr>
               ))}
             </tbody>
-          </table>
+          </DataTable>
         </Card>
       ) : null}
-    </div>
+    </>
   );
 }

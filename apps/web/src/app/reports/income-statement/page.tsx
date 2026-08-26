@@ -4,7 +4,22 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { IncomeStatement } from '@acct/domain';
 import { api, API_URL } from '../../../lib/api';
-import { Button, Card, ErrorBanner, Field, Input, Money } from '../../../components/ui';
+import {
+  Button,
+  Card,
+  DataTable,
+  EmptyState,
+  ErrorBanner,
+  Field,
+  Input,
+  Money,
+  PageHeader,
+  THead,
+  Td,
+  Th,
+  Toolbar,
+  Tr,
+} from '../../../components/ui';
 import { SectionRows, StatementTable, TotalRow } from '../../../components/statement-table';
 
 export default function IncomeStatementPage() {
@@ -27,45 +42,49 @@ export default function IncomeStatementPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-lg font-semibold">Income Statement</h1>
-        <Button
-          variant="secondary"
-          className="ml-auto"
-          disabled={!ready}
-          onClick={() => {
-            // The API renders the CSV so the export carries the same figures.
-            window.location.href = `${API_URL}/api/v1/reports/income-statement?${params.toString()}&format=csv`;
-          }}
-        >
-          Export CSV
-        </Button>
-      </div>
+    <>
+      <PageHeader
+        title="Income Statement"
+        subtitle="Built from posted journal lines for the window."
+        actions={
+          <Button
+            variant="secondary"
+            disabled={!ready}
+            onClick={() => {
+              // The API renders the CSV so the export carries the same figures.
+              window.location.href = `${API_URL}/api/v1/reports/income-statement?${params.toString()}&format=csv`;
+            }}
+          >
+            Export CSV
+          </Button>
+        }
+      />
 
-      <Card>
-        <div className="grid items-end gap-3 sm:grid-cols-4">
-          <Field label="From date">
-            <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-          </Field>
-          <Field label="To date">
-            <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
-          </Field>
-          <Field label="Compare from" hint="Optional prior period">
-            <Input type="date" value={compareFromDate} onChange={(e) => setCompareFromDate(e.target.value)} />
-          </Field>
-          <Field label="Compare to">
-            <Input type="date" value={compareToDate} onChange={(e) => setCompareToDate(e.target.value)} />
-          </Field>
-        </div>
-      </Card>
+      <Toolbar>
+        <Field label="From date">
+          <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+        </Field>
+        <Field label="To date">
+          <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+        </Field>
+        <Field label="Compare from" hint="Optional prior period">
+          <Input
+            type="date"
+            value={compareFromDate}
+            onChange={(e) => setCompareFromDate(e.target.value)}
+          />
+        </Field>
+        <Field label="Compare to">
+          <Input type="date" value={compareToDate} onChange={(e) => setCompareToDate(e.target.value)} />
+        </Field>
+      </Toolbar>
 
       <ErrorBanner error={error} />
 
       {!ready ? (
-        <p className="text-sm text-slate-500">Choose a date range.</p>
+        <EmptyState>Choose a date range to build the statement.</EmptyState>
       ) : isFetching && !data ? (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <EmptyState>Loading…</EmptyState>
       ) : data ? (
         <>
           <StatementTable>
@@ -76,41 +95,62 @@ export default function IncomeStatementPage() {
             <TotalRow label="Operating profit" value={data.operatingProfit} />
             <SectionRows section={data.otherIncome} fromDate={fromDate} toDate={toDate} />
             <SectionRows section={data.otherExpenses} fromDate={fromDate} toDate={toDate} />
-            <TotalRow label={`Profit for the period (${data.currency})`} value={data.netProfit} />
+            <TotalRow
+              label={`Profit for the period (${data.currency})`}
+              value={data.netProfit}
+              emphasis="strong"
+            />
           </StatementTable>
 
           {data.comparative && data.variance ? (
-            <Card title="Against the comparative period">
-              <table className="w-full text-sm">
-                <thead className="text-left text-xs uppercase text-slate-600">
+            <Card title="Against the comparative period" padded={false}>
+              <DataTable className="rounded-none border-0">
+                <THead>
                   <tr>
-                    <th className="px-3 py-1.5 font-medium">Measure</th>
-                    <th className="px-3 py-1.5 text-right font-medium">This period</th>
-                    <th className="px-3 py-1.5 text-right font-medium">Comparative</th>
-                    <th className="px-3 py-1.5 text-right font-medium">Variance</th>
+                    <Th>Measure</Th>
+                    <Th numeric className="w-44">
+                      This period
+                    </Th>
+                    <Th numeric className="w-44">
+                      Comparative
+                    </Th>
+                    <Th numeric className="w-44">
+                      Variance
+                    </Th>
                   </tr>
-                </thead>
+                </THead>
                 <tbody>
                   {(
                     [
                       ['Revenue', data.revenue.total, data.comparative.revenue.total, data.variance.revenue],
-                      ['Gross profit', data.grossProfit, data.comparative.grossProfit, data.variance.grossProfit],
+                      [
+                        'Gross profit',
+                        data.grossProfit,
+                        data.comparative.grossProfit,
+                        data.variance.grossProfit,
+                      ],
                       ['Net profit', data.netProfit, data.comparative.netProfit, data.variance.netProfit],
                     ] as const
                   ).map(([label, current, prior, variance]) => (
-                    <tr key={label} className="border-t border-slate-100">
-                      <td className="px-3 py-1.5">{label}</td>
-                      <td className="px-3 py-1.5 text-right"><Money value={current} /></td>
-                      <td className="px-3 py-1.5 text-right"><Money value={prior} /></td>
-                      <td className="px-3 py-1.5 text-right"><Money value={variance} bold /></td>
-                    </tr>
+                    <Tr key={label}>
+                      <Td>{label}</Td>
+                      <Td numeric>
+                        <Money value={current} />
+                      </Td>
+                      <Td numeric>
+                        <Money value={prior} />
+                      </Td>
+                      <Td numeric>
+                        <Money value={variance} bold />
+                      </Td>
+                    </Tr>
                   ))}
                 </tbody>
-              </table>
+              </DataTable>
             </Card>
           ) : null}
         </>
       ) : null}
-    </div>
+    </>
   );
 }

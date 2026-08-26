@@ -3,7 +3,18 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
-import { Button, Card, ErrorBanner, Field, Input, Select } from '../../components/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  ErrorBanner,
+  Field,
+  Input,
+  PageHeader,
+  Select,
+  StatusNote,
+  Toolbar,
+} from '../../components/ui';
 
 interface ChecklistItem {
   id: string;
@@ -90,83 +101,100 @@ export default function ClosePage() {
   const data = status.data;
   const blocking = data?.checklist.filter((i) => i.isBlocking && i.status === 'pending') ?? [];
 
+  const statusTone = { open: 'good', soft_closed: 'warn', closed: 'neutral' } as const;
+
   return (
-    <div className="space-y-4">
-      <h1 className="text-lg font-semibold">Period Close</h1>
+    <>
+      <PageHeader
+        title="Period Close"
+        subtitle="A soft close admits adjustments only; a hard close admits nothing."
+        actions={
+          data ? (
+            <>
+              <Badge tone={statusTone[data.status]}>{data.status.replace(/_/g, ' ')}</Badge>
+              {data.draftEntries > 0 ? (
+                <Badge tone="warn">{data.draftEntries} draft entries</Badge>
+              ) : null}
+            </>
+          ) : null
+        }
+      />
 
-      <Card>
-        <div className="grid items-end gap-3 sm:grid-cols-3">
-          <Field label="Period">
-            <Select value={selected} onChange={(e) => setPeriodId(e.target.value)}>
-              {periods.data?.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.periodNo.toString().padStart(2, '0')} · {p.startDate} → {p.endDate} ({p.status})
-                </option>
-              ))}
-            </Select>
-          </Field>
-          <div className="text-sm text-slate-600">
-            {data ? (
-              <>
-                Status: <span className="font-medium">{data.status}</span>
-                {data.draftEntries > 0 ? (
-                  <span className="ml-2 text-amber-700">{data.draftEntries} draft entries</span>
-                ) : null}
-              </>
-            ) : null}
-          </div>
-        </div>
-      </Card>
+      <Toolbar>
+        <Field label="Period">
+          <Select value={selected} onChange={(e) => setPeriodId(e.target.value)}>
+            {periods.data?.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.periodNo.toString().padStart(2, '0')} · {p.startDate} → {p.endDate} ({p.status})
+              </option>
+            ))}
+          </Select>
+        </Field>
+      </Toolbar>
 
-      <ErrorBanner error={status.error ?? setItem.error ?? setStatus.error ?? revalue.error ?? closeYear.error} />
+      <ErrorBanner
+        error={status.error ?? setItem.error ?? setStatus.error ?? revalue.error ?? closeYear.error}
+      />
 
-      <Card title="Checklist">
+      <Card title="Checklist" padded={false}>
         <table className="w-full text-sm">
           <tbody>
             {data?.checklist.map((item) => (
-              <tr key={item.id} className="border-b border-slate-100 last:border-0">
-                <td className="px-2 py-1.5">
+              <tr key={item.id} className="border-b border-ice-100 last:border-0 hover:bg-ice-50">
+                <td className="px-4 py-2">
                   {item.label}
-                  {item.isBlocking ? <span className="ml-2 text-xs text-slate-500">blocking</span> : null}
+                  {item.isBlocking ? (
+                    <span className="ms-2 text-[11px] uppercase tracking-wide text-ink-300">
+                      blocking
+                    </span>
+                  ) : null}
+                  {item.notes ? (
+                    <span className="ms-2 text-xs text-ink-400">— {item.notes}</span>
+                  ) : null}
                 </td>
-                <td className="px-2 py-1.5 text-right">
-                  <span
-                    className={
-                      item.status === 'done'
-                        ? 'text-green-700'
-                        : item.status === 'skipped'
-                          ? 'text-amber-700'
-                          : 'text-slate-500'
+                <td className="w-24 px-3 py-2 text-end">
+                  <Badge
+                    tone={
+                      item.status === 'done' ? 'good' : item.status === 'skipped' ? 'warn' : 'neutral'
                     }
                   >
                     {item.status}
-                  </span>
+                  </Badge>
                 </td>
-                <td className="px-2 py-1.5 text-right">
-                  <Button
-                    variant="secondary"
-                    disabled={data.status === 'closed' || setItem.isPending}
-                    onClick={() => setItem.mutate({ itemCode: item.itemCode, status: 'done' })}
-                  >
-                    Mark done
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    className="ml-2"
-                    disabled={data.status === 'closed' || setItem.isPending}
-                    onClick={() => {
-                      const notes = window.prompt('Reason for skipping this item?')?.trim();
-                      if (notes) setItem.mutate({ itemCode: item.itemCode, status: 'skipped', notes });
-                    }}
-                  >
-                    Skip…
-                  </Button>
+                <td className="w-56 px-4 py-2 text-end">
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={data.status === 'closed' || setItem.isPending}
+                      onClick={() => setItem.mutate({ itemCode: item.itemCode, status: 'done' })}
+                    >
+                      Mark done
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      disabled={data.status === 'closed' || setItem.isPending}
+                      onClick={() => {
+                        const notes = window.prompt('Reason for skipping this item?')?.trim();
+                        if (notes) setItem.mutate({ itemCode: item.itemCode, status: 'skipped', notes });
+                      }}
+                    >
+                      Skip…
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </Card>
+
+      {blocking.length > 0 ? (
+        <StatusNote tone="warn">
+          {blocking.length} blocking item(s) outstanding: {blocking.map((i) => i.label).join(', ')}
+        </StatusNote>
+      ) : null}
 
       <Card title="Close">
         <div className="flex flex-wrap items-center gap-2">
@@ -184,25 +212,22 @@ export default function ClosePage() {
             Hard close
           </Button>
           <Button
-            variant="secondary"
+            variant="ghost"
             disabled={!data || data.status === 'open' || setStatus.isPending}
             onClick={() => setStatus.mutate('open')}
           >
             Reopen
           </Button>
-          {blocking.length > 0 ? (
-            <span className="text-sm text-amber-700">
-              {blocking.length} blocking item(s) outstanding: {blocking.map((i) => i.label).join(', ')}
-            </span>
-          ) : null}
         </div>
       </Card>
 
       <Card title="Close routines">
-        <div className="grid items-end gap-3 sm:grid-cols-3">
-          <Field label="Revalue foreign currency as at">
-            <Input type="date" value={asOfDate} onChange={(e) => setAsOfDate(e.target.value)} />
-          </Field>
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="w-56">
+            <Field label="Revalue foreign currency as at">
+              <Input type="date" value={asOfDate} onChange={(e) => setAsOfDate(e.target.value)} />
+            </Field>
+          </div>
           <Button disabled={!asOfDate || revalue.isPending} onClick={() => revalue.mutate()}>
             Run FX revaluation
           </Button>
@@ -215,16 +240,16 @@ export default function ClosePage() {
           </Button>
         </div>
         {revalue.data ? (
-          <p className="mt-3 text-sm text-slate-700">
+          <p className="mt-3 text-sm text-ink-500">
             Revaluation posted. Net gain: {revalue.data.netGain.amount}
           </p>
         ) : null}
         {closeYear.data ? (
-          <p className="mt-3 text-sm text-slate-700">
+          <p className="mt-3 text-sm text-ink-500">
             Closing entry posted. Profit moved to retained earnings: {closeYear.data.profit.amount}
           </p>
         ) : null}
       </Card>
-    </div>
+    </>
   );
 }

@@ -1,1 +1,138 @@
 @import "tailwindcss";
+
+/*
+ * Design tokens.
+ *
+ * Five brand colours: two primary (deep teal, mint), two secondary (near-black
+ * navy, ice), and amber as the single alert accent. Everything else is a tint
+ * derived from them, so a screen never reaches for a colour that is not on the
+ * palette.
+ *
+ * The scales are deliberately narrow. An accounting screen is mostly numbers,
+ * and the job of colour here is to separate structure from data, not to
+ * decorate: ink for structure, mint for the active element, amber for
+ * attention, red only for money that is wrong.
+ */
+@theme {
+  /* Primary — deep teal. The chrome, headings and primary actions. */
+  --color-ink-50: #eef5f6;
+  --color-ink-100: #d6e6e9;
+  --color-ink-200: #a9c6cd;
+  --color-ink-300: #7aa3ad;
+  --color-ink-400: #4c7c89;
+  --color-ink-500: #2c5b68;
+  --color-ink-600: #17414d;
+  --color-ink-700: #0b2229;
+  --color-ink-800: #0e1821;
+  --color-ink-900: #080f15;
+
+  /* Primary — mint. Selection, focus, the "this is live" signal. */
+  --color-mint-100: #e8fdee;
+  --color-mint-200: #d0fcdc;
+  --color-mint-300: #b0fbc1;
+  --color-mint-400: #8beda3;
+  --color-mint-500: #5fd47e;
+  --color-mint-600: #2f9f52;
+  --color-mint-700: #1d6c37;
+
+  /* Secondary — ice. Table headers, panel backgrounds, quiet fills. */
+  --color-ice-50: #f4faf9;
+  --color-ice-100: #e1f0ee;
+  --color-ice-200: #cbe3e0;
+  --color-ice-300: #adcfcb;
+
+  /* Accent — amber. Warnings and pending states. Never a primary action. */
+  --color-amber-100: #fff3d1;
+  --color-amber-200: #ffe49a;
+  --color-amber-400: #ffc120;
+  --color-amber-500: #e0a600;
+  --color-amber-600: #a97a00;
+
+  /* Money that is wrong, and nothing else. */
+  --color-flag-100: #fdeaea;
+  --color-flag-200: #f8caca;
+  --color-flag-500: #c02626;
+  --color-flag-600: #9c1c1c;
+
+  --color-surface: #ffffff;
+  --color-canvas: #f5f9f9;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+}
+
+@layer base {
+  html {
+    /* Numbers must line up column to column, in every font weight. */
+    font-variant-numeric: tabular-nums;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink-800);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  /*
+   * One focus ring everywhere, mint on ink so it is unmistakable on both the
+   * dark chrome and the light grid. Keyboard-first entry means focus is the
+   * most important thing on the screen.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-mint-500);
+    outline-offset: 1px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background-color: var(--color-mint-300);
+    color: var(--color-ink-800);
+  }
+
+  /* Native controls follow the palette rather than the browser default blue. */
+  html {
+    accent-color: var(--color-ink-700);
+    color-scheme: light;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--color-ink-800);
+    letter-spacing: -0.011em;
+  }
+
+  /* A date input in a dense grid should not be taller than the row it sits in. */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.55;
+    cursor: pointer;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+}
+
+@layer utilities {
+  /* Amount columns: fixed-width digits, never wrapped, never hyphen-split. */
+  .amount {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* A scrollable grid keeps its header visible; the row height stays constant. */
+  .grid-scroll {
+    max-height: calc(100vh - 20rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+}

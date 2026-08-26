@@ -6,7 +6,22 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AccountDto } from '@acct/shared';
 import { api } from '../../lib/api';
 import { useSession, can } from '../../lib/session';
-import { Button, Card, ErrorBanner, Field, Input, Select } from '../../components/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  DataTable,
+  ErrorBanner,
+  Field,
+  Input,
+  LoadingRow,
+  PageHeader,
+  Select,
+  THead,
+  Td,
+  Th,
+  Tr,
+} from '../../components/ui';
 
 interface TreeNode extends AccountDto {
   depth: number;
@@ -59,20 +74,27 @@ export default function AccountsPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-lg font-semibold">Chart of Accounts</h1>
-        <div className="ml-auto w-64">
-          <Input
-            placeholder="Filter by code or name"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          />
-        </div>
-        {can(session, 'ledger.account.write') ? (
-          <Button onClick={() => setShowNew((v) => !v)}>{showNew ? 'Cancel' : 'New account'}</Button>
-        ) : null}
-      </div>
+    <>
+      <PageHeader
+        title="Chart of Accounts"
+        subtitle={`${rows.length} of ${accounts.length} accounts · summary accounts cannot be posted to`}
+        actions={
+          <>
+            <div className="w-64">
+              <Input
+                placeholder="Filter by code or name"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              />
+            </div>
+            {can(session, 'ledger.account.write') ? (
+              <Button onClick={() => setShowNew((v) => !v)}>
+                {showNew ? 'Cancel' : 'New account'}
+              </Button>
+            ) : null}
+          </>
+        }
+      />
 
       {showNew ? (
         <Card title="New account">
@@ -85,71 +107,73 @@ export default function AccountsPage() {
         </Card>
       ) : null}
 
-      <div className="overflow-x-auto rounded border border-slate-200 bg-white">
-        <table className="w-full text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase text-slate-600">
-            <tr>
-              <th className="px-3 py-2 font-medium">Code</th>
-              <th className="px-3 py-2 font-medium">Name</th>
-              <th className="px-3 py-2 font-medium">Type</th>
-              <th className="px-3 py-2 font-medium">Normal</th>
-              <th className="px-3 py-2 font-medium">Currency</th>
-              <th className="px-3 py-2 font-medium">Postable</th>
-              <th className="px-3 py-2 font-medium">Ledger</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr>
-                <td colSpan={7} className="px-3 py-6 text-center text-slate-500">
-                  Loading…
-                </td>
-              </tr>
-            ) : (
-              rows.map((account) => (
-                <tr key={account.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-                  <td className="px-3 py-1.5 font-mono text-xs">{account.code}</td>
-                  <td className="px-3 py-1.5" style={{ paddingLeft: `${12 + account.depth * 16}px` }}>
-                    <span className={account.isPostable ? '' : 'font-semibold text-slate-700'}>
-                      {account.name}
+      <DataTable scroll>
+        <THead>
+          <tr>
+            <Th className="w-24">Code</Th>
+            <Th>Name</Th>
+            <Th className="w-28">Type</Th>
+            <Th className="w-24">Normal</Th>
+            <Th className="w-24">Currency</Th>
+            <Th className="w-28">Postable</Th>
+            <Th className="w-20">Ledger</Th>
+          </tr>
+        </THead>
+        <tbody>
+          {isLoading ? (
+            <LoadingRow colSpan={7} />
+          ) : (
+            rows.map((account) => (
+              <Tr key={account.id}>
+                <Td mono muted>
+                  {account.code}
+                </Td>
+                {/* Indentation carries the hierarchy: one step per level, nothing else. */}
+                <Td style={{ paddingInlineStart: `${12 + account.depth * 18}px` }}>
+                  <span className={account.isPostable ? 'text-ink-800' : 'font-semibold text-ink-600'}>
+                    {account.name}
+                  </span>
+                  {account.nameAr ? (
+                    <span className="ms-2 text-xs text-ink-300" dir="rtl">
+                      {account.nameAr}
                     </span>
-                    {account.nameAr ? (
-                      <span className="ml-2 text-xs text-slate-400" dir="rtl">
-                        {account.nameAr}
-                      </span>
-                    ) : null}
-                  </td>
-                  <td className="px-3 py-1.5 text-slate-600">{account.type}</td>
-                  <td className="px-3 py-1.5 text-slate-600">{account.normalBalance}</td>
-                  <td className="px-3 py-1.5 text-slate-600">{account.currencyCode ?? 'any'}</td>
-                  <td className="px-3 py-1.5">
-                    {account.isPostable ? (
-                      <span className="text-green-700">yes</span>
-                    ) : (
-                      <span className="text-slate-400">summary</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-1.5">
-                    {account.isPostable ? (
-                      <Link
-                        href={`/reports/general-ledger?accountId=${account.id}`}
-                        className="text-slate-900 underline"
-                      >
-                        view
-                      </Link>
-                    ) : null}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      <p className="text-xs text-slate-500">
-        {rows.length} of {accounts.length} accounts. Summary accounts cannot be posted to — the
-        database refuses it.
+                  ) : null}
+                </Td>
+                <Td muted className="text-xs capitalize">
+                  {account.type}
+                </Td>
+                <Td muted className="text-xs capitalize">
+                  {account.normalBalance}
+                </Td>
+                <Td muted className="text-xs">
+                  {account.currencyCode ?? 'any'}
+                </Td>
+                <Td>
+                  {account.isPostable ? (
+                    <Badge tone="good">postable</Badge>
+                  ) : (
+                    <Badge>summary</Badge>
+                  )}
+                </Td>
+                <Td>
+                  {account.isPostable ? (
+                    <Link
+                      href={`/reports/general-ledger?accountId=${account.id}`}
+                      className="text-ink-700 underline decoration-ice-300 underline-offset-2 hover:decoration-ink-400"
+                    >
+                      view
+                    </Link>
+                  ) : null}
+                </Td>
+              </Tr>
+            ))
+          )}
+        </tbody>
+      </DataTable>
+      <p className="text-xs text-ink-400">
+        Summary accounts cannot be posted to — the database refuses it, not just this screen.
       </p>
-    </div>
+    </>
   );
 }
 

@@ -26,13 +26,12 @@ test('the trial balance balances', async ({ page }) => {
 test('Post stays disabled until an entry balances', async ({ page }) => {
   await page.goto('/journal/new');
 
-  const post = page.getByRole('button', { name: /^post$/i });
+  const post = page.getByRole('button', { name: /post entry/i });
   await expect(post).toBeDisabled();
 
   // One side only: still out of balance, so posting must stay unavailable.
-  const rows = page.getByRole('row');
-  await rows.nth(1).getByRole('combobox').first().selectOption({ index: 1 });
-  await rows.nth(1).getByRole('spinbutton').first().fill('100');
+  await page.getByLabel('Amount, line 1').fill('100');
+  await page.getByRole('row').nth(1).getByRole('combobox').first().selectOption({ index: 1 });
   await expect(post).toBeDisabled();
   await expect(page.getByText(/out of balance/i)).toBeVisible();
 });
@@ -42,11 +41,11 @@ test('a posted entry reaches the trial balance', async ({ page }) => {
 
   const rows = page.getByRole('row');
   await rows.nth(1).getByRole('combobox').first().selectOption({ index: 1 });
-  await rows.nth(1).getByRole('spinbutton').first().fill('250');
+  await page.getByLabel('Amount, line 1').fill('250');
   await rows.nth(2).getByRole('combobox').first().selectOption({ index: 2 });
-  await rows.nth(2).getByRole('spinbutton').nth(1).fill('250');
+  await page.getByLabel('Amount, line 2').fill('250');
 
-  const post = page.getByRole('button', { name: /^post$/i });
+  const post = page.getByRole('button', { name: /post entry/i });
   await expect(post).toBeEnabled();
   await post.click();
 

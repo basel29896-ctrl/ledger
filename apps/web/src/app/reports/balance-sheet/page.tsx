@@ -4,7 +4,16 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { BalanceSheet } from '@acct/domain';
 import { api, API_URL } from '../../../lib/api';
-import { Button, Card, ErrorBanner, Field, Input } from '../../../components/ui';
+import {
+  Button,
+  EmptyState,
+  ErrorBanner,
+  Field,
+  Input,
+  PageHeader,
+  StatusNote,
+  Toolbar,
+} from '../../../components/ui';
 import { SectionRows, StatementTable, TotalRow } from '../../../components/statement-table';
 
 export default function BalanceSheetPage() {
@@ -18,53 +27,58 @@ export default function BalanceSheetPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <h1 className="text-lg font-semibold">Balance Sheet</h1>
-        <Button
-          variant="secondary"
-          className="ml-auto"
-          disabled={!ready}
-          onClick={() => {
-            window.location.href = `${API_URL}/api/v1/reports/balance-sheet?asOfDate=${asOfDate}&format=csv`;
-          }}
-        >
-          Export CSV
-        </Button>
-      </div>
+    <>
+      <PageHeader
+        title="Balance Sheet"
+        subtitle="Assets, liabilities and equity, including the unclosed profit for the year."
+        actions={
+          <Button
+            variant="secondary"
+            disabled={!ready}
+            onClick={() => {
+              window.location.href = `${API_URL}/api/v1/reports/balance-sheet?asOfDate=${asOfDate}&format=csv`;
+            }}
+          >
+            Export CSV
+          </Button>
+        }
+      />
 
-      <Card>
-        <div className="grid items-end gap-3 sm:grid-cols-4">
-          <Field label="As at" hint="The statement covers the fiscal year to this date">
-            <Input type="date" value={asOfDate} onChange={(e) => setAsOfDate(e.target.value)} />
-          </Field>
-        </div>
-      </Card>
+      <Toolbar>
+        <Field label="As at" hint="The statement covers the fiscal year to this date">
+          <Input type="date" value={asOfDate} onChange={(e) => setAsOfDate(e.target.value)} />
+        </Field>
+      </Toolbar>
 
       <ErrorBanner error={error} />
 
       {!ready ? (
-        <p className="text-sm text-slate-500">Choose a date.</p>
+        <EmptyState>Choose a date.</EmptyState>
       ) : isFetching && !data ? (
-        <p className="text-sm text-slate-500">Loading…</p>
+        <EmptyState>Loading…</EmptyState>
       ) : data ? (
         <>
           <StatementTable>
             <SectionRows section={data.currentAssets} toDate={asOfDate} />
             <SectionRows section={data.nonCurrentAssets} toDate={asOfDate} />
-            <TotalRow label={`Total assets (${data.currency})`} value={data.totalAssets} />
+            <TotalRow label={`Total assets (${data.currency})`} value={data.totalAssets} emphasis="strong" />
             <SectionRows section={data.currentLiabilities} toDate={asOfDate} />
             <SectionRows section={data.nonCurrentLiabilities} toDate={asOfDate} />
             <TotalRow label="Total liabilities" value={data.totalLiabilities} />
             <SectionRows section={data.equity} toDate={asOfDate} />
-            <TotalRow label="Total liabilities and equity" value={data.totalLiabilitiesAndEquity} />
+            <TotalRow
+              label="Total liabilities and equity"
+              value={data.totalLiabilitiesAndEquity}
+              emphasis="strong"
+            />
           </StatementTable>
-          <p className="text-sm text-green-700">
-            Assets equal liabilities plus equity. A statement that did not balance would be refused
-            by the API rather than shown here.
-          </p>
+
+          <StatusNote tone="good">
+            Assets equal liabilities plus equity. A statement that did not balance would be refused by
+            the API rather than shown here.
+          </StatusNote>
         </>
       ) : null}
-    </div>
+    </>
   );
 }
