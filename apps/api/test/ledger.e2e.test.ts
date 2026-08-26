@@ -350,12 +350,13 @@ describe('draft workflow', () => {
        WHERE tenant_id = ${tenantId} AND period_no = 3 AND id NOT IN (
          SELECT period_id FROM journal_entries WHERE status = 'draft')`;
     // The draft blocks a hard close, so soft-close instead and try to post.
+    // M9: a soft-closed period takes adjustments only, and this is not one.
     await sql`UPDATE fiscal_periods SET status = 'soft_closed' WHERE tenant_id = ${tenantId} AND period_no = 3`;
 
     const res = await post(`/api/v1/journal-entries/${draft.body.id}/post`)
       
       .expect(409);
-    expect(res.body.code).toBe('PERIOD_CLOSED');
+    expect(res.body.code).toBe('PERIOD_SOFT_CLOSED');
 
     await sql`UPDATE fiscal_periods SET status = 'open' WHERE tenant_id = ${tenantId} AND period_no = 3`;
   });

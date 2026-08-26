@@ -125,6 +125,7 @@ export async function postEntry(
     memo?: string;
     externalId?: string;
     sourceSystem?: string;
+    isAdjustment?: boolean;
     sql?: postgres.Sql | postgres.TransactionSql;
   },
 ): Promise<{ id: string; entryNo: bigint | null; entryRef: string | null }> {
@@ -133,13 +134,14 @@ export async function postEntry(
     const [entry] = await tx<{ id: string; entry_no: string | null; entry_ref: string | null }[]>`
       INSERT INTO journal_entries (
         tenant_id, entry_date, period_id, fiscal_year_id, status, base_currency,
-        memo, external_id, source_system, created_by, posted_by
+        memo, external_id, source_system, is_adjustment, created_by, posted_by
       ) VALUES (
         ${fx.tenantId}, ${options.entryDate ?? '2026-01-15'},
         ${options.periodId ?? fx.periodId}, ${fx.fiscalYearId},
         ${options.status ?? 'posted'}::entry_status, 'JOD',
         ${options.memo ?? 'test entry'}, ${options.externalId ?? null},
-        ${options.sourceSystem ?? null}, ${fx.userId}, ${fx.userId}
+        ${options.sourceSystem ?? null}, ${options.isAdjustment ?? false},
+        ${fx.userId}, ${fx.userId}
       ) RETURNING id, entry_no::text, entry_ref`;
 
     let lineNo = 1;

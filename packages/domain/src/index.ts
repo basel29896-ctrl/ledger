@@ -11,3 +11,4 @@ export * from './bank/matching';
 export * from './tax/tax-engine';
 export * from './tax/jordan';
 export * from './statements/statements';
+export * from './close/close';

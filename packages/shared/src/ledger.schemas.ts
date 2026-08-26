@@ -81,6 +81,9 @@ export const createJournalEntrySchema = z.object({
   sourceModule: sourceModuleSchema.default('manual'),
   /** `draft` saves without posting; `posted` validates and posts immediately. */
   status: z.enum(['draft', 'posted']).default('draft'),
+  /* A soft-closed period accepts adjustments and nothing else, so the flag has
+   * to travel with the entry rather than be inferred at posting time. */
+  isAdjustment: z.boolean().default(false),
   lines: z.array(journalLineInputSchema).min(2, 'An entry needs at least two lines'),
 });
 export type CreateJournalEntryInput = z.infer<typeof createJournalEntrySchema>;

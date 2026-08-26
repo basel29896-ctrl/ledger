@@ -296,7 +296,14 @@ describe('account integrity', () => {
 
 describe('invariant 6 — closed periods are locked', () => {
   it('refuses a posting into a hard-closed period', async () => {
-    await fx.sql`UPDATE fiscal_periods SET status = 'closed' WHERE id = ${fx.period2Id}`;
+    // M9: a period closes only after every earlier one has, so close in order —
+    // and a period with drafts left in it will not close at all.
+    await fx.sql`DELETE FROM journal_lines WHERE entry_id IN (
+                   SELECT id FROM journal_entries WHERE status = 'draft')`;
+    await fx.sql`DELETE FROM journal_entries WHERE status = 'draft'`;
+    await fx.sql`UPDATE fiscal_periods SET status = 'closed'
+                  WHERE tenant_id = ${fx.tenantId} AND end_date <= (
+                    SELECT end_date FROM fiscal_periods WHERE id = ${fx.period2Id})`;
     await expect(
       postEntry(fx, {
         entryDate: '2026-02-10',
@@ -320,11 +327,26 @@ describe('invariant 6 — closed periods are locked', () => {
           { accountId: fx.accounts.revenue, side: 'credit', amountMinor: 1_000n },
         ],
       }),
-    ).rejects.toThrow(/is soft_closed and will not accept postings/);
+    ).rejects.toThrow(/soft closed: only adjustments may be posted into it/);
+  });
+
+  it('accepts an adjustment into a soft-closed period, which is what the close is made of', async () => {
+    await fx.sql`UPDATE fiscal_periods SET status = 'soft_closed' WHERE id = ${fx.period2Id}`;
+    const entry = await postEntry(fx, {
+      entryDate: '2026-02-11',
+      periodId: fx.period2Id,
+      isAdjustment: true,
+      lines: [
+        { accountId: fx.accounts.cash, side: 'debit', amountMinor: 1_000n },
+        { accountId: fx.accounts.revenue, side: 'credit', amountMinor: 1_000n },
+      ],
+    });
+    expect(entry.entryNo).not.toBeNull();
   });
 
   it('accepts the same posting once the period is reopened', async () => {
-    await fx.sql`UPDATE fiscal_periods SET status = 'open' WHERE id = ${fx.period2Id}`;
+    await fx.sql`UPDATE fiscal_periods SET status = 'open'
+                  WHERE tenant_id = ${fx.tenantId}`;
     const entry = await postEntry(fx, {
       entryDate: '2026-02-10',
       periodId: fx.period2Id,

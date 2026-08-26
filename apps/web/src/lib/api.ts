@@ -70,6 +70,11 @@ export const api = {
     if (headers) init.headers = headers;
     return request<T>(path, init);
   },
+  put: <T>(path: string, body?: unknown): Promise<T> => {
+    const init: RequestInit = { method: 'PUT' };
+    if (body !== undefined) init.body = JSON.stringify(body);
+    return request<T>(path, init);
+  },
 };
 
 /**

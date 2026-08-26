@@ -34,6 +34,7 @@ const PG_MESSAGE_CODES: readonly { pattern: RegExp; code: string; status: HttpSt
   { pattern: /cannot be deleted; post a reversing entry/i, code: 'ENTRY_IMMUTABLE', status: HttpStatus.CONFLICT },
   { pattern: /cannot be modified or deleted/i, code: 'ENTRY_IMMUTABLE', status: HttpStatus.CONFLICT },
   { pattern: /will not accept postings/i, code: 'PERIOD_CLOSED', status: HttpStatus.CONFLICT },
+  { pattern: /soft closed: only adjustments/i, code: 'PERIOD_SOFT_CLOSED', status: HttpStatus.CONFLICT },
   { pattern: /is outside period/i, code: 'ENTRY_DATE_OUTSIDE_PERIOD', status: HttpStatus.UNPROCESSABLE_ENTITY },
   { pattern: /summary account and cannot be posted to/i, code: 'ACCOUNT_NOT_POSTABLE', status: HttpStatus.UNPROCESSABLE_ENTITY },
   { pattern: /only accepts/i, code: 'ACCOUNT_CURRENCY_MISMATCH', status: HttpStatus.UNPROCESSABLE_ENTITY },

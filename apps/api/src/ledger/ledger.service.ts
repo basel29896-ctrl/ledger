@@ -133,11 +133,11 @@ export class LedgerService {
           const [entry] = await tx<{ id: string }[]>`
             INSERT INTO journal_entries (
               tenant_id, entry_date, period_id, fiscal_year_id, status, source_module,
-              memo, base_currency, source_system, external_id, created_by, posted_by
+              memo, base_currency, is_adjustment, source_system, external_id, created_by, posted_by
             ) VALUES (
               ${tenantId}, ${input.entryDate}, ${period.id}, ${period.fiscal_year_id},
               ${input.status}::entry_status, ${input.sourceModule}::source_module,
-              ${input.memo ?? null}, ${tenant.base_currency},
+              ${input.memo ?? null}, ${tenant.base_currency}, ${input.isAdjustment},
               ${idempotencyKey ? 'api' : null}, ${idempotencyKey ?? null},
               ${actorId ?? null}, ${input.status === 'posted' ? (actorId ?? null) : null}
             ) RETURNING id`;
