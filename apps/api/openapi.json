@@ -274,6 +274,31 @@
         ]
       }
     },
+    "/api/v1/reports/general-ledger/{accountId}": {
+      "get": {
+        "description": "Every posted line hitting the account, in date order, with a running balance. Each row carries its entry id so a report drills to its source document in one click.",
+        "operationId": "ReportsController_generalLedger",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "General ledger detail for one account",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
     "/api/v1/fiscal-periods": {
       "get": {
         "operationId": "FiscalPeriodsController_list",

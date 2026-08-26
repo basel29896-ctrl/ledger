@@ -133,6 +133,12 @@ export const trialBalanceQuerySchema = z.object({
 });
 export type TrialBalanceQuery = z.infer<typeof trialBalanceQuerySchema>;
 
+export const generalLedgerQuerySchema = z.object({
+  fromDate: isoDateSchema.optional(),
+  toDate: isoDateSchema.optional(),
+});
+export type GeneralLedgerQuery = z.infer<typeof generalLedgerQuerySchema>;
+
 export const trialBalanceRowSchema = z.object({
   accountId: uuidSchema,
   accountCode: z.string(),

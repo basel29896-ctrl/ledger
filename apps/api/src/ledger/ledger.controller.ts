@@ -17,6 +17,7 @@ import {
   createJournalEntrySchema,
   cursorPageSchema,
   reverseEntrySchema,
+  generalLedgerQuerySchema,
   trialBalanceQuerySchema,
   type AccountDto,
   type CreateAccountInput,
@@ -27,6 +28,7 @@ import {
   type TrialBalanceQuery,
 } from '@acct/shared';
 import { LedgerService } from './ledger.service';
+import { GeneralLedgerService, type GeneralLedgerReport } from './gl.service';
 import { zodPipe } from '../common/zod.pipe';
 import { LedgerError } from '../common/problem.filter';
 import { IdempotencyKey } from '../common/tenant';
@@ -146,7 +148,10 @@ export class JournalEntriesController {
 @ApiTags('reports')
 @Controller('reports')
 export class ReportsController {
-  constructor(private readonly ledger: LedgerService) {}
+  constructor(
+    private readonly ledger: LedgerService,
+    private readonly gl: GeneralLedgerService,
+  ) {}
 
   @Get('trial-balance')
   @RequirePermissions('report.read')
@@ -160,6 +165,22 @@ export class ReportsController {
     @Query(zodPipe(trialBalanceQuerySchema)) query: TrialBalanceQuery,
   ): Promise<TrialBalanceDto> {
     return this.ledger.trialBalance(tenantId, query);
+  }
+
+  @Get('general-ledger/:accountId')
+  @RequirePermissions('report.read')
+  @ApiOperation({
+    summary: 'General ledger detail for one account',
+    description:
+      'Every posted line hitting the account, in date order, with a running balance. ' +
+      'Each row carries its entry id so a report drills to its source document in one click.',
+  })
+  generalLedger(
+    @TenantId() tenantId: string,
+    @Param('accountId', ParseUUIDPipe) accountId: string,
+    @Query(zodPipe(generalLedgerQuerySchema)) query: { fromDate?: string; toDate?: string },
+  ): Promise<GeneralLedgerReport> {
+    return this.gl.forAccount(tenantId, accountId, query);
   }
 }
 
