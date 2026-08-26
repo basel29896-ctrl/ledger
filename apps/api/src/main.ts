@@ -5,6 +5,8 @@ import { Logger } from 'nestjs-pino';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEnv } from '@acct/shared';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ProblemFilter } from './common/problem.filter';
 
@@ -14,6 +16,17 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
+
+  app.use(helmet({ contentSecurityPolicy: env.NODE_ENV === 'production' }));
+  app.use(cookieParser());
+  // Strict allowlist: credentials are cookies, so a wildcard origin is unusable
+  // anyway and a permissive one would hand sessions to any site.
+  app.enableCors({
+    origin: env.CORS_ORIGINS.split(',').map((o) => o.trim()),
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key', 'X-CSRF-Token'],
+    exposedHeaders: ['Idempotent-Replay', 'X-Request-Id'],
+  });
   app.setGlobalPrefix('api/v1', { exclude: ['health', 'ready'] });
   // Every error leaves as RFC 9457 problem+json with a stable machine-readable code.
   app.useGlobalFilters(new ProblemFilter());

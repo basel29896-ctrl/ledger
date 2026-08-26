@@ -3,9 +3,11 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import postgres from 'postgres';
 import Redis from 'ioredis';
 import { ENV } from '../config/env.module';
+import { Public } from '../auth/auth.guard';
 import type { Env } from '@acct/shared';
 
 @ApiTags('health')
+@Public()
 @Controller()
 export class HealthController {
   private readonly sql: postgres.Sql;

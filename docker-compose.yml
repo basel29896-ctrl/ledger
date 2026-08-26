@@ -68,7 +68,9 @@ services:
     build: { context: ., dockerfile: apps/api/Dockerfile, target: dev }
     env_file: [.env]
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      # Restricted role for the app; owner role for migrations only.
+      DATABASE_URL: postgresql://acct_app_user:${APP_DB_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      MIGRATION_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       REDIS_URL: redis://redis:6379
       S3_ENDPOINT: http://minio:9000
       SMTP_HOST: mailhog

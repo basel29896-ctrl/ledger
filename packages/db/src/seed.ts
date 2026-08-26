@@ -1,6 +1,8 @@
 import postgres from 'postgres';
+import argon2 from 'argon2';
 import { MINOR_UNIT_EXPONENTS } from '@acct/shared';
 import { normalBalanceFor, SME_COA } from './seed/coa-sme';
+import { SYSTEM_ROLES } from './seed/roles';
 
 /**
  * Baseline seed: currencies with their real exponents, one demo tenant, an
@@ -26,9 +28,12 @@ const CURRENCY_NAMES: Record<string, { name: string; symbol: string }> = {
 const TENANT_SLUG = 'demo';
 const ADMIN_EMAIL = 'admin@demo.local';
 const FISCAL_YEAR = 2026;
+// Development convenience only. Production seeds must supply SEED_ADMIN_PASSWORD.
+const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD ?? 'ChangeMe!2026';
 
 async function main(): Promise<void> {
-  const url = process.env.DATABASE_URL;
+  // Seeds and maintenance span tenants, so they use the owner connection.
+  const url = process.env.MIGRATION_DATABASE_URL ?? process.env.DATABASE_URL;
   if (!url) throw new Error('DATABASE_URL is required');
   const sql = postgres(url, { max: 1, onnotice: () => {} });
 
@@ -53,12 +58,52 @@ async function main(): Promise<void> {
       const tenantId = tenant?.id;
       if (!tenantId) throw new Error('failed to upsert tenant');
 
+      // Argon2id: memory-hard, the OWASP recommendation for password storage.
+      const passwordHash = await argon2.hash(ADMIN_PASSWORD, {
+        type: argon2.argon2id,
+        memoryCost: 19456,
+        timeCost: 2,
+        parallelism: 1,
+      });
+
       const [admin] = await tx<{ id: string }[]>`
-        INSERT INTO users (tenant_id, email, display_name)
-        VALUES (${tenantId}, ${ADMIN_EMAIL}, 'Demo Admin')
-        ON CONFLICT (tenant_id, email) DO UPDATE SET display_name = EXCLUDED.display_name
+        INSERT INTO users (tenant_id, email, display_name, password_hash)
+        VALUES (${tenantId}, ${ADMIN_EMAIL}, 'Demo Admin', ${passwordHash})
+        ON CONFLICT (tenant_id, email) DO UPDATE
+          SET display_name = EXCLUDED.display_name, password_hash = EXCLUDED.password_hash
         RETURNING id`;
       const adminId = admin?.id;
+
+      // Roles and their permission grants.
+      for (const role of SYSTEM_ROLES) {
+        const [saved] = await tx<{ id: string }[]>`
+          INSERT INTO roles (tenant_id, code, name, description, is_system)
+          VALUES (${tenantId}, ${role.code}, ${role.name}, ${role.description}, true)
+          ON CONFLICT (tenant_id, code) DO UPDATE SET name = EXCLUDED.name
+          RETURNING id`;
+        await tx`DELETE FROM role_permissions WHERE role_id = ${saved!.id}`;
+        const codes =
+          role.permissions === '*'
+            ? (await tx<{ code: string }[]>`SELECT code FROM permissions`).map((r) => r.code)
+            : role.permissions;
+        for (const code of codes) {
+          await tx`
+            INSERT INTO role_permissions (role_id, permission_code) VALUES (${saved!.id}, ${code})
+            ON CONFLICT DO NOTHING`;
+        }
+        if (role.code === 'admin' && adminId) {
+          await tx`
+            INSERT INTO user_roles (user_id, role_id, tenant_id)
+            VALUES (${adminId}, ${saved!.id}, ${tenantId})
+            ON CONFLICT DO NOTHING`;
+        }
+      }
+
+      await tx`
+        INSERT INTO company_settings (tenant_id, legal_name, legal_name_ar, tax_number, address, base_currency, default_locale)
+        VALUES (${tenantId}, 'Demo Company LLC', 'شركة العرض التجريبي', '1234567',
+                'Amman, Jordan', 'JOD', 'en')
+        ON CONFLICT (tenant_id) DO UPDATE SET legal_name = EXCLUDED.legal_name`;
 
       const [year] = await tx<{ id: string }[]>`
         INSERT INTO fiscal_years (tenant_id, name, start_date, end_date, created_by)
@@ -110,7 +155,8 @@ async function main(): Promise<void> {
 
       console.log(
         `seed — tenant ${TENANT_SLUG} (base JOD): ${counts?.accounts ?? '0'} accounts, ` +
-          `${counts?.periods ?? '0'} fiscal periods, admin ${ADMIN_EMAIL}`,
+          `${counts?.periods ?? '0'} fiscal periods, ${SYSTEM_ROLES.length} roles, ` +
+          `admin ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`,
       );
     });
   } finally {

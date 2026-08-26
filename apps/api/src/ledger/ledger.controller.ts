@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -27,37 +28,42 @@ import {
 } from '@acct/shared';
 import { LedgerService } from './ledger.service';
 import { zodPipe } from '../common/zod.pipe';
-import { IdempotencyKey, TenantId } from '../common/tenant';
+import { LedgerError } from '../common/problem.filter';
+import { IdempotencyKey } from '../common/tenant';
+import { CurrentUser, RequirePermissions, TenantId } from '../auth/auth.guard';
+import type { AccessTokenClaims } from '../auth/auth.service';
 
 @ApiTags('ledger')
-@ApiHeader({ name: 'X-Tenant-Id', required: true, description: 'Tenant scope (replaced by the JWT claim in M2)' })
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly ledger: LedgerService) {}
 
   @Get()
+  @RequirePermissions('ledger.account.read')
   @ApiOperation({ summary: 'List the chart of accounts' })
   list(@TenantId() tenantId: string): Promise<AccountDto[]> {
     return this.ledger.listAccounts(tenantId);
   }
 
   @Post()
+  @RequirePermissions('ledger.account.write')
   @ApiOperation({ summary: 'Create an account' })
   create(
     @TenantId() tenantId: string,
+    @CurrentUser() user: AccessTokenClaims,
     @Body(zodPipe(createAccountSchema)) body: CreateAccountInput,
   ): Promise<AccountDto> {
-    return this.ledger.createAccount(tenantId, body);
+    return this.ledger.createAccount(tenantId, body, user.sub);
   }
 }
 
 @ApiTags('ledger')
-@ApiHeader({ name: 'X-Tenant-Id', required: true })
 @Controller('journal-entries')
 export class JournalEntriesController {
   constructor(private readonly ledger: LedgerService) {}
 
   @Post()
+  @RequirePermissions('ledger.entry.draft')
   @ApiOperation({
     summary: 'Create a journal entry as draft or posted',
     description:
@@ -69,15 +75,27 @@ export class JournalEntriesController {
     @TenantId() tenantId: string,
     @Body(zodPipe(createJournalEntrySchema)) body: CreateJournalEntryInput,
     @IdempotencyKey() idempotencyKey: string | undefined,
+    @CurrentUser() user: AccessTokenClaims,
     @Res({ passthrough: true }) res: Response,
   ): Promise<JournalEntryDto> {
-    const { entry, replayed } = await this.ledger.createEntry(tenantId, body, idempotencyKey);
+    // Posting outright is a stronger act than saving a draft, so it needs the
+    // stronger permission even though both arrive at the same endpoint.
+    if (body.status === 'posted' && !user.perms.includes('ledger.entry.post')) {
+      throw new LedgerError('FORBIDDEN', 'Missing permission: ledger.entry.post', HttpStatus.FORBIDDEN);
+    }
+    const { entry, replayed } = await this.ledger.createEntry(
+      tenantId,
+      body,
+      idempotencyKey,
+      user.sub,
+    );
     res.status(replayed ? 200 : 201);
     if (replayed) res.setHeader('Idempotent-Replay', 'true');
     return entry;
   }
 
   @Get()
+  @RequirePermissions('ledger.entry.read')
   @ApiOperation({ summary: 'List journal entries, newest first' })
   list(
     @TenantId() tenantId: string,
@@ -87,6 +105,7 @@ export class JournalEntriesController {
   }
 
   @Get(':id')
+  @RequirePermissions('ledger.entry.read')
   @ApiOperation({ summary: 'Fetch one journal entry with its lines' })
   get(
     @TenantId() tenantId: string,
@@ -96,16 +115,19 @@ export class JournalEntriesController {
   }
 
   @Post(':id/post')
+  @RequirePermissions('ledger.entry.post')
   @HttpCode(200)
   @ApiOperation({ summary: 'Post a draft entry' })
   post(
     @TenantId() tenantId: string,
+    @CurrentUser() user: AccessTokenClaims,
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<JournalEntryDto> {
-    return this.ledger.postEntry(tenantId, id);
+    return this.ledger.postEntry(tenantId, id, user.sub);
   }
 
   @Post(':id/reverse')
+  @RequirePermissions('ledger.entry.reverse')
   @HttpCode(201)
   @ApiOperation({
     summary: 'Reverse a posted entry',
@@ -113,20 +135,21 @@ export class JournalEntriesController {
   })
   reverse(
     @TenantId() tenantId: string,
+    @CurrentUser() user: AccessTokenClaims,
     @Param('id', ParseUUIDPipe) id: string,
     @Body(zodPipe(reverseEntrySchema)) body: ReverseEntryInput,
   ): Promise<{ original: JournalEntryDto; reversal: JournalEntryDto }> {
-    return this.ledger.reverseEntry(tenantId, id, body);
+    return this.ledger.reverseEntry(tenantId, id, body, user.sub);
   }
 }
 
 @ApiTags('reports')
-@ApiHeader({ name: 'X-Tenant-Id', required: true })
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly ledger: LedgerService) {}
 
   @Get('trial-balance')
+  @RequirePermissions('report.read')
   @ApiOperation({
     summary: 'Trial balance',
     description: 'Computed from journal lines, not from the balance cache. Must always be balanced.',
@@ -141,12 +164,12 @@ export class ReportsController {
 }
 
 @ApiTags('ledger')
-@ApiHeader({ name: 'X-Tenant-Id', required: true })
 @Controller('fiscal-periods')
 export class FiscalPeriodsController {
   constructor(private readonly ledger: LedgerService) {}
 
   @Get()
+  @RequirePermissions('ledger.entry.read')
   @ApiOperation({ summary: 'List fiscal periods and their open/closed status' })
   list(
     @TenantId() tenantId: string,

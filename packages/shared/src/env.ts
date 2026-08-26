@@ -10,8 +10,13 @@ export const envSchema = z.object({
   API_PORT: z.coerce.number().int().positive().default(4000),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 
+  // The API connects through a NON-superuser role so row-level security
+  // actually applies; superusers bypass RLS entirely.
   DATABASE_URL: z.string().url(),
   DATABASE_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
+  // Owner connection used only by migrations, seeds and cross-tenant maintenance.
+  MIGRATION_DATABASE_URL: z.string().url().optional(),
+  APP_DB_PASSWORD: z.string().min(8).optional(),
 
   REDIS_URL: z.string().url(),
 
@@ -24,8 +29,18 @@ export const envSchema = z.object({
   SMTP_HOST: z.string().min(1),
   SMTP_PORT: z.coerce.number().int().positive(),
 
-  // Base currency of the deployment; per-tenant base currency lands in M2 settings.
+  // Base currency of the deployment; per-tenant base currency lives in company_settings.
   DEFAULT_BASE_CURRENCY: z.string().length(3).default('JOD'),
+
+  // --- auth ---
+  JWT_ACCESS_SECRET: z.string().min(32),
+  JWT_REFRESH_SECRET: z.string().min(32),
+  JWT_ACCESS_TTL_SECONDS: z.coerce.number().int().positive().default(900),
+  JWT_REFRESH_TTL_SECONDS: z.coerce.number().int().positive().default(604800),
+  COOKIE_DOMAIN: z.string().default('localhost'),
+  COOKIE_SECURE: z.coerce.boolean().default(false),
+  CORS_ORIGINS: z.string().default('http://localhost:3000'),
+  TOTP_ISSUER: z.string().default('Accounting'),
 });
 
 export type Env = z.infer<typeof envSchema>;

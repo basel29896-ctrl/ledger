@@ -29,20 +29,100 @@
         ]
       }
     },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Sign in with email, password and optional TOTP code",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Rotate the refresh token and issue a new access token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Revoke the current session",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "The authenticated user and effective permissions",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/totp/enrol": {
+      "post": {
+        "operationId": "AuthController_beginTotp",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Begin TOTP enrolment; returns the secret and otpauth URL",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/totp/confirm": {
+      "post": {
+        "operationId": "AuthController_confirmTotp",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Confirm TOTP enrolment with a generated code",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/accounts": {
       "get": {
         "operationId": "AccountsController_list",
-        "parameters": [
-          {
-            "name": "X-Tenant-Id",
-            "in": "header",
-            "description": "Tenant scope (replaced by the JWT claim in M2)",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -55,17 +135,7 @@
       },
       "post": {
         "operationId": "AccountsController_create",
-        "parameters": [
-          {
-            "name": "X-Tenant-Id",
-            "in": "header",
-            "description": "Tenant scope (replaced by the JWT claim in M2)",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "201": {
             "description": ""
@@ -82,14 +152,6 @@
         "description": "Send an Idempotency-Key header to make retries safe: a repeat of the same key returns the original entry with 200 instead of creating a second one.",
         "operationId": "JournalEntriesController_create",
         "parameters": [
-          {
-            "name": "X-Tenant-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "Idempotency-Key",
             "in": "header",
@@ -111,16 +173,7 @@
       },
       "get": {
         "operationId": "JournalEntriesController_list",
-        "parameters": [
-          {
-            "name": "X-Tenant-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -136,14 +189,6 @@
       "get": {
         "operationId": "JournalEntriesController_get",
         "parameters": [
-          {
-            "name": "X-Tenant-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "id",
             "required": true,
@@ -168,14 +213,6 @@
       "post": {
         "operationId": "JournalEntriesController_post",
         "parameters": [
-          {
-            "name": "X-Tenant-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "id",
             "required": true,
@@ -202,14 +239,6 @@
         "operationId": "JournalEntriesController_reverse",
         "parameters": [
           {
-            "name": "X-Tenant-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "id",
             "required": true,
             "in": "path",
@@ -233,16 +262,7 @@
       "get": {
         "description": "Computed from journal lines, not from the balance cache. Must always be balanced.",
         "operationId": "ReportsController_trialBalance",
-        "parameters": [
-          {
-            "name": "X-Tenant-Id",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Debit and credit totals per account, in the tenant base currency"
@@ -257,11 +277,99 @@
     "/api/v1/fiscal-periods": {
       "get": {
         "operationId": "FiscalPeriodsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List fiscal periods and their open/closed status",
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/api/v1/admin/users": {
+      "get": {
+        "operationId": "AdminController_listUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List users with their roles",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "AdminController_createUser",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a user and grant roles",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/roles": {
+      "get": {
+        "operationId": "AdminController_listRoles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List roles and their permissions",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/audit-log": {
+      "get": {
+        "operationId": "AdminController_auditLog",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Read the append-only audit trail",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/settings": {
+      "get": {
+        "operationId": "AdminController_settings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Company settings",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/users/{id}/permissions": {
+      "get": {
+        "operationId": "AdminController_permissions",
         "parameters": [
           {
-            "name": "X-Tenant-Id",
-            "in": "header",
+            "name": "id",
             "required": true,
+            "in": "path",
             "schema": {
               "type": "string"
             }
@@ -272,9 +380,9 @@
             "description": ""
           }
         },
-        "summary": "List fiscal periods and their open/closed status",
+        "summary": "Effective permissions of one user",
         "tags": [
-          "ledger"
+          "admin"
         ]
       }
     }

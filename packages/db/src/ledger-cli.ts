@@ -20,7 +20,8 @@ interface Imbalance {
 }
 
 function connect(): postgres.Sql {
-  const url = process.env.DATABASE_URL;
+  // Seeds and maintenance span tenants, so they use the owner connection.
+  const url = process.env.MIGRATION_DATABASE_URL ?? process.env.DATABASE_URL;
   if (!url) throw new Error('DATABASE_URL is required');
   return postgres(url, { max: 1, onnotice: () => {} });
 }

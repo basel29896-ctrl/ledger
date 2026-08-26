@@ -4,13 +4,20 @@ import { randomUUID } from 'node:crypto';
 import { EnvModule } from './config/env.module';
 import { DbModule } from './db/db.module';
 import { LedgerModule } from './ledger/ledger.module';
+import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
+import { AuthGuard } from './auth/auth.guard';
+import { CsrfGuard } from './auth/csrf.guard';
+import { APP_GUARD } from '@nestjs/core';
 import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
     EnvModule,
     DbModule,
+    AuthModule,
     LedgerModule,
+    AdminModule,
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? 'info',
@@ -25,5 +32,10 @@ import { HealthController } from './health/health.controller';
     }),
   ],
   controllers: [HealthController],
+  // Authentication is on by default; endpoints opt out with @Public().
+  providers: [
+    { provide: APP_GUARD, useClass: CsrfGuard },
+    { provide: APP_GUARD, useClass: AuthGuard },
+  ],
 })
 export class AppModule {}

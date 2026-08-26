@@ -30,11 +30,24 @@ export class Database implements OnModuleDestroy {
   async transaction<T>(
     tenantId: string,
     work: (tx: postgres.TransactionSql) => Promise<T>,
+    context: { userId?: string | undefined; requestId?: string | undefined } = {},
   ): Promise<T> {
     return this.sql.begin(async (tx) => {
+      // `app.tenant_id` drives the row-level security policies; the other two
+      // are read by the audit trigger so every row change names its actor.
       await tx`SELECT set_config('app.tenant_id', ${tenantId}, true)`;
+      await tx`SELECT set_config('app.user_id', ${context.userId ?? ''}, true)`;
+      await tx`SELECT set_config('app.request_id', ${context.requestId ?? ''}, true)`;
       return work(tx);
     }) as Promise<T>;
+  }
+
+  /**
+   * A read that must still respect row-level security. Reads run in a
+   * transaction too, because `app.tenant_id` is set with SET LOCAL.
+   */
+  async read<T>(tenantId: string, work: (tx: postgres.TransactionSql) => Promise<T>): Promise<T> {
+    return this.transaction(tenantId, work);
   }
 
   async onModuleDestroy(): Promise<void> {

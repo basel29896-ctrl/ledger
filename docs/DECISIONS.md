@@ -90,3 +90,39 @@ even though no RLS policy reads it yet. M1 takes the tenant from an `X-Tenant-Id
 **Rationale.** Attaching RLS in M2 then becomes a migration that adds policies, with no change
 to a single query — the plumbing is already correct. The header is an acknowledged stopgap and
 is documented as such: this build must not be exposed to a network before M2.
+
+## ADR-0011 — The API connects as a non-owner, non-superuser role
+**Decision.** `DATABASE_URL` points at `acct_app_user` (member of `acct_app`).
+`MIGRATION_DATABASE_URL` points at the owner and is used only by migrations, seeds and
+cross-tenant maintenance.
+**Alternatives.** One connection as the owner; disabling RLS in development.
+**Rationale.** A superuser bypasses row-level security silently, and the table owner bypasses it
+unless the table is marked `FORCE`. Either would leave the policies looking correct while doing
+nothing. Splitting the roles means the isolation tests exercise the same path production does.
+
+## ADR-0012 — Login goes through SECURITY DEFINER functions, not a relaxed policy
+**Decision.** Thirteen narrow functions in `0003_auth_functions.sql` handle every read and write
+that must happen before a tenant is known. Each is revoked from `PUBLIC` and granted to
+`acct_app`.
+**Alternatives.** An RLS policy on `users` allowing reads when `app.tenant_id` is unset; doing
+authentication on the owner connection.
+**Rationale.** A policy that permits reads when the tenant is unset turns every forgotten
+`SET LOCAL` into a full table disclosure. A function that takes an email and returns one row is
+a hole the size of the requirement, and it is greppable.
+
+## ADR-0013 — Refresh tokens rotate, and reuse revokes the family
+**Decision.** Refresh tokens are opaque random values stored as SHA-256 hashes, single-use, and
+grouped by `family_id`. Presenting an already-rotated token revokes every live session in the
+family.
+**Alternatives.** Long-lived refresh tokens; JWT refresh tokens; rotation without reuse detection.
+**Rationale.** Rotation alone does not help if a stolen token can be replayed before the victim
+uses it. Treating replay as evidence of theft turns the race into a detection signal. Storing
+only the hash means a database leak does not hand over live sessions.
+
+## ADR-0014 — Posting is a separate permission from drafting, on the same endpoint
+**Decision.** `POST /journal-entries` requires `ledger.entry.draft`; `status: "posted"` in the
+body additionally requires `ledger.entry.post`, checked in the handler.
+**Alternatives.** Two endpoints; a single permission covering both.
+**Rationale.** Segregation of duties is the point of the AP/AR clerk roles — a clerk prepares,
+someone else commits. One endpoint keeps the client simple; the permission check keeps the
+control real. The database still enforces every posting invariant regardless of who asked.

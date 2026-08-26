@@ -43,10 +43,31 @@ interface LineRow {
   description: string | null;
 }
 
+interface AccountRow {
+  id: string;
+  code: string;
+  name: string;
+  name_ar: string | null;
+  type: AccountDto['type'];
+  subtype: string | null;
+  normal_balance: AccountDto['normalBalance'];
+  parent_account_id: string | null;
+  currency_code: string | null;
+  is_bank: boolean;
+  is_control_account: boolean;
+  is_postable: boolean;
+  is_active: boolean;
+}
+
 function money(minor: string | bigint, currency: string): MoneyDto {
   return Money.fromMinor(minor, currency).toJSON();
 }
 
+/**
+ * Every method here runs inside `Database.transaction`/`read`, which sets
+ * `app.tenant_id`. That is not a convenience: without it the row-level
+ * security policies match nothing and the query returns an empty result.
+ */
 @Injectable()
 export class LedgerService {
   constructor(private readonly db: Database) {}
@@ -54,29 +75,38 @@ export class LedgerService {
   // --- chart of accounts ----------------------------------------------
 
   async listAccounts(tenantId: string): Promise<AccountDto[]> {
-    const rows = await this.db.sql<Record<string, never>[]>`
-      SELECT id, code, name, name_ar, type, subtype, normal_balance, parent_account_id,
-             currency_code, is_bank, is_control_account, is_postable, is_active
-        FROM accounts WHERE tenant_id = ${tenantId} ORDER BY code`;
+    const rows = await this.db.read(tenantId, (tx) =>
+      tx<AccountRow[]>`
+        SELECT id, code, name, name_ar, type, subtype, normal_balance, parent_account_id,
+               currency_code, is_bank, is_control_account, is_postable, is_active
+          FROM accounts ORDER BY code`,
+    );
     return rows.map(toAccountDto);
   }
 
-  async createAccount(tenantId: string, input: CreateAccountInput): Promise<AccountDto> {
+  async createAccount(
+    tenantId: string,
+    input: CreateAccountInput,
+    actorId?: string,
+  ): Promise<AccountDto> {
     const normalBalance = input.type === 'asset' || input.type === 'expense' ? 'debit' : 'credit';
-    const rows = await this.db.transaction(tenantId, async (tx) => {
-      return tx<Record<string, never>[]>`
-        INSERT INTO accounts (
-          tenant_id, code, name, name_ar, type, subtype, normal_balance,
-          parent_account_id, currency_code, is_bank, is_control_account
-        ) VALUES (
-          ${tenantId}, ${input.code}, ${input.name}, ${input.nameAr ?? null},
-          ${input.type}::account_type, ${input.subtype ?? null}, ${normalBalance}::normal_balance,
-          ${input.parentAccountId ?? null}, ${input.currencyCode ?? null},
-          ${input.isBank}, ${input.isControlAccount}
-        )
-        RETURNING id, code, name, name_ar, type, subtype, normal_balance, parent_account_id,
-                  currency_code, is_bank, is_control_account, is_postable, is_active`;
-    });
+    const rows = await this.db.transaction(
+      tenantId,
+      (tx) =>
+        tx<AccountRow[]>`
+          INSERT INTO accounts (
+            tenant_id, code, name, name_ar, type, subtype, normal_balance,
+            parent_account_id, currency_code, is_bank, is_control_account, created_by
+          ) VALUES (
+            ${tenantId}, ${input.code}, ${input.name}, ${input.nameAr ?? null},
+            ${input.type}::account_type, ${input.subtype ?? null}, ${normalBalance}::normal_balance,
+            ${input.parentAccountId ?? null}, ${input.currencyCode ?? null},
+            ${input.isBank}, ${input.isControlAccount}, ${actorId ?? null}
+          )
+          RETURNING id, code, name, name_ar, type, subtype, normal_balance, parent_account_id,
+                    currency_code, is_bank, is_control_account, is_postable, is_active`,
+      { userId: actorId },
+    );
     return toAccountDto(rows[0]!);
   }
 
@@ -86,6 +116,7 @@ export class LedgerService {
     tenantId: string,
     input: CreateJournalEntryInput,
     idempotencyKey?: string,
+    actorId?: string,
   ): Promise<{ entry: JournalEntryDto; replayed: boolean }> {
     if (idempotencyKey) {
       const existing = await this.findByExternalId(tenantId, idempotencyKey);
@@ -93,24 +124,29 @@ export class LedgerService {
     }
 
     const tenant = await this.requireTenant(tenantId);
-    const period = await this.requirePeriodFor(tenantId, input.entryDate);
 
     try {
-      const id = await this.db.transaction(tenantId, async (tx) => {
-        const [entry] = await tx<{ id: string }[]>`
-          INSERT INTO journal_entries (
-            tenant_id, entry_date, period_id, fiscal_year_id, status, source_module,
-            memo, base_currency, source_system, external_id
-          ) VALUES (
-            ${tenantId}, ${input.entryDate}, ${period.id}, ${period.fiscal_year_id},
-            ${input.status}::entry_status, ${input.sourceModule}::source_module,
-            ${input.memo ?? null}, ${tenant.base_currency},
-            ${idempotencyKey ? 'api' : null}, ${idempotencyKey ?? null}
-          ) RETURNING id`;
+      const id = await this.db.transaction(
+        tenantId,
+        async (tx) => {
+          const period = await requirePeriodFor(tx, input.entryDate);
+          const [entry] = await tx<{ id: string }[]>`
+            INSERT INTO journal_entries (
+              tenant_id, entry_date, period_id, fiscal_year_id, status, source_module,
+              memo, base_currency, source_system, external_id, created_by, posted_by
+            ) VALUES (
+              ${tenantId}, ${input.entryDate}, ${period.id}, ${period.fiscal_year_id},
+              ${input.status}::entry_status, ${input.sourceModule}::source_module,
+              ${input.memo ?? null}, ${tenant.base_currency},
+              ${idempotencyKey ? 'api' : null}, ${idempotencyKey ?? null},
+              ${actorId ?? null}, ${input.status === 'posted' ? (actorId ?? null) : null}
+            ) RETURNING id`;
 
-        await this.insertLines(tx, tenantId, entry!.id, input.lines, tenant.base_currency);
-        return entry!.id;
-      });
+          await insertLines(tx, tenantId, entry!.id, input.lines, tenant.base_currency);
+          return entry!.id;
+        },
+        { userId: actorId },
+      );
 
       return { entry: await this.getEntry(tenantId, id), replayed: false };
     } catch (err) {
@@ -124,7 +160,7 @@ export class LedgerService {
   }
 
   /** Move a draft to posted. The database re-checks every invariant at COMMIT. */
-  async postEntry(tenantId: string, entryId: string): Promise<JournalEntryDto> {
+  async postEntry(tenantId: string, entryId: string, actorId?: string): Promise<JournalEntryDto> {
     const current = await this.getEntry(tenantId, entryId);
     if (current.status !== 'draft') {
       throw new LedgerError(
@@ -134,11 +170,16 @@ export class LedgerService {
       );
     }
 
-    await this.db.transaction(tenantId, async (tx) => {
-      await tx`
-        UPDATE journal_entries SET status = 'posted', updated_at = now()
-         WHERE id = ${entryId} AND tenant_id = ${tenantId}`;
-    });
+    await this.db.transaction(
+      tenantId,
+      async (tx) => {
+        await tx`
+          UPDATE journal_entries
+             SET status = 'posted', posted_by = ${actorId ?? null}, updated_at = now()
+           WHERE id = ${entryId}`;
+      },
+      { userId: actorId },
+    );
     return this.getEntry(tenantId, entryId);
   }
 
@@ -150,6 +191,7 @@ export class LedgerService {
     tenantId: string,
     entryId: string,
     input: ReverseEntryInput,
+    actorId?: string,
   ): Promise<{ original: JournalEntryDto; reversal: JournalEntryDto }> {
     const original = await this.getEntry(tenantId, entryId);
     if (original.status !== 'posted') {
@@ -161,9 +203,8 @@ export class LedgerService {
     }
 
     const entryDate = input.entryDate ?? original.entryDate;
-    const period = await this.requirePeriodFor(tenantId, entryDate);
 
-    // Compute the mirrored lines with the domain rules, not by hand.
+    // Mirror the lines with the domain rules rather than by hand.
     const draftLines: DraftLine[] = original.lines.map((line, index) => ({
       lineNo: index + 1,
       accountId: line.accountId,
@@ -185,36 +226,42 @@ export class LedgerService {
       { entryDate, memo: `Reversal of ${original.entryRef ?? entryId}: ${input.reason}` },
     );
 
-    const reversalId = await this.db.transaction(tenantId, async (tx) => {
-      const [reversal] = await tx<{ id: string }[]>`
-        INSERT INTO journal_entries (
-          tenant_id, entry_date, period_id, fiscal_year_id, status, source_module,
-          memo, base_currency, reverses_entry_id, reversal_reason
-        ) VALUES (
-          ${tenantId}, ${entryDate}, ${period.id}, ${period.fiscal_year_id},
-          'posted', ${original.sourceModule}::source_module, ${mirrored.memo ?? null},
-          ${original.baseCurrency}, ${entryId}, ${input.reason}
-        ) RETURNING id`;
+    const reversalId = await this.db.transaction(
+      tenantId,
+      async (tx) => {
+        const period = await requirePeriodFor(tx, entryDate);
+        const [reversal] = await tx<{ id: string }[]>`
+          INSERT INTO journal_entries (
+            tenant_id, entry_date, period_id, fiscal_year_id, status, source_module,
+            memo, base_currency, reverses_entry_id, reversal_reason, created_by, posted_by
+          ) VALUES (
+            ${tenantId}, ${entryDate}, ${period.id}, ${period.fiscal_year_id},
+            'posted', ${original.sourceModule}::source_module, ${mirrored.memo ?? null},
+            ${original.baseCurrency}, ${entryId}, ${input.reason},
+            ${actorId ?? null}, ${actorId ?? null}
+          ) RETURNING id`;
 
-      await tx`
-        INSERT INTO journal_lines (
-          tenant_id, entry_id, line_no, account_id, side, amount_minor,
-          currency_code, fx_rate, base_amount_minor, description
-        )
-        SELECT ${tenantId}, ${reversal!.id}, l.line_no, l.account_id,
-               CASE l.side WHEN 'debit' THEN 'credit' ELSE 'debit' END::entry_side,
-               l.amount_minor, l.currency_code, l.fx_rate, l.base_amount_minor,
-               ${`Reversal: ${input.reason}`}
-          FROM journal_lines l WHERE l.entry_id = ${entryId} ORDER BY l.line_no`;
+        await tx`
+          INSERT INTO journal_lines (
+            tenant_id, entry_id, line_no, account_id, side, amount_minor,
+            currency_code, fx_rate, base_amount_minor, description, created_by
+          )
+          SELECT ${tenantId}, ${reversal!.id}, l.line_no, l.account_id,
+                 CASE l.side WHEN 'debit' THEN 'credit' ELSE 'debit' END::entry_side,
+                 l.amount_minor, l.currency_code, l.fx_rate, l.base_amount_minor,
+                 ${`Reversal: ${input.reason}`}, ${actorId ?? null}
+            FROM journal_lines l WHERE l.entry_id = ${entryId} ORDER BY l.line_no`;
 
-      await tx`
-        UPDATE journal_entries
-           SET status = 'reversed', reversed_by_entry_id = ${reversal!.id},
-               reversal_reason = ${input.reason}, updated_at = now()
-         WHERE id = ${entryId} AND tenant_id = ${tenantId}`;
+        await tx`
+          UPDATE journal_entries
+             SET status = 'reversed', reversed_by_entry_id = ${reversal!.id},
+                 reversal_reason = ${input.reason}, updated_at = now()
+           WHERE id = ${entryId}`;
 
-      return reversal!.id;
-    });
+        return reversal!.id;
+      },
+      { userId: actorId },
+    );
 
     return {
       original: await this.getEntry(tenantId, entryId),
@@ -223,22 +270,27 @@ export class LedgerService {
   }
 
   async getEntry(tenantId: string, entryId: string): Promise<JournalEntryDto> {
-    const [entry] = await this.db.sql<EntryRow[]>`
-      SELECT id, entry_no::text, entry_ref, entry_date::text, period_id, status, source_module,
-             memo, base_currency, posted_at::text, reverses_entry_id, reversed_by_entry_id
-        FROM journal_entries WHERE id = ${entryId} AND tenant_id = ${tenantId}`;
+    const { entry, lines } = await this.db.read(tenantId, async (tx) => {
+      const [row] = await tx<EntryRow[]>`
+        SELECT id, entry_no::text AS entry_no, entry_ref, entry_date::text AS entry_date,
+               period_id, status, source_module, memo, base_currency,
+               posted_at::text AS posted_at, reverses_entry_id, reversed_by_entry_id
+          FROM journal_entries WHERE id = ${entryId}`;
+      if (!row) return { entry: null, lines: [] as LineRow[] };
+
+      const lineRows = await tx<LineRow[]>`
+        SELECT l.id, l.line_no, l.account_id, a.code AS account_code, a.name AS account_name,
+               l.side, l.amount_minor::text AS amount_minor, l.currency_code,
+               l.fx_rate::text AS fx_rate, l.base_amount_minor::text AS base_amount_minor,
+               l.description
+          FROM journal_lines l JOIN accounts a ON a.id = l.account_id
+         WHERE l.entry_id = ${entryId} ORDER BY l.line_no`;
+      return { entry: row, lines: lineRows };
+    });
 
     if (!entry) {
       throw new LedgerError('ENTRY_NOT_FOUND', `No journal entry ${entryId}`, HttpStatus.NOT_FOUND);
     }
-
-    const lines = await this.db.sql<LineRow[]>`
-      SELECT l.id, l.line_no, l.account_id, a.code AS account_code, a.name AS account_name,
-             l.side, l.amount_minor::text, l.currency_code, l.fx_rate::text,
-             l.base_amount_minor::text, l.description
-        FROM journal_lines l JOIN accounts a ON a.id = l.account_id
-       WHERE l.entry_id = ${entryId} ORDER BY l.line_no`;
-
     return toEntryDto(entry, lines);
   }
 
@@ -246,11 +298,12 @@ export class LedgerService {
     tenantId: string,
     options: { limit: number; cursor?: string },
   ): Promise<{ items: JournalEntryDto[]; nextCursor: string | null }> {
-    const rows = await this.db.sql<{ id: string }[]>`
-      SELECT id FROM journal_entries
-       WHERE tenant_id = ${tenantId}
-         ${options.cursor ? this.db.sql`AND id < ${options.cursor}` : this.db.sql``}
-       ORDER BY id DESC LIMIT ${options.limit + 1}`;
+    const rows = await this.db.read(tenantId, (tx) =>
+      tx<{ id: string }[]>`
+        SELECT id FROM journal_entries
+         ${options.cursor ? tx`WHERE id < ${options.cursor}` : tx``}
+         ORDER BY id DESC LIMIT ${options.limit + 1}`,
+    );
 
     const page = rows.slice(0, options.limit);
     const items = await Promise.all(page.map((r) => this.getEntry(tenantId, r.id)));
@@ -270,30 +323,31 @@ export class LedgerService {
     const tenant = await this.requireTenant(tenantId);
     const currency = tenant.base_currency;
 
-    const rows = await this.db.sql<
-      {
-        account_id: string;
-        code: string;
-        name: string;
-        type: TrialBalanceDto['rows'][number]['accountType'];
-        normal_balance: 'debit' | 'credit';
-        debit_total: string;
-        credit_total: string;
-      }[]
-    >`
-      SELECT l.account_id, a.code, a.name, a.type, a.normal_balance,
-             COALESCE(SUM(l.base_amount_minor) FILTER (WHERE l.side = 'debit'), 0)::text  AS debit_total,
-             COALESCE(SUM(l.base_amount_minor) FILTER (WHERE l.side = 'credit'), 0)::text AS credit_total
-        FROM journal_lines l
-        JOIN journal_entries e ON e.id = l.entry_id
-        JOIN accounts a ON a.id = l.account_id
-       WHERE l.tenant_id = ${tenantId}
-         AND e.status IN ('posted', 'reversed')
-         ${query.fromDate ? this.db.sql`AND e.entry_date >= ${query.fromDate}` : this.db.sql``}
-         ${query.toDate ? this.db.sql`AND e.entry_date <= ${query.toDate}` : this.db.sql``}
-         ${query.periodId ? this.db.sql`AND e.period_id = ${query.periodId}` : this.db.sql``}
-       GROUP BY l.account_id, a.code, a.name, a.type, a.normal_balance
-       ORDER BY a.code`;
+    const rows = await this.db.read(tenantId, (tx) =>
+      tx<
+        {
+          account_id: string;
+          code: string;
+          name: string;
+          type: TrialBalanceDto['rows'][number]['accountType'];
+          normal_balance: 'debit' | 'credit';
+          debit_total: string;
+          credit_total: string;
+        }[]
+      >`
+        SELECT l.account_id, a.code, a.name, a.type, a.normal_balance,
+               COALESCE(SUM(l.base_amount_minor) FILTER (WHERE l.side = 'debit'), 0)::text  AS debit_total,
+               COALESCE(SUM(l.base_amount_minor) FILTER (WHERE l.side = 'credit'), 0)::text AS credit_total
+          FROM journal_lines l
+          JOIN journal_entries e ON e.id = l.entry_id
+          JOIN accounts a ON a.id = l.account_id
+         WHERE e.status IN ('posted', 'reversed')
+           ${query.fromDate ? tx`AND e.entry_date >= ${query.fromDate}` : tx``}
+           ${query.toDate ? tx`AND e.entry_date <= ${query.toDate}` : tx``}
+           ${query.periodId ? tx`AND e.period_id = ${query.periodId}` : tx``}
+         GROUP BY l.account_id, a.code, a.name, a.type, a.normal_balance
+         ORDER BY a.code`,
+    );
 
     let totalDebit = Money.zero(currency);
     let totalCredit = Money.zero(currency);
@@ -335,12 +389,11 @@ export class LedgerService {
   async listPeriods(tenantId: string): Promise<
     { id: string; periodNo: number; startDate: string; endDate: string; status: string }[]
   > {
-    const rows = await this.db.sql<
-      { id: string; period_no: number; start_date: string; end_date: string; status: string }[]
-    >`
-      SELECT p.id, p.period_no, p.start_date::text, p.end_date::text, p.status
-        FROM fiscal_periods p WHERE p.tenant_id = ${tenantId}
-       ORDER BY p.start_date`;
+    const rows = await this.db.read(tenantId, (tx) =>
+      tx<{ id: string; period_no: number; start_date: string; end_date: string; status: string }[]>`
+        SELECT id, period_no, start_date::text AS start_date, end_date::text AS end_date, status
+          FROM fiscal_periods ORDER BY start_date`,
+    );
     return rows.map((r) => ({
       id: r.id,
       periodNo: r.period_no,
@@ -352,43 +405,12 @@ export class LedgerService {
 
   // --- internals -------------------------------------------------------
 
-  private async insertLines(
-    tx: postgres.TransactionSql,
-    tenantId: string,
-    entryId: string,
-    lines: CreateJournalEntryInput['lines'],
-    baseCurrency: string,
-  ): Promise<void> {
-    let lineNo = 1;
-    for (const line of lines) {
-      const currency = line.currencyCode ?? baseCurrency;
-      const isBase = currency === baseCurrency;
-      const fxRate = isBase ? '1' : (line.fxRate ?? '1');
-      const baseAmount = isBase
-        ? line.amountMinor
-        : (line.baseAmountMinor ??
-          Money.fromMinor(line.amountMinor, currency).multiply(fxRate).minor.toString());
-
-      await tx`
-        INSERT INTO journal_lines (
-          tenant_id, entry_id, line_no, account_id, side, amount_minor,
-          currency_code, fx_rate, base_amount_minor, description,
-          contact_id, cost_center_id, project_id
-        ) VALUES (
-          ${tenantId}, ${entryId}, ${lineNo}, ${line.accountId}, ${line.side}::entry_side,
-          ${line.amountMinor}, ${currency}, ${fxRate}, ${baseAmount},
-          ${line.description ?? null}, ${line.contactId ?? null},
-          ${line.costCenterId ?? null}, ${line.projectId ?? null}
-        )`;
-      lineNo += 1;
-    }
-  }
-
   private async findByExternalId(tenantId: string, key: string): Promise<JournalEntryDto | null> {
-    const [row] = await this.db.sql<{ id: string }[]>`
-      SELECT id FROM journal_entries
-       WHERE tenant_id = ${tenantId} AND source_system = 'api' AND external_id = ${key}`;
-    return row ? this.getEntry(tenantId, row.id) : null;
+    const rows = await this.db.read(tenantId, (tx) =>
+      tx<{ id: string }[]>`
+        SELECT id FROM journal_entries WHERE source_system = 'api' AND external_id = ${key}`,
+    );
+    return rows[0] ? this.getEntry(tenantId, rows[0].id) : null;
   }
 
   private async requireTenant(tenantId: string): Promise<{ base_currency: string }> {
@@ -399,44 +421,62 @@ export class LedgerService {
     }
     return tenant;
   }
+}
 
-  private async requirePeriodFor(
-    tenantId: string,
-    entryDate: string,
-  ): Promise<{ id: string; fiscal_year_id: string; status: string }> {
-    const [period] = await this.db.sql<
-      { id: string; fiscal_year_id: string; status: string }[]
-    >`
-      SELECT id, fiscal_year_id, status FROM fiscal_periods
-       WHERE tenant_id = ${tenantId} AND ${entryDate}::date BETWEEN start_date AND end_date`;
+/** Resolve the fiscal period covering a date, inside the caller transaction. */
+export async function requirePeriodFor(
+  tx: postgres.TransactionSql,
+  entryDate: string,
+): Promise<{ id: string; fiscal_year_id: string; status: string }> {
+  const [period] = await tx<{ id: string; fiscal_year_id: string; status: string }[]>`
+    SELECT id, fiscal_year_id, status FROM fiscal_periods
+     WHERE ${entryDate}::date BETWEEN start_date AND end_date`;
 
-    if (!period) {
-      throw new LedgerError(
-        'NO_FISCAL_PERIOD',
-        `No fiscal period covers ${entryDate}; create the fiscal year first`,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
-    return period;
+  if (!period) {
+    throw new LedgerError(
+      'NO_FISCAL_PERIOD',
+      `No fiscal period covers ${entryDate}; create the fiscal year first`,
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+  return period;
+}
+
+/** Insert journal lines, deriving base-currency amounts where not supplied. */
+export async function insertLines(
+  tx: postgres.TransactionSql,
+  tenantId: string,
+  entryId: string,
+  lines: CreateJournalEntryInput['lines'],
+  baseCurrency: string,
+  actorId?: string,
+): Promise<void> {
+  let lineNo = 1;
+  for (const line of lines) {
+    const currency = line.currencyCode ?? baseCurrency;
+    const isBase = currency === baseCurrency;
+    const fxRate = isBase ? '1' : (line.fxRate ?? '1');
+    const baseAmount = isBase
+      ? line.amountMinor
+      : (line.baseAmountMinor ??
+        Money.fromMinor(line.amountMinor, currency).multiply(fxRate).minor.toString());
+
+    await tx`
+      INSERT INTO journal_lines (
+        tenant_id, entry_id, line_no, account_id, side, amount_minor,
+        currency_code, fx_rate, base_amount_minor, description,
+        contact_id, cost_center_id, project_id, created_by
+      ) VALUES (
+        ${tenantId}, ${entryId}, ${lineNo}, ${line.accountId}, ${line.side}::entry_side,
+        ${line.amountMinor}, ${currency}, ${fxRate}, ${baseAmount},
+        ${line.description ?? null}, ${line.contactId ?? null},
+        ${line.costCenterId ?? null}, ${line.projectId ?? null}, ${actorId ?? null}
+      )`;
+    lineNo += 1;
   }
 }
 
-function toAccountDto(row: Record<string, never>): AccountDto {
-  const r = row as unknown as {
-    id: string;
-    code: string;
-    name: string;
-    name_ar: string | null;
-    type: AccountDto['type'];
-    subtype: string | null;
-    normal_balance: AccountDto['normalBalance'];
-    parent_account_id: string | null;
-    currency_code: string | null;
-    is_bank: boolean;
-    is_control_account: boolean;
-    is_postable: boolean;
-    is_active: boolean;
-  };
+function toAccountDto(r: AccountRow): AccountDto {
   return {
     id: r.id,
     code: r.code,
