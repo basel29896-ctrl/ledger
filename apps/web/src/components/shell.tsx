@@ -9,6 +9,7 @@ import { useSession } from '../lib/session';
 const NAV = [
   { href: '/accounts', label: 'Chart of Accounts', permission: 'ledger.account.read' },
   { href: '/journal', label: 'Journal', permission: 'ledger.entry.read' },
+  { href: '/inventory', label: 'Inventory', permission: 'inventory.read' },
   { href: '/close', label: 'Period Close', permission: 'ledger.period.close' },
   { href: '/reports/trial-balance', label: 'Trial Balance', permission: 'report.read' },
   { href: '/reports/income-statement', label: 'P&L', permission: 'report.read' },
