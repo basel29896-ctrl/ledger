@@ -1,6 +1,8 @@
-import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { z } from 'zod';
+import { ClearanceQueue } from './clearance.queue';
+import { LedgerError } from '../common/problem.filter';
 import { TaxService } from './tax.service';
 import { zodPipe } from '../common/zod.pipe';
 import { CurrentUser, RequirePermissions, TenantId } from '../auth/auth.guard';
@@ -53,7 +55,10 @@ export class TaxCodesController {
 @ApiTags('tax')
 @Controller('e-invoices')
 export class EInvoiceController {
-  constructor(private readonly tax: TaxService) {}
+  constructor(
+    private readonly tax: TaxService,
+    private readonly clearance: ClearanceQueue,
+  ) {}
 
   @Get('queue')
   @RequirePermissions('tax.read')
@@ -81,12 +86,33 @@ export class EInvoiceController {
       'A transient failure leaves the invoice in `failed` with the attempt counted, so it can ' +
       'be retried. Until clearance succeeds the invoice is not a valid tax document.',
   })
-  submit(
+  async submit(
     @TenantId() tenantId: string,
     @CurrentUser() user: AccessTokenClaims,
     @Param('documentId', ParseUUIDPipe) documentId: string,
   ): Promise<unknown> {
-    return this.tax.submitForClearance(tenantId, documentId, user.sub);
+    try {
+      return await this.tax.submitForClearance(tenantId, documentId, user.sub);
+    } catch (error) {
+      /*
+       * A transport failure is worth retrying on its own; hand it to the queue
+       * and still tell the caller it did not clear, because until it does the
+       * invoice is not a valid tax document.
+       */
+      if (error instanceof LedgerError && error.code === 'CLEARANCE_RETRYABLE') {
+        const { queued } = await this.clearance.enqueue({
+          tenantId,
+          documentId,
+          actorId: user.sub,
+        });
+        throw new LedgerError(
+          error.code,
+          queued ? `${error.message} — queued for retry` : error.message,
+          HttpStatus.SERVICE_UNAVAILABLE,
+        );
+      }
+      throw error;
+    }
   }
 }
 

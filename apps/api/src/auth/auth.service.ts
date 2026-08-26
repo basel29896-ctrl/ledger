@@ -124,6 +124,65 @@ export class AuthService {
     });
   }
 
+  /** The companies this user may sign in to, home first. */
+  async tenantsFor(userId: string): Promise<
+    { tenantId: string; slug: string; name: string; baseCurrency: string; isHome: boolean }[]
+  > {
+    const rows = await this.db.sql<
+      { tenant_id: string; slug: string; name: string; base_currency: string; is_home: boolean }[]
+    >`SELECT * FROM auth_tenants_for_user(${userId}::uuid)`;
+    return rows.map((r) => ({
+      tenantId: r.tenant_id,
+      slug: r.slug,
+      name: r.name,
+      baseCurrency: r.base_currency,
+      isHome: r.is_home,
+    }));
+  }
+
+  /**
+   * Switch the session to another company.
+   *
+   * Membership is checked in the database before a token is minted, so a tenant
+   * id taken from a request body can never become a session in a company the
+   * user was not granted a role in. The old session is revoked: one session,
+   * one company, so an access token always names the company it may act in.
+   */
+  async switchTenant(
+    claims: AccessTokenClaims,
+    tenantId: string,
+    context: { ip?: string | undefined; userAgent?: string | undefined },
+  ): Promise<LoginResult> {
+    const [allowed] = await this.db.sql<{ auth_user_belongs_to_tenant: boolean }[]>`
+      SELECT auth_user_belongs_to_tenant(${claims.sub}::uuid, ${tenantId}::uuid)`;
+    if (!allowed?.auth_user_belongs_to_tenant) {
+      throw new LedgerError(
+        'NOT_A_MEMBER',
+        'You do not hold a role in that company',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const [user] = await this.db.sql<{ email: string; display_name: string }[]>`
+      SELECT email, display_name FROM auth_user_by_id(${claims.sub}::uuid)`;
+    if (!user) {
+      throw new LedgerError('USER_NOT_FOUND', 'No such user', HttpStatus.UNAUTHORIZED);
+    }
+
+    await this.logoutSession(claims.sid);
+    const permissions = await this.permissionsFor(tenantId, claims.sub);
+    return this.issueSession({
+      userId: claims.sub,
+      tenantId,
+      email: user.email,
+      displayName: user.display_name,
+      permissions,
+      familyId: randomUUID(),
+      ip: context.ip,
+      userAgent: context.userAgent,
+    });
+  }
+
   /**
    * Refresh-token rotation.
    *
@@ -185,6 +244,10 @@ export class AuthService {
       ip: context.ip,
       userAgent: context.userAgent,
     });
+  }
+
+  private async logoutSession(sessionId: string): Promise<void> {
+    await this.db.sql`SELECT auth_revoke_session_by_id(${sessionId}::uuid, 'tenant_switch')`;
   }
 
   async logout(refreshToken: string | undefined): Promise<void> {

@@ -6,6 +6,7 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEnv } from '@acct/shared';
 import cookieParser from 'cookie-parser';
+import express from 'express';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ProblemFilter } from './common/problem.filter';
@@ -18,6 +19,9 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(Logger));
 
   app.use(helmet({ contentSecurityPolicy: env.NODE_ENV === 'production' }));
+  // Attachments arrive base64-encoded in JSON, so the body limit has to clear
+  // the 20 MB file cap with room for the encoding overhead — and no more.
+  app.use(express.json({ limit: '30mb' }));
   app.use(cookieParser());
   // Strict allowlist: credentials are cookies, so a wildcard origin is unusable
   // anyway and a permissive one would hand sessions to any site.

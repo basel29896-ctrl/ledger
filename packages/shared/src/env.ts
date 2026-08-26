@@ -25,6 +25,9 @@ export const envSchema = z.object({
   S3_BUCKET: z.string().min(1),
   S3_ACCESS_KEY: z.string().min(1),
   S3_SECRET_KEY: z.string().min(1),
+  /* Optional. With no scanner an upload is marked `skipped`, never `clean`, so
+   * "not scanned" is never mistaken for "scanned and safe". */
+  VIRUS_SCAN_URL: z.string().url().optional(),
 
   SMTP_HOST: z.string().min(1),
   SMTP_PORT: z.coerce.number().int().positive(),

@@ -2,7 +2,9 @@
   "name": "accounting",
   "private": true,
   "packageManager": "pnpm@10.34.1",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -11,7 +13,9 @@
     "test": "turbo run test",
     "migrate": "pnpm --filter @acct/db migrate",
     "migrate:new": "pnpm --filter @acct/db generate",
-    "seed": "pnpm --filter @acct/db seed"
+    "seed": "pnpm --filter @acct/db seed",
+    "scan:secrets": "node scripts/scan-secrets.mjs",
+    "scan:secrets:all": "node scripts/scan-secrets.mjs --all"
   },
   "devDependencies": {
     "turbo": "^2.5.0",

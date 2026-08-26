@@ -95,6 +95,19 @@ export class ProblemFilter implements ExceptionFilter {
       };
     }
 
+    // Express rejects an oversized body before any handler sees it; without
+    // this it would surface as a 500 and read like a server fault.
+    if ((exception as { type?: string }).type === 'entity.too.large') {
+      return {
+        type: 'about:blank',
+        title: 'file too large',
+        status: HttpStatus.PAYLOAD_TOO_LARGE,
+        code: 'FILE_TOO_LARGE',
+        detail: 'The request body is larger than the upload limit',
+        instance,
+      };
+    }
+
     const message = exception instanceof Error ? exception.message : String(exception);
     const mapped = PG_MESSAGE_CODES.find((m) => m.pattern.test(message));
     if (mapped) {

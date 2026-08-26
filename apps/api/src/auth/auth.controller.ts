@@ -8,6 +8,7 @@ import { AuthService, type LoginResult } from './auth.service';
 import { CurrentUser, Public, TenantId } from './auth.guard';
 import type { AccessTokenClaims } from './auth.service';
 import { zodPipe } from '../common/zod.pipe';
+import { Throttle } from '@nestjs/throttler';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -15,6 +16,15 @@ const loginSchema = z.object({
   totpCode: z.string().optional(),
   tenantSlug: z.string().optional(),
 });
+
+/** Sign-in attempts per minute per IP; relaxed under test, which logs in constantly. */
+function loginLimit(): number {
+  const configured = Number(process.env['RATE_LIMIT_LOGIN_PER_MINUTE']);
+  if (Number.isFinite(configured) && configured > 0) return configured;
+  return process.env['NODE_ENV'] === 'test' ? 1_000_000 : 10;
+}
+
+const switchTenantSchema = z.object({ tenantId: z.string().uuid() });
 
 const totpConfirmSchema = z.object({ code: z.string().length(6) });
 
@@ -27,6 +37,9 @@ export class AuthController {
   ) {}
 
   @Public()
+  // Sign-in is the one endpoint worth throttling hard: it is where guessing
+  // happens. The account lockout still applies on top of this.
+  @Throttle({ short: { ttl: 60_000, limit: loginLimit() } })
   @Post('login')
   @HttpCode(200)
   @ApiOperation({ summary: 'Sign in with email, password and optional TOTP code' })
@@ -82,6 +95,37 @@ export class AuthController {
     permissions: string[];
   } {
     return { id: user.sub, email: user.email, tenantId: user.tid, permissions: user.perms };
+  }
+
+  @Get('tenants')
+  @ApiOperation({
+    summary: 'The companies this user may sign in to',
+    description: 'Membership follows from the roles a user holds, home company first.',
+  })
+  tenants(@CurrentUser() user: AccessTokenClaims) {
+    return this.auth.tenantsFor(user.sub);
+  }
+
+  @Post('switch-tenant')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Switch the session to another company',
+    description:
+      'Membership is checked in the database before a token is minted, and the previous ' +
+      'session is revoked: an access token always names the one company it may act in.',
+  })
+  async switchTenant(
+    @CurrentUser() user: AccessTokenClaims,
+    @Body(zodPipe(switchTenantSchema)) body: z.infer<typeof switchTenantSchema>,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<Omit<LoginResult, 'refreshToken' | 'accessToken'>> {
+    const result = await this.auth.switchTenant(user, body.tenantId, {
+      ip: req.ip,
+      userAgent: req.headers['user-agent'],
+    });
+    this.setAuthCookies(res, result);
+    return { expiresIn: result.expiresIn, user: result.user };
   }
 
   @Post('totp/enrol')
