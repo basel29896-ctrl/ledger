@@ -6,3 +6,5 @@ export * from './ledger/trial-balance';
 export * from './ar/invoice';
 export * from './ar/aging';
 export * from './ap/three-way-match';
+export * from './bank/statement-formats';
+export * from './bank/matching';

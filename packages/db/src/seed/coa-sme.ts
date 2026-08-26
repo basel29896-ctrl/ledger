@@ -30,6 +30,7 @@ export const SME_COA: readonly SeedAccount[] = [
   { code: '1150', name: 'Inventory', nameAr: 'المخزون', type: 'asset', subtype: 'inventory', parent: '1100', isControlAccount: true },
   { code: '1160', name: 'Prepaid Expenses', nameAr: 'مصاريف مدفوعة مقدماً', type: 'asset', subtype: 'prepaid', parent: '1100' },
   { code: '1170', name: 'Input Tax Recoverable', nameAr: 'ضريبة المدخلات القابلة للاسترداد', type: 'asset', subtype: 'tax_receivable', parent: '1100' },
+  { code: '1190', name: 'Currency Exchange Clearing', nameAr: 'حساب تسوية صرف العملات', type: 'asset', subtype: 'fx_clearing', parent: '1100' },
   { code: '1200', name: 'Non-Current Assets', nameAr: 'الأصول غير المتداولة', type: 'asset', subtype: 'fixed_asset', parent: '1000' },
   { code: '1210', name: 'Property, Plant and Equipment', nameAr: 'الممتلكات والآلات والمعدات', type: 'asset', subtype: 'fixed_asset', parent: '1200' },
   { code: '1220', name: 'Accumulated Depreciation', nameAr: 'مجمع الاستهلاك', type: 'asset', subtype: 'accumulated_depreciation', parent: '1200' },
