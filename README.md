@@ -1,0 +1,56 @@
+# Accounting Platform
+
+Self-hosted, multi-tenant, double-entry accounting. TypeScript end to end.
+Ledger correctness outranks every other concern: the invariants in
+`docs/DECISIONS.md` are enforced by PostgreSQL, not by application code alone.
+
+## Quick start
+
+```bash
+git clone <repo> && cd accounting
+cp .env.example .env
+make dev
+```
+
+| Service | URL |
+|---|---|
+| Web | http://localhost:3000 |
+| API | http://localhost:4000/api/v1 |
+| API docs (OpenAPI) | http://localhost:4000/api/v1/docs |
+| Liveness / readiness | http://localhost:4000/health, /ready |
+| DB browser (pgweb) | http://localhost:8081 |
+| Mail catcher (Mailhog) | http://localhost:8025 |
+| MinIO console | http://localhost:9001 |
+
+If port 3000 is already taken on your machine, set `WEB_PORT` in `.env`.
+
+## Make targets
+
+`dev` `down` `migrate` `migrate:new` `seed` `seed:demo` `test` `test:e2e` `lint`
+`typecheck` `ledger:rebuild` `ledger:verify` `logs` `psql` `reset`
+
+`reset` destroys the local data volumes.
+
+## Layout
+
+```
+apps/api        NestJS 11 REST API, /api/v1, OpenAPI generated
+apps/web        Next.js 15 App Router UI
+packages/domain Framework-free accounting logic (money, posting rules, schedules)
+packages/db     Drizzle schema, SQL migrations, migration runner, seeds
+packages/shared Zod schemas shared by API and web (env, currency, DTOs)
+```
+
+## Migrations
+
+```bash
+make migrate:new   # generate SQL from the Drizzle schema
+# review the generated file by hand, add triggers/policies as needed
+make migrate       # apply pending migrations inside a transaction
+```
+
+Migrations never run automatically on boot.
+
+## Status
+
+M0 (foundation) complete — see `docs/M0-foundation.md`. Ledger core is M1.

@@ -1,0 +1,1 @@
+-- Extensions are shared infrastructure; dropping them is intentionally a no-op.

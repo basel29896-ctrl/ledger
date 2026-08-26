@@ -1,0 +1,15 @@
+{
+  "name": "@acct/domain",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "echo lint:domain"
+  },
+  "dependencies": { "decimal.js": "^10.4.3", "@acct/shared": "workspace:*" },
+  "devDependencies": { "@vitest/coverage-v8": "^3.0.5" }
+}

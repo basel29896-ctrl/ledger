@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Local development placeholders only."
+paths = ['''\.env\.example$''']
