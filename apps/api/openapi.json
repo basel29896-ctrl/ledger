@@ -28,6 +28,255 @@
           "health"
         ]
       }
+    },
+    "/api/v1/accounts": {
+      "get": {
+        "operationId": "AccountsController_list",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "description": "Tenant scope (replaced by the JWT claim in M2)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List the chart of accounts",
+        "tags": [
+          "ledger"
+        ]
+      },
+      "post": {
+        "operationId": "AccountsController_create",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "description": "Tenant scope (replaced by the JWT claim in M2)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create an account",
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/api/v1/journal-entries": {
+      "post": {
+        "description": "Send an Idempotency-Key header to make retries safe: a repeat of the same key returns the original entry with 200 instead of creating a second one.",
+        "operationId": "JournalEntriesController_create",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a journal entry as draft or posted",
+        "tags": [
+          "ledger"
+        ]
+      },
+      "get": {
+        "operationId": "JournalEntriesController_list",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List journal entries, newest first",
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/api/v1/journal-entries/{id}": {
+      "get": {
+        "operationId": "JournalEntriesController_get",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Fetch one journal entry with its lines",
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/api/v1/journal-entries/{id}/post": {
+      "post": {
+        "operationId": "JournalEntriesController_post",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Post a draft entry",
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/api/v1/journal-entries/{id}/reverse": {
+      "post": {
+        "description": "Posts the mirror image and links both entries. The original is never edited.",
+        "operationId": "JournalEntriesController_reverse",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Reverse a posted entry",
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/api/v1/reports/trial-balance": {
+      "get": {
+        "description": "Computed from journal lines, not from the balance cache. Must always be balanced.",
+        "operationId": "ReportsController_trialBalance",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Debit and credit totals per account, in the tenant base currency"
+          }
+        },
+        "summary": "Trial balance",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/fiscal-periods": {
+      "get": {
+        "operationId": "FiscalPeriodsController_list",
+        "parameters": [
+          {
+            "name": "X-Tenant-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List fiscal periods and their open/closed status",
+        "tags": [
+          "ledger"
+        ]
+      }
     }
   },
   "info": {

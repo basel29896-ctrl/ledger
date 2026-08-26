@@ -2,11 +2,15 @@ import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { randomUUID } from 'node:crypto';
 import { EnvModule } from './config/env.module';
+import { DbModule } from './db/db.module';
+import { LedgerModule } from './ledger/ledger.module';
 import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
     EnvModule,
+    DbModule,
+    LedgerModule,
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? 'info',

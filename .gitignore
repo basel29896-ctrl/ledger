@@ -5,3 +5,7 @@ dist/
 coverage/
 .env
 *.local
+
+# pnpm store created by installs inside the api container
+.pnpm-store/
+*.tsbuildinfo

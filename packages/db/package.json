@@ -7,16 +7,24 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "lint": "echo lint:db",
     "generate": "drizzle-kit generate",
     "migrate": "tsx src/migrate.ts",
-    "seed": "tsx src/seed.ts"
+    "seed": "tsx src/seed.ts",
+    "ledger:rebuild": "tsx src/ledger-cli.ts rebuild",
+    "ledger:verify": "tsx src/ledger-cli.ts verify"
   },
   "dependencies": {
+    "@acct/domain": "workspace:*",
+    "@acct/shared": "workspace:*",
     "drizzle-orm": "^0.38.4",
-    "postgres": "^3.4.5",
-    "@acct/shared": "workspace:*"
+    "postgres": "^3.4.5"
   },
-  "devDependencies": { "drizzle-kit": "^0.30.2", "tsx": "^4.19.2" }
+  "devDependencies": {
+    "@testcontainers/postgresql": "^12.1.0",
+    "drizzle-kit": "^0.30.2",
+    "testcontainers": "^12.1.0",
+    "tsx": "^4.19.2"
+  }
 }

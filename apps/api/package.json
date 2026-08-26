@@ -7,31 +7,35 @@
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "lint": "echo lint:api"
   },
   "dependencies": {
+    "@acct/db": "workspace:*",
+    "@acct/domain": "workspace:*",
+    "@acct/shared": "workspace:*",
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/swagger": "^11.0.0",
+    "decimal.js": "^10.4.3",
+    "ioredis": "^5.4.2",
     "nestjs-pino": "^4.3.0",
     "pino": "^9.6.0",
     "pino-http": "^10.4.0",
+    "postgres": "^3.4.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "postgres": "^3.4.5",
-    "ioredis": "^5.4.2",
-    "decimal.js": "^10.4.3",
-    "@acct/shared": "workspace:*",
-    "@acct/domain": "workspace:*",
-    "@acct/db": "workspace:*"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
-    "supertest": "^7.0.0",
+    "@swc/core": "^1.16.1",
+    "@testcontainers/postgresql": "^12.1.0",
+    "@types/express": "^5.0.0",
     "@types/supertest": "^6.0.2",
-    "@types/express": "^5.0.0"
+    "supertest": "^7.0.0",
+    "unplugin-swc": "^1.5.11"
   }
 }

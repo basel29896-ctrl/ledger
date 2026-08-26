@@ -51,6 +51,20 @@ make migrate       # apply pending migrations inside a transaction
 
 Migrations never run automatically on boot.
 
+## Ledger commands
+
+```bash
+make ledger:verify    # asserts debits = credits per tenant per currency; exits non-zero on drift
+make ledger:rebuild   # recomputes account_balances from journal lines alone
+```
+
+Balances are always derived. If the cache and the journal ever disagree, the journal wins and
+`ledger:verify` says so.
+
 ## Status
 
-M0 (foundation) complete — see `docs/M0-foundation.md`. Ledger core is M1.
+- **M0 — Foundation** complete: `docs/M0-foundation.md`
+- **M1 — Ledger Core** complete: `docs/M1-ledger-core.md` (140 tests passing)
+
+Next: M2 — auth, roles, RLS, audit log. Until then the tenant comes from an `X-Tenant-Id`
+header and this build must not be exposed to a network.

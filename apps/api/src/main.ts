@@ -6,6 +6,7 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadEnv } from '@acct/shared';
 import { AppModule } from './app.module';
+import { ProblemFilter } from './common/problem.filter';
 
 async function bootstrap(): Promise<void> {
   // Fail fast before the server binds.
@@ -14,6 +15,8 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
   app.setGlobalPrefix('api/v1', { exclude: ['health', 'ready'] });
+  // Every error leaves as RFC 9457 problem+json with a stable machine-readable code.
+  app.useGlobalFilters(new ProblemFilter());
 
   const doc = SwaggerModule.createDocument(
     app,
