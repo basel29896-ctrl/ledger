@@ -13,6 +13,7 @@
   "dependencies": {
     "@acct/db": "workspace:*",
     "@acct/domain": "workspace:*",
+    "@acct/einvoice-jo": "workspace:*",
     "@acct/shared": "workspace:*",
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",

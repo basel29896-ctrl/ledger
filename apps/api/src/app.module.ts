@@ -9,6 +9,7 @@ import { AdminModule } from './admin/admin.module';
 import { ArModule } from './ar/ar.module';
 import { ApModule } from './ap/ap.module';
 import { BankModule } from './bank/bank.module';
+import { TaxModule } from './tax/tax.module';
 import { AuthGuard } from './auth/auth.guard';
 import { CsrfGuard } from './auth/csrf.guard';
 import { APP_GUARD } from '@nestjs/core';
@@ -23,6 +24,7 @@ import { HealthController } from './health/health.controller';
     ArModule,
     ApModule,
     BankModule,
+    TaxModule,
     AdminModule,
     LoggerModule.forRoot({
       pinoHttp: {

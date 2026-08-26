@@ -35,6 +35,9 @@ importers:
       '@acct/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@acct/einvoice-jo':
+        specifier: workspace:*
+        version: link:../../packages/einvoice-jo
       '@acct/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -207,6 +210,15 @@ importers:
       fast-check:
         specifier: ^4.9.0
         version: 4.9.0
+
+  packages/einvoice-jo:
+    dependencies:
+      '@acct/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@acct/shared':
+        specifier: workspace:*
+        version: link:../shared
 
   packages/shared:
     dependencies:

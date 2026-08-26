@@ -1,6 +1,7 @@
 import postgres from 'postgres';
 import argon2 from 'argon2';
 import { MINOR_UNIT_EXPONENTS } from '@acct/shared';
+import { JORDAN_SPECIAL_SALES_TAX_CATEGORIES, JORDAN_TAX_CODES } from '@acct/domain';
 import { normalBalanceFor, SME_COA } from './seed/coa-sme';
 import { SYSTEM_ROLES } from './seed/roles';
 
@@ -161,21 +162,49 @@ async function main(): Promise<void> {
           ON CONFLICT (tenant_id, doc_type, scope_key) DO NOTHING`;
       }
 
-      // Generic tax codes; the Jordan set with its rates and rules is seeded in M7.
+      // Jordan tax codes. Rates change by regulation, so these are seed values
+      // the tenant may edit, not constants of the system.
       const [outputTax] = await tx<{ id: string }[]>`
         SELECT id FROM accounts WHERE tenant_id = ${tenantId} AND code = '2130'`;
       const [inputTax] = await tx<{ id: string }[]>`
         SELECT id FROM accounts WHERE tenant_id = ${tenantId} AND code = '1170'`;
-      for (const code of [
-        { code: 'GST16', name: 'General Sales Tax 16%', nameAr: 'ضريبة المبيعات العامة ١٦٪', rate: '16' },
-        { code: 'GST0', name: 'Zero rated', nameAr: 'معفى بنسبة صفر', rate: '0' },
-      ]) {
+
+      for (const [index, code] of JORDAN_TAX_CODES.entries()) {
         await tx`
-          INSERT INTO tax_codes (tenant_id, code, name, name_ar, kind, rate_percent,
-                                 output_account_id, input_account_id)
-          VALUES (${tenantId}, ${code.code}, ${code.name}, ${code.nameAr}, 'both', ${code.rate},
-                  ${outputTax?.id ?? null}, ${inputTax?.id ?? null})
-          ON CONFLICT (tenant_id, code) DO UPDATE SET rate_percent = EXCLUDED.rate_percent`;
+          INSERT INTO tax_codes (
+            tenant_id, code, name, kind, rate_percent, treatment, is_withholding,
+            is_recoverable, compound_on, output_account_id, input_account_id,
+            jurisdiction, sort_order
+          ) VALUES (
+            ${tenantId}, ${code.code}, ${code.name},
+            ${code.kind}::tax_kind, ${code.ratePercent.toString()},
+            ${code.treatment ?? 'standard'}::tax_treatment, ${code.isWithholding ?? false},
+            ${code.isRecoverable ?? true}, ${[...(code.compoundOn ?? [])]},
+            ${outputTax?.id ?? null}, ${inputTax?.id ?? null}, 'JO', ${index * 10}
+          )
+          ON CONFLICT (tenant_id, code) DO UPDATE
+            SET name = EXCLUDED.name,
+                rate_percent = EXCLUDED.rate_percent,
+                treatment = EXCLUDED.treatment,
+                is_withholding = EXCLUDED.is_withholding,
+                is_recoverable = EXCLUDED.is_recoverable,
+                compound_on = EXCLUDED.compound_on`;
+      }
+
+      // Special Sales Tax categories: an excise charged on top of the value,
+      // with General Sales Tax then charged on value + excise. Rates are left
+      // at zero until the tenant sets the ones that apply to its goods.
+      for (const [index, category] of JORDAN_SPECIAL_SALES_TAX_CATEGORIES.entries()) {
+        await tx`
+          INSERT INTO tax_codes (
+            tenant_id, code, name, kind, rate_percent, treatment, is_recoverable,
+            output_account_id, input_account_id, jurisdiction, sort_order
+          ) VALUES (
+            ${tenantId}, ${category.code}, ${category.name}, 'both', ${category.ratePercent},
+            'standard', true, ${outputTax?.id ?? null}, ${inputTax?.id ?? null}, 'JO',
+            ${500 + index}
+          )
+          ON CONFLICT (tenant_id, code) DO NOTHING`;
       }
 
       const [counts] = await tx<{ accounts: string; periods: string }[]>`
@@ -185,6 +214,7 @@ async function main(): Promise<void> {
       console.log(
         `seed — tenant ${TENANT_SLUG} (base JOD): ${counts?.accounts ?? '0'} accounts, ` +
           `${counts?.periods ?? '0'} fiscal periods, ${SYSTEM_ROLES.length} roles, ` +
+          `${JORDAN_TAX_CODES.length + JORDAN_SPECIAL_SALES_TAX_CATEGORIES.length} Jordan tax codes, ` +
           `admin ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}`,
       );
     });
