@@ -7,6 +7,7 @@ import { LedgerModule } from './ledger/ledger.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { ArModule } from './ar/ar.module';
+import { ApModule } from './ap/ap.module';
 import { AuthGuard } from './auth/auth.guard';
 import { CsrfGuard } from './auth/csrf.guard';
 import { APP_GUARD } from '@nestjs/core';
@@ -19,6 +20,7 @@ import { HealthController } from './health/health.controller';
     AuthModule,
     LedgerModule,
     ArModule,
+    ApModule,
     AdminModule,
     LoggerModule.forRoot({
       pinoHttp: {

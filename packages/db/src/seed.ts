@@ -152,6 +152,8 @@ async function main(): Promise<void> {
         ['vendor_bill', `BILL-${FISCAL_YEAR}-`],
         ['vendor_payment', `PAY-${FISCAL_YEAR}-`],
         ['purchase_order', `PO-${FISCAL_YEAR}-`],
+        ['goods_receipt', `GRN-${FISCAL_YEAR}-`],
+        ['debit_note', `DN-${FISCAL_YEAR}-`],
       ] as const) {
         await tx`
           INSERT INTO number_sequences (tenant_id, doc_type, scope_key, prefix, padding)
