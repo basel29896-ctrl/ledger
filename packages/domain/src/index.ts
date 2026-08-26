@@ -13,3 +13,4 @@ export * from './tax/jordan';
 export * from './statements/statements';
 export * from './close/close';
 export * from './inventory/costing';
+export * from './assets/depreciation';

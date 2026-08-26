@@ -5,6 +5,7 @@ import { EnvModule } from './config/env.module';
 import { DbModule } from './db/db.module';
 import { LedgerModule } from './ledger/ledger.module';
 import { AuthModule } from './auth/auth.module';
+import { AssetsModule } from './assets/assets.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { CloseModule } from './close/close.module';
 import { ReportsModule } from './reports/reports.module';
@@ -31,6 +32,7 @@ import { HealthController } from './health/health.controller';
     ReportsModule,
     CloseModule,
     InventoryModule,
+    AssetsModule,
     AdminModule,
     LoggerModule.forRoot({
       pinoHttp: {
