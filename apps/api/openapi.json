@@ -89,6 +89,38 @@
         ]
       }
     },
+    "/api/v1/auth/tenants": {
+      "get": {
+        "description": "Membership follows from the roles a user holds, home company first.",
+        "operationId": "AuthController_tenants",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "The companies this user may sign in to",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/switch-tenant": {
+      "post": {
+        "description": "Membership is checked in the database before a token is minted, and the previous session is revoked: an access token always names the one company it may act in.",
+        "operationId": "AuthController_switchTenant",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Switch the session to another company",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/auth/totp/enrol": {
       "post": {
         "operationId": "AuthController_beginTotp",
@@ -574,6 +606,1395 @@
         "summary": "AR aging: current, 1-30, 31-60, 61-90, 91-120, 120+",
         "tags": [
           "reports"
+        ]
+      }
+    },
+    "/api/v1/vendors": {
+      "get": {
+        "operationId": "VendorsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List vendors",
+        "tags": [
+          "ap"
+        ]
+      },
+      "post": {
+        "operationId": "VendorsController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a vendor",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/purchase-orders": {
+      "post": {
+        "operationId": "PurchaseOrdersController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Raise a purchase order",
+        "tags": [
+          "ap"
+        ]
+      },
+      "get": {
+        "operationId": "PurchaseOrdersController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List purchase orders",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/purchase-orders/{id}": {
+      "get": {
+        "operationId": "PurchaseOrdersController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "One purchase order with ordered / received / billed quantities",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/goods-receipts": {
+      "post": {
+        "operationId": "GoodsReceiptsController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Record a goods receipt against a purchase order",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/bills": {
+      "post": {
+        "description": "The three-way match runs on entry and the bill lands in pending_approval. It reaches the ledger only when someone approves it.",
+        "operationId": "BillsController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Enter a vendor bill",
+        "tags": [
+          "ap"
+        ]
+      },
+      "get": {
+        "operationId": "BillsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List vendor bills",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/bills/match-exceptions": {
+      "get": {
+        "operationId": "BillsController_exceptions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Bills the three-way match refused",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/bills/{id}": {
+      "get": {
+        "operationId": "BillsController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "One bill with its lines and approval history",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/bills/{id}/match": {
+      "get": {
+        "operationId": "BillsController_match",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Three-way match detail: ordered, received, billed",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/bills/{id}/override-match": {
+      "post": {
+        "operationId": "BillsController_override",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Accept a match exception with a stated reason",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/bills/{id}/approve": {
+      "post": {
+        "description": "Refused if the approver entered the bill and it is above the approval threshold, or while match exceptions are unresolved.",
+        "operationId": "BillsController_approve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Approve a bill and post it",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/bills/{id}/reject": {
+      "post": {
+        "operationId": "BillsController_reject",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Send a bill back to the clerk",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/vendor-payments": {
+      "post": {
+        "operationId": "VendorPaymentsController_create",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Pay a vendor, settling the oldest bills first unless told otherwise",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/vendor-payments/run": {
+      "get": {
+        "operationId": "VendorPaymentsController_run",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Payment run: everything due by a date, grouped by vendor",
+        "tags": [
+          "ap"
+        ]
+      }
+    },
+    "/api/v1/reports/ap-aging": {
+      "get": {
+        "operationId": "ApReportsController_aging",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "AP aging",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/reports/cash-requirements": {
+      "get": {
+        "operationId": "ApReportsController_cash",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "What must be paid, and by when",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/bank-accounts": {
+      "get": {
+        "operationId": "BankAccountsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Bank accounts with their ledger balance and unmatched line count",
+        "tags": [
+          "bank"
+        ]
+      },
+      "post": {
+        "operationId": "BankAccountsController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Register a bank account against a GL account",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/bank-accounts/{id}/statement-lines": {
+      "get": {
+        "operationId": "BankAccountsController_lines",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Statement lines for an account",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/bank-statements/import": {
+      "post": {
+        "description": "Auto-matching runs immediately. Re-importing the same file is refused: the content hash is unique per bank account.",
+        "operationId": "BankStatementsController_import",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Import a statement (CSV, OFX, MT940 or CAMT.053)",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/bank-statement-lines/{id}/match": {
+      "post": {
+        "operationId": "BankStatementLinesController_match",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Confirm a suggested match, or match to a named journal entry",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/bank-statement-lines/{id}/unmatch": {
+      "post": {
+        "operationId": "BankStatementLinesController_unmatch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Undo a match that has not been locked by a reconciliation",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/bank-statement-lines/{id}/categorise": {
+      "post": {
+        "operationId": "BankStatementLinesController_categorise",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Post the entry the ledger was missing and match the line to it",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/bank-transfers": {
+      "post": {
+        "description": "Cross-currency transfers must state the amount received; the difference posts to realised FX gain or loss rather than distorting a bank balance.",
+        "operationId": "BankTransfersController_transfer",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Transfer between own accounts",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/reconciliations": {
+      "post": {
+        "operationId": "ReconciliationsController_start",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Start a reconciliation session",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/reconciliations/{id}": {
+      "get": {
+        "operationId": "ReconciliationsController_status",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Reconciliation status with the difference",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/reconciliations/{id}/complete": {
+      "post": {
+        "description": "Refused unless the difference is exactly zero. Cleared lines are then locked.",
+        "operationId": "ReconciliationsController_complete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Complete a reconciliation",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/bank-rules": {
+      "get": {
+        "operationId": "BankRulesController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List bank rules in priority order",
+        "tags": [
+          "bank"
+        ]
+      },
+      "post": {
+        "operationId": "BankRulesController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a bank rule",
+        "tags": [
+          "bank"
+        ]
+      }
+    },
+    "/api/v1/tax-codes": {
+      "get": {
+        "operationId": "TaxCodesController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Tax codes, including the Jordan set",
+        "tags": [
+          "tax"
+        ]
+      },
+      "post": {
+        "operationId": "TaxCodesController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a tax code, optionally compounding on another",
+        "tags": [
+          "tax"
+        ]
+      }
+    },
+    "/api/v1/e-invoices/queue": {
+      "get": {
+        "operationId": "EInvoiceController_queue",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Invoices awaiting clearance or failed, oldest first",
+        "tags": [
+          "tax"
+        ]
+      }
+    },
+    "/api/v1/e-invoices/{documentId}/ubl": {
+      "get": {
+        "operationId": "EInvoiceController_ubl",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "The UBL 2.1 XML that would be submitted",
+        "tags": [
+          "tax"
+        ]
+      }
+    },
+    "/api/v1/e-invoices/{documentId}/submit": {
+      "post": {
+        "description": "A transient failure leaves the invoice in `failed` with the attempt counted, so it can be retried. Until clearance succeeds the invoice is not a valid tax document.",
+        "operationId": "EInvoiceController_submit",
+        "parameters": [
+          {
+            "name": "documentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Submit an invoice for clearance",
+        "tags": [
+          "tax"
+        ]
+      }
+    },
+    "/api/v1/reports/tax-return": {
+      "get": {
+        "description": "Taxable, zero-rated and exempt sales; output tax; recoverable and irrecoverable input tax; and the net payable or refundable position.",
+        "operationId": "TaxReportsController_taxReturn",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Tax return for a period",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/reports/income-statement": {
+      "get": {
+        "description": "Built from posted journal lines for the window. Pass compareFromDate and compareToDate for a comparative column and its variance.",
+        "operationId": "StatementsController_incomeStatement",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Revenue, cost of sales, expenses and the resulting profit"
+          }
+        },
+        "summary": "Income statement (profit and loss)",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/reports/balance-sheet": {
+      "get": {
+        "description": "Assets, liabilities and equity, including the unclosed profit for the year. Returns 422 rather than rendering a statement that does not balance.",
+        "operationId": "StatementsController_balanceSheet",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Balance sheet as at a date",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/reports/cash-flow": {
+      "get": {
+        "description": "Operating, investing and financing activities. The three sections must sum to the movement in cash and bank accounts; a mismatch is reported, not hidden.",
+        "operationId": "StatementsController_cashFlow",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Cash flow statement, indirect method",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/reports/equity": {
+      "get": {
+        "operationId": "StatementsController_equity",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Statement of changes in equity",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/fiscal-periods/{id}/close-status": {
+      "get": {
+        "description": "The checklist is seeded on first read so its items are stable per period.",
+        "operationId": "PeriodCloseController_status",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Period status, outstanding drafts and checklist items"
+          }
+        },
+        "summary": "Close status and checklist for one period",
+        "tags": [
+          "close"
+        ]
+      }
+    },
+    "/api/v1/fiscal-periods/{id}/checklist/{itemCode}": {
+      "put": {
+        "description": "Skipping requires a reason, which is kept with the period.",
+        "operationId": "PeriodCloseController_setItem",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "itemCode",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Mark a checklist item done or skipped",
+        "tags": [
+          "close"
+        ]
+      }
+    },
+    "/api/v1/fiscal-periods/{id}/status": {
+      "post": {
+        "description": "A soft close admits adjustments only; a hard close admits nothing and requires every blocking checklist item to be resolved and every earlier period closed.",
+        "operationId": "PeriodCloseController_setStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Soft close, hard close or reopen a period",
+        "tags": [
+          "close"
+        ]
+      }
+    },
+    "/api/v1/close/accruals": {
+      "get": {
+        "operationId": "CloseController_listAccruals",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Accruals and prepayments with their reversals",
+        "tags": [
+          "close"
+        ]
+      },
+      "post": {
+        "description": "Both legs post immediately. An accrual whose reversal waits on a job that never runs overstates the next period until someone notices.",
+        "operationId": "CloseController_createAccrual",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Post an accrual or prepayment together with its reversal",
+        "tags": [
+          "close"
+        ]
+      }
+    },
+    "/api/v1/close/fx-revaluation": {
+      "post": {
+        "description": "Monetary balances only. A currency with no closing rate is refused rather than assumed unchanged. Running the same date twice is refused.",
+        "operationId": "CloseController_revalue",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Revalue foreign-currency monetary balances at the closing rate",
+        "tags": [
+          "close"
+        ]
+      }
+    },
+    "/api/v1/close/fiscal-years/{id}/closing-entry": {
+      "post": {
+        "description": "Zeroes every profit and loss account into retained earnings. Once per year.",
+        "operationId": "CloseController_closeYear",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Post the year-end closing entry",
+        "tags": [
+          "close"
+        ]
+      }
+    },
+    "/api/v1/close/fiscal-years/{id}/status": {
+      "post": {
+        "description": "A year hard closes only once all its periods are closed and the closing entry is posted.",
+        "operationId": "CloseController_setYearStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Soft close, hard close or reopen a fiscal year",
+        "tags": [
+          "close"
+        ]
+      }
+    },
+    "/api/v1/inventory/warehouses": {
+      "get": {
+        "operationId": "InventoryController_listWarehouses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List warehouses",
+        "tags": [
+          "inventory"
+        ]
+      },
+      "post": {
+        "operationId": "InventoryController_createWarehouse",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a warehouse",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/items": {
+      "get": {
+        "operationId": "InventoryController_listItems",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List items",
+        "tags": [
+          "inventory"
+        ]
+      },
+      "post": {
+        "description": "The costing method is fixed at creation: changing it later would restate every movement already posted.",
+        "operationId": "InventoryController_createItem",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create an item",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/items/{id}/movements": {
+      "get": {
+        "operationId": "InventoryController_movements",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Movement history for one item, with the entry behind each",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/receipts": {
+      "post": {
+        "description": "Raises stock and posts the inventory entry in the same transaction.",
+        "operationId": "InventoryController_receive",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The movement, the entry it posted, and the new position"
+          }
+        },
+        "summary": "Receive stock",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/issues": {
+      "post": {
+        "description": "Values the issue from the cost layers and posts cost of sales. Issuing more than is on hand is refused rather than valued at a guess.",
+        "operationId": "InventoryController_issue",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Issue stock",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/transfers": {
+      "post": {
+        "description": "Moves stock at the cost it left with: a transfer is not a revaluation.",
+        "operationId": "InventoryController_transfer",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Transfer stock between warehouses",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/inventory/valuation": {
+      "get": {
+        "description": "Reports the ledger inventory balance next to the stock valuation. A disagreement is surfaced, not smoothed over.",
+        "operationId": "InventoryController_valuation",
+        "parameters": [
+          {
+            "name": "asOfDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Stock valuation, and whether it agrees with the inventory accounts",
+        "tags": [
+          "inventory"
+        ]
+      }
+    },
+    "/api/v1/assets": {
+      "get": {
+        "operationId": "AssetsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List fixed assets",
+        "tags": [
+          "assets"
+        ]
+      },
+      "post": {
+        "description": "Reducing balance needs a rate and units of production needs an expected output.",
+        "operationId": "AssetsController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Add an asset to the register",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/api/v1/assets/register": {
+      "get": {
+        "operationId": "AssetsController_register",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "The register: cost, accumulated depreciation and net book value",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/api/v1/assets/{id}/schedule": {
+      "get": {
+        "description": "The whole life, month by month. Units of production has no schedule in advance.",
+        "operationId": "AssetsController_schedule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Depreciation schedule for one asset",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/api/v1/assets/depreciation-runs": {
+      "post": {
+        "description": "Charges every in-service asset once and posts the total. Running the same period twice is refused: it would understate profit and nothing downstream would notice.",
+        "operationId": "AssetsController_run",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The run, its entry, and the charge per asset"
+          }
+        },
+        "summary": "Run depreciation for a period",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/api/v1/assets/{id}/disposal": {
+      "post": {
+        "description": "Removes cost and accumulated depreciation in full and books the gain or loss. An asset is disposed of once.",
+        "operationId": "AssetsController_dispose",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Dispose of an asset",
+        "tags": [
+          "assets"
+        ]
+      }
+    },
+    "/api/v1/budgets": {
+      "get": {
+        "operationId": "BudgetController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List budgets",
+        "tags": [
+          "budget"
+        ]
+      },
+      "post": {
+        "operationId": "BudgetController_create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a draft budget for a fiscal year",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/budgets/{id}/accounts": {
+      "put": {
+        "description": "An even spread puts the remainder in the last period; weights use largest remainder.",
+        "operationId": "BudgetController_setAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Budget one account, per period or as an annual figure to spread",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/budgets/{id}/approve": {
+      "post": {
+        "description": "An approved budget is the baseline a variance is measured against, so it stops moving.",
+        "operationId": "BudgetController_approve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Approve a budget",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/budgets/{id}/variance": {
+      "get": {
+        "description": "Actuals come from posted journal lines. Favourable is decided by account type, not by the sign: revenue short of budget and expense over it are both unfavourable.",
+        "operationId": "BudgetController_variance",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Budget against actual",
+        "tags": [
+          "budget"
+        ]
+      }
+    },
+    "/api/v1/attachments": {
+      "get": {
+        "operationId": "FilesController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Attachments on one document",
+        "tags": [
+          "attachments"
+        ]
+      },
+      "post": {
+        "description": "Type allowlist checked against the file signature, size capped, and passed to the virus-scan hook. With no scanner configured the file is marked skipped, never clean.",
+        "operationId": "FilesController_upload",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Attach a file to a document",
+        "tags": [
+          "attachments"
+        ]
+      }
+    },
+    "/api/v1/attachments/{id}/url": {
+      "get": {
+        "description": "Nothing is served by a permanent link, and an infected file is never served at all.",
+        "operationId": "FilesController_url",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "A short-lived signed download URL",
+        "tags": [
+          "attachments"
+        ]
+      }
+    },
+    "/api/v1/attachments/{id}": {
+      "delete": {
+        "operationId": "FilesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Remove an attachment",
+        "tags": [
+          "attachments"
         ]
       }
     },

@@ -126,3 +126,132 @@ body additionally requires `ledger.entry.post`, checked in the handler.
 **Rationale.** Segregation of duties is the point of the AP/AR clerk roles — a clerk prepares,
 someone else commits. One endpoint keeps the client simple; the permission check keeps the
 control real. The database still enforces every posting invariant regardless of who asked.
+
+## ADR-0015 — A cross-currency transfer posts one entry per currency, not one entry
+**Decision.** Moving money between accounts in different currencies posts an entry per currency
+through an `fx_clearing` account, plus a base-currency entry for the spread.
+**Alternatives.** A single entry with lines in two currencies; converting one leg silently.
+**Rationale.** The balancing invariant is per currency, and rightly so — an entry whose USD lines
+do not balance is not made correct by JOD lines that do. Splitting it keeps every entry balanced
+in its own currency and puts the spread where it can be seen.
+
+## ADR-0016 — Reconciliation is an identity, not a status flag
+**Decision.** `closing = ledger − in-transit`, and a reconciliation completes only when no
+statement line is left unmatched.
+**Alternatives.** Marking a reconciliation done when the operator says so.
+**Rationale.** The first implementation treated unmatched statement lines as reconciling items,
+which made every reconciliation appear to balance — the one outcome a reconciliation exists to
+disprove. An identity that must hold is worth more than a flag somebody sets.
+
+## ADR-0017 — Compound tax order is declared, and cycles are rejected
+**Decision.** `tax_codes.compound_on` names the codes a tax is charged on top of;
+`orderTaxCodes()` topologically sorts them and throws on a cycle.
+**Alternatives.** A fixed precedence; evaluating in insertion order.
+**Rationale.** Jordan charges General Sales Tax on a base that already includes Special Sales Tax.
+Any implicit order is right by accident. A cycle has no correct answer at all, so it is refused
+rather than resolved arbitrarily.
+
+## ADR-0018 — An invoice is not a valid tax document until it is cleared
+**Decision.** Clearance status, UUID and QR live on `sales_documents`, and the immutability
+trigger permits exactly those columns to move after posting.
+**Alternatives.** A separate clearance table; treating clearance as advisory metadata.
+**Rationale.** Every reader — PDF, tax return, API consumer — must get the same answer to "is this
+a valid tax document?". Putting it on the invoice makes disagreement impossible. Widening the
+immutability exception to exactly those columns keeps everything else frozen.
+
+## ADR-0019 — Statements are built from one balance query and refuse to be wrong
+**Decision.** The four financial statements come from a single query over posted journal lines.
+`buildBalanceSheet` computes both sides independently and throws if they differ; the cash flow
+statement asserts its sections sum to the movement in cash.
+**Alternatives.** Reading the balance cache; presenting whatever the numbers come to.
+**Rationale.** Statements that disagree with each other, or with the trial balance, are worse than
+no statements, because they are believed. A 422 is a bad day; a plausible wrong balance sheet is a
+bad year.
+
+## ADR-0020 — A soft-closed period accepts adjustments only, enforced in the trigger
+**Decision.** `journal_entries.is_adjustment` gates posting into a soft-closed period; a hard close
+accepts nothing.
+**Alternatives.** Enforcing the distinction in the service; a single closed state.
+**Rationale.** The close is itself made of postings — accruals, revaluation, reclassifications — so
+a state that admits those and nothing else is the one accountants actually work in. The trigger is
+the only place that cannot be bypassed by a new code path.
+
+## ADR-0021 — Accruals post their reversal immediately
+**Decision.** Creating an accrual posts both the accrual and its reversal in one request.
+**Alternatives.** A scheduled job that reverses accruals at period start.
+**Rationale.** An accrual whose reversal depends on a job that never runs overstates the next
+period for as long as nobody notices — and nobody notices, because the number looks reasonable.
+Posting both makes the reversal a fact rather than an intention.
+
+## ADR-0022 — FX revaluation refuses a currency with no closing rate
+**Decision.** `buildFxRevaluation` throws `NO_CLOSING_RATE` rather than skipping the balance.
+**Alternatives.** Skipping unrated currencies; carrying the last known rate forward.
+**Rationale.** Skipping silently asserts the rate did not move, which is a statement about the
+world that nobody actually made. The run is cheap to repeat once the rate is entered.
+
+## ADR-0023 — One year-end closing entry per year, enforced by a partial unique index
+**Decision.** `journal_entries_one_closing_entry_per_year` allows a single posted closing entry per
+fiscal year, and a year cannot hard close without one.
+**Alternatives.** A service-level check; allowing repeated closes.
+**Rationale.** A second closing entry doubles retained earnings, and the trial balance still
+balances afterwards — so nothing downstream would catch it. That is exactly the class of error
+that belongs in a constraint.
+
+## ADR-0024 — Stock and its journal entry move in one transaction
+**Decision.** Every stock movement writes the movement, its layers and its journal entry inside a
+single transaction.
+**Alternatives.** Posting inventory entries in a nightly batch.
+**Rationale.** A batch that fails leaves stock and ledger disagreeing, and the valuation report
+then has to choose which to believe. One transaction removes the question. The report still
+compares the two and says so if they ever diverge.
+
+## ADR-0025 — Issuing more stock than is on hand is refused
+**Decision.** `costIssue` throws `INSUFFICIENT_STOCK`; balances and open layers are locked
+`FOR UPDATE` so concurrent issues cannot both take the same stock.
+**Alternatives.** Allowing negative stock valued at the last known cost, or at zero.
+**Rationale.** The cost of stock that was never received is unknown, and any value assigned to it
+is invented. Negative stock also understates cost of sales, which flatters profit.
+
+## ADR-0026 — Exhausting a cost layer costs its whole remaining value
+**Decision.** A FIFO layer consumed to zero contributes its remaining value, not
+`unit cost × quantity`; issuing all stock under weighted average costs the entire remaining value.
+**Alternatives.** Always multiplying by the unit cost and rounding.
+**Rationale.** Rounding per issue leaves fractions of a fil behind in layers with no stock, and
+`stock_balances` would then carry value against zero quantity — which a CHECK constraint forbids.
+
+## ADR-0027 — Depreciation is charged once per asset per period, by constraint
+**Decision.** Unique constraints on the run period and on `(asset, period_end)`.
+**Alternatives.** Checking in the service before charging.
+**Rationale.** Charging a month twice understates profit permanently and leaves the books in
+balance, so no report reveals it. A constraint is the only guard that survives a new code path.
+
+## ADR-0028 — CHECK constraints against nullable columns use COALESCE
+**Decision.** `CHECK (method <> 'reducing_balance' OR COALESCE(annual_rate_percent, 0) > 0)`.
+**Alternatives.** `annual_rate_percent > 0`.
+**Rationale.** A comparison against NULL is *unknown*, and Postgres accepts unknown as satisfied.
+The bare version admitted a reducing-balance asset with no rate, which has no schedule at all. The
+test asserting the refusal is what caught it.
+
+## ADR-0029 — Budget variance reads favourability from the account type
+**Decision.** `isFavourable` is derived from the account type, and is `null` when the type is
+unknown.
+**Alternatives.** Treating a positive variance as good.
+**Rationale.** Revenue below budget and expense above it are both bad news and carry opposite
+signs. Colouring by sign would mark a cost overrun green. Where the type is unknown, saying
+nothing beats being confidently wrong.
+
+## ADR-0030 — An unscanned attachment is marked `skipped`, never `clean`
+**Decision.** With no virus scanner configured the upload records `skipped`; a scanner that cannot
+be reached fails the upload.
+**Alternatives.** Defaulting to `clean` when no scanner is configured.
+**Rationale.** "Not scanned" and "scanned and safe" must never be the same value in the database,
+because six months later nobody remembers which deployments had a scanner. Failing closed on an
+unreachable scanner keeps the two states honest.
+
+## ADR-0031 — Company membership is derived from roles
+**Decision.** `auth_tenants_for_user` derives a user's companies from `user_roles`; switching is
+checked by `auth_user_belongs_to_tenant` before a token is minted, and revokes the old session.
+**Alternatives.** A separate membership table; trusting the tenant id in the request.
+**Rationale.** A membership list that can disagree with the roles granted will eventually disagree,
+and the disagreement will be in the permissive direction. One session per company also means an
+access token always names the company it may act in.

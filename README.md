@@ -63,8 +63,52 @@ Balances are always derived. If the cache and the journal ever disagree, the jou
 
 ## Status
 
-- **M0 — Foundation** complete: `docs/M0-foundation.md`
-- **M1 — Ledger Core** complete: `docs/M1-ledger-core.md` (140 tests passing)
+All milestones are complete. Full suite: **550 tests passing** (domain 274,
+einvoice-jo 16, db 56, api 204), plus a Playwright suite that runs against a
+live stack.
 
-Next: M2 — auth, roles, RLS, audit log. Until then the tenant comes from an `X-Tenant-Id`
-header and this build must not be exposed to a network.
+| Milestone | Notes |
+| --- | --- |
+| M0 — Foundation | `docs/M0-foundation.md` |
+| M1 — Ledger core | `docs/M1-ledger-core.md` — the ten invariants, enforced in the database |
+| M2 — Auth, RBAC, RLS, audit | `docs/M2-auth-tenancy.md` |
+| M3 — Manual GL screens | `docs/M3-manual-gl-ui.md` |
+| M4 — Accounts receivable | `docs/M4-accounts-receivable.md` |
+| M5 — Accounts payable | `docs/M5-accounts-payable.md` — three-way match, segregation of duties |
+| M6 — Banking and reconciliation | `docs/M6-banking.md` |
+| M7 — Tax, Jordan, JoFotara | `docs/M7-tax.md` |
+| M8 — Financial statements | `docs/M8-financial-statements.md` |
+| M9 — Period close | `docs/M9-period-close.md` |
+| M10 — Inventory | `docs/M10-inventory.md` |
+| M11 — Fixed assets | `docs/M11-fixed-assets.md` |
+| M12 — Budget, multi-company, platform | `docs/M12-platform.md` |
+
+Design decisions are recorded as ADRs in `docs/DECISIONS.md` (31 entries).
+
+## Packages
+
+```
+packages/einvoice-jo   JoFotara adapter behind a provider interface (UBL 2.1, TLV QR)
+```
+
+## Security
+
+```bash
+pnpm scan:secrets       # staged files, before a credential can enter history
+pnpm scan:secrets:all   # the whole tree
+```
+
+Gitleaks runs the deeper scan in CI. Secrets come from the environment only —
+`JOFOTARA_CLIENT_ID` and `JOFOTARA_SECRET_KEY` included, which are never in the
+repository.
+
+**Encryption at rest is assumed to be provided by the volume or disk, not by the
+application.** Postgres data, MinIO objects and backups must sit on encrypted
+storage; the application encrypts nothing itself and does not pretend to.
+
+## End-to-end tests
+
+```bash
+make dev        # a real stack, migrated and seeded
+make test:e2e   # Playwright against it
+```
