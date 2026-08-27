@@ -10,3 +10,7 @@ coverage/
 .pnpm-store/
 *.tsbuildinfo
 site/
+verify/
+apps/web/out/
+apps/web/test-results/
+apps/web/playwright-report/

@@ -9,7 +9,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --passWithNoTests",
     "lint": "eslint . --max-warnings 0",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test e2e/ledger.spec.ts",
+    "test:e2e:demo": "playwright test e2e/demo.spec.ts"
   },
   "dependencies": {
     "@acct/domain": "workspace:*",

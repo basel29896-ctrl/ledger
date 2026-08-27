@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { useSession } from '../lib/session';
+import { DemoNotice } from './demo-notice';
 import { useLocale } from '../lib/i18n';
 
 /**
@@ -192,6 +193,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
             </button>
           </div>
         </header>
+
+        <DemoNotice />
 
         <main className="mx-auto w-full max-w-[110rem] flex-1 space-y-4 p-4 lg:p-6">{children}</main>
       </div>

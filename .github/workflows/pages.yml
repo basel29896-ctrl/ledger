@@ -1,15 +1,12 @@
-name: Docs site
+name: Demo site
 
-# The application needs PostgreSQL, Redis and the API to run, so Pages carries
-# the written record instead: the README, the milestone notes and the ADR log.
+# GitHub Pages carries the demo build of the application at the root and the
+# written record beneath it at /docs. The demo is a static export whose API
+# client answers in the browser; see apps/web/src/demo/backend.ts for what it
+# computes and what it replays.
 on:
   push:
     branches: [main]
-    paths:
-      - 'README.md'
-      - 'docs/**'
-      - 'scripts/build-docs-site.mjs'
-      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -20,6 +17,10 @@ permissions:
 concurrency:
   group: pages
   cancel-in-progress: true
+
+env:
+  NEXT_PUBLIC_DEMO: '1'
+  NEXT_PUBLIC_BASE_PATH: /ledger
 
 jobs:
   build:
@@ -32,7 +33,32 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: node scripts/build-docs-site.mjs
+
+      - name: Build the demo export
+        run: pnpm --filter @acct/web build
+
+      - name: Assemble the site
+        run: |
+          mkdir -p site
+          cp -r apps/web/out/. site/
+          node scripts/build-docs-site.mjs
+          # Pages runs Jekyll by default, which drops directories starting with
+          # an underscore — including Next's _next asset directory.
+          touch site/.nojekyll
+
+      # The deploy is gated on the demo actually working: if posting an entry
+      # no longer moves the trial balance, nothing gets published.
+      - name: Verify the demo
+        run: |
+          # The demo is built for the /ledger sub-path, so it is served from one
+          # to match how Pages will serve it.
+          mkdir -p verify
+          cp -r site verify/ledger
+          npx --yes serve verify -l 4173 &
+          npx --yes wait-on -t 60000 http://localhost:4173/ledger/
+          pnpm --filter @acct/web exec playwright install --with-deps chromium
+          E2E_BASE_URL=http://localhost:4173/ledger/ pnpm --filter @acct/web test:e2e:demo
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

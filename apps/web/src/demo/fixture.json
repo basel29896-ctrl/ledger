@@ -1,0 +1,6100 @@
+{
+  "capturedAt": "2026-08-27",
+  "user": {
+    "id": "01a04352-9efc-7c4d-9b91-f8c8db487a83",
+    "email": "admin@demo.local",
+    "tenantId": "01a04352-9ed4-7738-abda-faf7e2a4b1d3",
+    "permissions": [
+      "admin.audit.read",
+      "admin.settings.write",
+      "admin.user.read",
+      "admin.user.write",
+      "ap.bill.approve",
+      "ap.bill.read",
+      "ap.bill.write",
+      "ap.grn.write",
+      "ap.payment.read",
+      "ap.payment.write",
+      "ap.po.read",
+      "ap.po.write",
+      "ap.vendor.read",
+      "ap.vendor.write",
+      "ar.creditnote.write",
+      "ar.customer.read",
+      "ar.customer.write",
+      "ar.invoice.read",
+      "ar.invoice.write",
+      "ar.payment.read",
+      "ar.payment.write",
+      "asset.read",
+      "asset.write",
+      "attachment.read",
+      "attachment.write",
+      "bank.import",
+      "bank.read",
+      "bank.reconcile",
+      "bank.write",
+      "budget.read",
+      "budget.write",
+      "inventory.read",
+      "inventory.write",
+      "ledger.account.read",
+      "ledger.account.write",
+      "ledger.close.run",
+      "ledger.entry.draft",
+      "ledger.entry.post",
+      "ledger.entry.read",
+      "ledger.entry.reverse",
+      "ledger.period.close",
+      "ledger.period.reopen",
+      "report.read",
+      "tax.einvoice.submit",
+      "tax.read",
+      "tax.write"
+    ]
+  },
+  "tenants": [
+    {
+      "tenantId": "01a04352-9ed4-7738-abda-faf7e2a4b1d3",
+      "slug": "demo",
+      "name": "Demo Company",
+      "baseCurrency": "JOD",
+      "isHome": true
+    }
+  ],
+  "accounts": [
+    {
+      "id": "01a04352-9f22-79c7-97b2-5993beb527de",
+      "code": "1000",
+      "name": "Assets",
+      "nameAr": "الأصول",
+      "type": "asset",
+      "subtype": null,
+      "normalBalance": "debit",
+      "parentAccountId": null,
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "code": "1100",
+      "name": "Current Assets",
+      "nameAr": "الأصول المتداولة",
+      "type": "asset",
+      "subtype": "current_asset",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f22-79c7-97b2-5993beb527de",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f25-77c5-b61f-b3213e74dab1",
+      "code": "1110",
+      "name": "Cash on Hand",
+      "nameAr": "النقد في الصندوق",
+      "type": "asset",
+      "subtype": "cash",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f26-79fa-96c7-5f59594c8645",
+      "code": "1120",
+      "name": "Bank — Current Account",
+      "nameAr": "البنك — الحساب الجاري",
+      "type": "asset",
+      "subtype": "bank",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "currencyCode": null,
+      "isBank": true,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f26-7b8f-8540-1166e10e736a",
+      "code": "1130",
+      "name": "Accounts Receivable",
+      "nameAr": "الذمم المدينة",
+      "type": "asset",
+      "subtype": "receivable",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": true,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f27-7ee5-b8d0-1e963da87b25",
+      "code": "1140",
+      "name": "Allowance for Doubtful Accounts",
+      "nameAr": "مخصص الديون المشكوك فيها",
+      "type": "asset",
+      "subtype": "receivable",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+      "code": "1150",
+      "name": "Inventory",
+      "nameAr": "المخزون",
+      "type": "asset",
+      "subtype": "inventory",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": true,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f27-7fcb-b1bb-e46e19753cdf",
+      "code": "1160",
+      "name": "Prepaid Expenses",
+      "nameAr": "مصاريف مدفوعة مقدماً",
+      "type": "asset",
+      "subtype": "prepaid",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f28-714f-bee6-a44508f57cc6",
+      "code": "1170",
+      "name": "Input Tax Recoverable",
+      "nameAr": "ضريبة المدخلات القابلة للاسترداد",
+      "type": "asset",
+      "subtype": "tax_receivable",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f28-793d-821a-50dc544dd129",
+      "code": "1190",
+      "name": "Currency Exchange Clearing",
+      "nameAr": "حساب تسوية صرف العملات",
+      "type": "asset",
+      "subtype": "fx_clearing",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f24-75e1-9e31-14cea739fcc3",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f28-7b60-8cc9-cd34424746c0",
+      "code": "1200",
+      "name": "Non-Current Assets",
+      "nameAr": "الأصول غير المتداولة",
+      "type": "asset",
+      "subtype": "fixed_asset",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f22-79c7-97b2-5993beb527de",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f29-7515-89f4-fabe6474685a",
+      "code": "1210",
+      "name": "Property, Plant and Equipment",
+      "nameAr": "الممتلكات والآلات والمعدات",
+      "type": "asset",
+      "subtype": "fixed_asset",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f28-7b60-8cc9-cd34424746c0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f29-76bc-93c9-40326ca65b33",
+      "code": "1220",
+      "name": "Accumulated Depreciation",
+      "nameAr": "مجمع الاستهلاك",
+      "type": "asset",
+      "subtype": "accumulated_depreciation",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f28-7b60-8cc9-cd34424746c0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f29-7dea-934c-b17c4409a7d0",
+      "code": "2000",
+      "name": "Liabilities",
+      "nameAr": "الالتزامات",
+      "type": "liability",
+      "subtype": null,
+      "normalBalance": "credit",
+      "parentAccountId": null,
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2a-7d32-b543-f44fd0ab7ba0",
+      "code": "2100",
+      "name": "Current Liabilities",
+      "nameAr": "الالتزامات المتداولة",
+      "type": "liability",
+      "subtype": "current_liability",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f29-7dea-934c-b17c4409a7d0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2a-7865-bd8c-f843c4fef28f",
+      "code": "2110",
+      "name": "Accounts Payable",
+      "nameAr": "الذمم الدائنة",
+      "type": "liability",
+      "subtype": "payable",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2a-7d32-b543-f44fd0ab7ba0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": true,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2a-7b91-ad12-538d58adaf53",
+      "code": "2120",
+      "name": "Accrued Expenses",
+      "nameAr": "مصاريف مستحقة",
+      "type": "liability",
+      "subtype": "accrual",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2a-7d32-b543-f44fd0ab7ba0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2b-7251-bebd-3fb3538cdcd6",
+      "code": "2130",
+      "name": "Output Tax Payable",
+      "nameAr": "ضريبة المخرجات المستحقة",
+      "type": "liability",
+      "subtype": "tax_payable",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2a-7d32-b543-f44fd0ab7ba0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2b-7702-bce4-a3aa32e7ba07",
+      "code": "2140",
+      "name": "Payroll Liabilities",
+      "nameAr": "التزامات الرواتب",
+      "type": "liability",
+      "subtype": "payroll",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2a-7d32-b543-f44fd0ab7ba0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2b-72bc-a49e-7e3e4aa30533",
+      "code": "2150",
+      "name": "Customer Deposits",
+      "nameAr": "دفعات مقدمة من العملاء",
+      "type": "liability",
+      "subtype": "current_liability",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2a-7d32-b543-f44fd0ab7ba0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2c-7d51-bfcc-c6f27fbd1db0",
+      "code": "2200",
+      "name": "Non-Current Liabilities",
+      "nameAr": "الالتزامات غير المتداولة",
+      "type": "liability",
+      "subtype": "long_term_liability",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f29-7dea-934c-b17c4409a7d0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2c-75bd-bb1b-b5620b1b29ae",
+      "code": "2210",
+      "name": "Long-Term Loans",
+      "nameAr": "قروض طويلة الأجل",
+      "type": "liability",
+      "subtype": "long_term_liability",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2c-7d51-bfcc-c6f27fbd1db0",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2c-7d9a-8424-743bc4fa0736",
+      "code": "3000",
+      "name": "Equity",
+      "nameAr": "حقوق الملكية",
+      "type": "equity",
+      "subtype": null,
+      "normalBalance": "credit",
+      "parentAccountId": null,
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2c-7450-b350-6571ca917ab7",
+      "code": "3010",
+      "name": "Share Capital",
+      "nameAr": "رأس المال",
+      "type": "equity",
+      "subtype": "capital",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2c-7d9a-8424-743bc4fa0736",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2d-7354-bf9c-7ee5b91410c4",
+      "code": "3020",
+      "name": "Retained Earnings",
+      "nameAr": "الأرباح المدورة",
+      "type": "equity",
+      "subtype": "retained_earnings",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2c-7d9a-8424-743bc4fa0736",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2d-7e4e-90ab-f6f2b3817e34",
+      "code": "3030",
+      "name": "Current Year Earnings",
+      "nameAr": "أرباح السنة الحالية",
+      "type": "equity",
+      "subtype": "current_earnings",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2c-7d9a-8424-743bc4fa0736",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2d-77a3-ad35-e8b6d163e017",
+      "code": "3090",
+      "name": "Opening Balance Suspense",
+      "nameAr": "حساب تسوية الأرصدة الافتتاحية",
+      "type": "equity",
+      "subtype": "suspense",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2c-7d9a-8424-743bc4fa0736",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2e-7cd4-97a4-bce41284d4c6",
+      "code": "4000",
+      "name": "Revenue",
+      "nameAr": "الإيرادات",
+      "type": "revenue",
+      "subtype": null,
+      "normalBalance": "credit",
+      "parentAccountId": null,
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2e-7bc2-926c-90e5623477cc",
+      "code": "4010",
+      "name": "Sales Revenue",
+      "nameAr": "إيرادات المبيعات",
+      "type": "revenue",
+      "subtype": "operating_revenue",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2e-7cd4-97a4-bce41284d4c6",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2e-7cae-a546-4f24d962bf8b",
+      "code": "4020",
+      "name": "Service Revenue",
+      "nameAr": "إيرادات الخدمات",
+      "type": "revenue",
+      "subtype": "operating_revenue",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2e-7cd4-97a4-bce41284d4c6",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2f-7563-a346-3844283ca014",
+      "code": "4030",
+      "name": "Sales Returns and Discounts",
+      "nameAr": "مردودات وخصومات المبيعات",
+      "type": "revenue",
+      "subtype": "contra_revenue",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2e-7cd4-97a4-bce41284d4c6",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2f-7799-9be6-6f4e2952c8bf",
+      "code": "4900",
+      "name": "Realised FX Gain",
+      "nameAr": "أرباح فروقات العملة المحققة",
+      "type": "revenue",
+      "subtype": "other_income",
+      "normalBalance": "credit",
+      "parentAccountId": "01a04352-9f2e-7cd4-97a4-bce41284d4c6",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f2f-7dfc-89c1-fef859f0692a",
+      "code": "5000",
+      "name": "Expenses",
+      "nameAr": "المصاريف",
+      "type": "expense",
+      "subtype": null,
+      "normalBalance": "debit",
+      "parentAccountId": null,
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f30-7b46-95be-4b071bd4dd67",
+      "code": "5100",
+      "name": "Cost of Goods Sold",
+      "nameAr": "تكلفة البضاعة المباعة",
+      "type": "expense",
+      "subtype": "cogs",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f2f-7dfc-89c1-fef859f0692a",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "code": "5200",
+      "name": "Operating Expenses",
+      "nameAr": "المصاريف التشغيلية",
+      "type": "expense",
+      "subtype": "operating_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f2f-7dfc-89c1-fef859f0692a",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": false,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f30-7882-928e-f88726ff075d",
+      "code": "5210",
+      "name": "Salaries and Wages",
+      "nameAr": "الرواتب والأجور",
+      "type": "expense",
+      "subtype": "operating_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f31-7851-affa-3447c8b8d07f",
+      "code": "5220",
+      "name": "Rent",
+      "nameAr": "الإيجار",
+      "type": "expense",
+      "subtype": "operating_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f31-725d-9848-d163f0cbf96b",
+      "code": "5230",
+      "name": "Utilities",
+      "nameAr": "المنافع",
+      "type": "expense",
+      "subtype": "operating_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f31-7bc3-ae00-122ae71a0b4d",
+      "code": "5240",
+      "name": "Telecommunications",
+      "nameAr": "الاتصالات",
+      "type": "expense",
+      "subtype": "operating_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f32-7aa5-8d81-452fc72397b2",
+      "code": "5250",
+      "name": "Professional Fees",
+      "nameAr": "أتعاب مهنية",
+      "type": "expense",
+      "subtype": "operating_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f32-7cfb-9885-0370981b1207",
+      "code": "5260",
+      "name": "Depreciation Expense",
+      "nameAr": "مصروف الاستهلاك",
+      "type": "expense",
+      "subtype": "depreciation",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f32-7a8d-b088-c4820b393a23",
+      "code": "5270",
+      "name": "Bad Debt Expense",
+      "nameAr": "مصروف الديون المعدومة",
+      "type": "expense",
+      "subtype": "operating_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f32-714b-ab48-c8d911169544",
+      "code": "5280",
+      "name": "Bank Charges",
+      "nameAr": "مصاريف بنكية",
+      "type": "expense",
+      "subtype": "operating_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f30-735e-89ea-5ab9bccaa30e",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    },
+    {
+      "id": "01a04352-9f33-7f0b-82ce-6ba2fa806bc9",
+      "code": "5900",
+      "name": "Realised FX Loss",
+      "nameAr": "خسائر فروقات العملة المحققة",
+      "type": "expense",
+      "subtype": "other_expense",
+      "normalBalance": "debit",
+      "parentAccountId": "01a04352-9f2f-7dfc-89c1-fef859f0692a",
+      "currencyCode": null,
+      "isBank": false,
+      "isControlAccount": false,
+      "isPostable": true,
+      "isActive": true
+    }
+  ],
+  "periods": [
+    {
+      "id": "01a04352-9f19-760c-8fa6-3ad2165fc91b",
+      "periodNo": 1,
+      "startDate": "2026-01-01",
+      "endDate": "2026-01-31",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f1a-7db4-90a8-9c57412d67f2",
+      "periodNo": 2,
+      "startDate": "2026-02-01",
+      "endDate": "2026-02-28",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f1a-7546-aef6-1a7edf3514b3",
+      "periodNo": 3,
+      "startDate": "2026-03-01",
+      "endDate": "2026-03-31",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f1d-7d0a-97e8-c39215bee614",
+      "periodNo": 4,
+      "startDate": "2026-04-01",
+      "endDate": "2026-04-30",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "periodNo": 5,
+      "startDate": "2026-05-01",
+      "endDate": "2026-05-31",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "periodNo": 6,
+      "startDate": "2026-06-01",
+      "endDate": "2026-06-30",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f1f-7fd9-8f4c-b663ec01e3db",
+      "periodNo": 7,
+      "startDate": "2026-07-01",
+      "endDate": "2026-07-31",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f1f-7d76-ba6f-518f8d577619",
+      "periodNo": 8,
+      "startDate": "2026-08-01",
+      "endDate": "2026-08-31",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f20-797a-b721-fe2598d35a6f",
+      "periodNo": 9,
+      "startDate": "2026-09-01",
+      "endDate": "2026-09-30",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f20-7684-a10d-0087245e1c2d",
+      "periodNo": 10,
+      "startDate": "2026-10-01",
+      "endDate": "2026-10-31",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f20-7a96-9619-861f1a52d057",
+      "periodNo": 11,
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-30",
+      "status": "open"
+    },
+    {
+      "id": "01a04352-9f21-71a1-8441-e15c9d12cfc5",
+      "periodNo": 12,
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-31",
+      "status": "open"
+    }
+  ],
+  "closeStatus": {
+    "01a04352-9f19-760c-8fa6-3ad2165fc91b": {
+      "id": "01a04352-9f19-760c-8fa6-3ad2165fc91b",
+      "periodNo": 1,
+      "startDate": "2026-01-01",
+      "endDate": "2026-01-31",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04352-b5a9-7ef7-9aba-7537c7e1a056",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04352-b5aa-76f8-b884-93aa51fc35e2",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04352-b5ab-7906-96f2-919ab2ab3b16",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04352-b5ab-7e59-9807-95277b981398",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04352-b5ab-7b07-be94-2a309fd1b847",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04352-b5ac-76fe-8032-cdff59714768",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04352-b5ac-7991-8dbd-be157f695dd7",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f1a-7db4-90a8-9c57412d67f2": {
+      "id": "01a04352-9f1a-7db4-90a8-9c57412d67f2",
+      "periodNo": 2,
+      "startDate": "2026-02-01",
+      "endDate": "2026-02-28",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-135e-77ed-81b2-7984758dd16b",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1360-76e6-84de-9aa592133a3a",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1361-7e14-818e-3c9ed1789337",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1361-7dda-9409-5950f101ffac",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1361-75d2-90aa-37091887145d",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1362-731f-979d-2b52b2f72a7d",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1362-73a0-912d-6d59f9a5921d",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f1a-7546-aef6-1a7edf3514b3": {
+      "id": "01a04352-9f1a-7546-aef6-1a7edf3514b3",
+      "periodNo": 3,
+      "startDate": "2026-03-01",
+      "endDate": "2026-03-31",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-13b5-758f-be85-688426dc4d58",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-13b7-7a81-83a6-104160920e83",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-13b7-7aa9-80b1-3815d246afe0",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-13b7-7970-9057-f8ef9fb1553f",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-13b8-7334-8b36-93cf271d53ed",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-13b9-790d-85b2-b6b88aa7add2",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-13bb-7f70-9a0b-6ce782b9824d",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f1d-7d0a-97e8-c39215bee614": {
+      "id": "01a04352-9f1d-7d0a-97e8-c39215bee614",
+      "periodNo": 4,
+      "startDate": "2026-04-01",
+      "endDate": "2026-04-30",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-1400-7978-96d3-1f2f9f2b8d92",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1401-7c4c-b9b9-cb93be850910",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1402-70dd-a327-a0875e84da4a",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1402-7125-9f00-eca666eecc97",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1403-7541-8267-386dc1a3e54e",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1403-7b60-a0e2-886f5a488097",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1403-72d6-8f9e-b01778b34e03",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f1e-7988-8b63-caeb2763fb0b": {
+      "id": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "periodNo": 5,
+      "startDate": "2026-05-01",
+      "endDate": "2026-05-31",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-1449-76c5-8403-cc4c7014458c",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-144b-7e1c-8135-4c1500b9dceb",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-144b-7243-ba56-f5b39ecee86f",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-144c-7746-a4c4-e04fd7b0ad57",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-144c-78ac-ac46-b8050285406b",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-144c-7b7d-a064-388c37718b7f",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-144d-7369-b252-08708a94276d",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f1f-7595-bf15-b3c35edf23de": {
+      "id": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "periodNo": 6,
+      "startDate": "2026-06-01",
+      "endDate": "2026-06-30",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 4,
+      "checklist": [
+        {
+          "id": "01a04354-1492-7a41-b7b6-8eaaae491099",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1493-79ad-b13e-1b495b898ef2",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1493-748e-b7ee-847d31068d07",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1494-7a77-9993-df37153ea476",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1494-7deb-93ae-90f8d87a6bbe",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1495-7374-aaed-feb68df95f1c",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1495-7ba2-bf8f-056b31ad1c90",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f1f-7fd9-8f4c-b663ec01e3db": {
+      "id": "01a04352-9f1f-7fd9-8f4c-b663ec01e3db",
+      "periodNo": 7,
+      "startDate": "2026-07-01",
+      "endDate": "2026-07-31",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-14d9-7344-87cb-1e42512641c0",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-14db-7e9c-9e8d-4e533fd6999e",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-14db-7b5f-a90b-5f6a7d7a090b",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-14db-7b43-9ac1-168764b6fc13",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-14dc-7f7f-ae37-09ca8ec9cb9f",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-14dc-7cf0-aec6-5b972c33892b",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-14dd-73d5-a0c0-139c4e256514",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f1f-7d76-ba6f-518f8d577619": {
+      "id": "01a04352-9f1f-7d76-ba6f-518f8d577619",
+      "periodNo": 8,
+      "startDate": "2026-08-01",
+      "endDate": "2026-08-31",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-1520-7cea-a417-1e03fb4c4b13",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1521-786b-b3f3-0ce180fff8cb",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1522-784b-b0b0-d96646c9a183",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1522-7660-82c3-e9a21fe8f1ea",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1522-72a5-a94d-ab61a15736de",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1523-7734-bb9f-9d4c4c05ae38",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1523-74e3-a1da-efe32cf8c8b1",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f20-797a-b721-fe2598d35a6f": {
+      "id": "01a04352-9f20-797a-b721-fe2598d35a6f",
+      "periodNo": 9,
+      "startDate": "2026-09-01",
+      "endDate": "2026-09-30",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-1566-752e-a470-4a42a56820b3",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1567-7ee5-a057-17bee244502a",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1567-7baf-94a9-7a947c1039aa",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1568-7f37-854f-c307d0d686d3",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1568-79ff-8484-43fc5c229f69",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1568-757f-aebd-6a22552544ca",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-1569-704c-8471-d3e0f77b9fa9",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f20-7684-a10d-0087245e1c2d": {
+      "id": "01a04352-9f20-7684-a10d-0087245e1c2d",
+      "periodNo": 10,
+      "startDate": "2026-10-01",
+      "endDate": "2026-10-31",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-15ae-7cc1-8708-71057fed2f15",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15b0-7fce-9900-facd354d0809",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15b0-763b-a27f-16899e50fc08",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15b0-70e9-8d27-6a620d5a2a48",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15b1-771c-9ea5-429d536a0e72",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15b1-74e4-b3da-cab2e584990d",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15b2-7bff-ab57-561d53993ca2",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f20-7a96-9619-861f1a52d057": {
+      "id": "01a04352-9f20-7a96-9619-861f1a52d057",
+      "periodNo": 11,
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-30",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-15f4-79f2-8b3c-08ddc03fe193",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15f6-780b-bf73-47e8ed770cc9",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15f6-709e-9050-439a061e1142",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15f6-7c80-83da-220e74390412",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15f7-799a-a1d4-d13d4ce06f98",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15f7-7e0d-993b-22f0025c0b42",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-15f8-76b3-8cac-e9a037a7d87c",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    },
+    "01a04352-9f21-71a1-8441-e15c9d12cfc5": {
+      "id": "01a04352-9f21-71a1-8441-e15c9d12cfc5",
+      "periodNo": 12,
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-31",
+      "status": "open",
+      "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+      "fiscalYearName": "2026",
+      "draftEntries": 0,
+      "checklist": [
+        {
+          "id": "01a04354-163a-7d2c-b4d6-56715248f692",
+          "itemCode": "bank_reconciled",
+          "label": "All bank accounts reconciled",
+          "labelAr": "تسوية الحسابات البنكية",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-163a-7c8d-935f-79d4c8dd053e",
+          "itemCode": "ar_reviewed",
+          "label": "Receivables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم المدينة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-163b-790b-a4a0-412bfc71bb13",
+          "itemCode": "ap_reviewed",
+          "label": "Payables aging reviewed",
+          "labelAr": "مراجعة أعمار الذمم الدائنة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-163b-7bce-8cb6-17b1df45384c",
+          "itemCode": "accruals_posted",
+          "label": "Accruals and prepayments posted",
+          "labelAr": "قيود الاستحقاق والمصاريف المدفوعة مقدماً",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-163b-7298-8dd0-5986f0d0a0a9",
+          "itemCode": "fx_revalued",
+          "label": "Foreign currency balances revalued",
+          "labelAr": "إعادة تقييم أرصدة العملات الأجنبية",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-163b-7ea7-817c-f8cb5bb2a646",
+          "itemCode": "tax_return_filed",
+          "label": "Sales tax return prepared",
+          "labelAr": "إعداد إقرار ضريبة المبيعات",
+          "isBlocking": false,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        },
+        {
+          "id": "01a04354-163c-7359-906f-ef19067d09d1",
+          "itemCode": "trial_balance_checked",
+          "label": "Trial balance agreed",
+          "labelAr": "مطابقة ميزان المراجعة",
+          "isBlocking": true,
+          "status": "pending",
+          "notes": null,
+          "completedAt": null
+        }
+      ]
+    }
+  },
+  "entries": [
+    {
+      "id": "01a04352-fcaa-774f-aef3-57a1e05f8b61",
+      "entryNo": null,
+      "entryRef": null,
+      "entryDate": "2026-06-28",
+      "periodId": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "status": "draft",
+      "sourceModule": "manual",
+      "memo": "Accrual awaiting supporting document — left as a draft on purpose",
+      "baseCurrency": "JOD",
+      "postedAt": null,
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "1200.000",
+        "minor": "1200000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "1200.000",
+        "minor": "1200000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-fcaa-73c7-b6dd-7f9487984f47",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-7aa5-8d81-452fc72397b2",
+          "accountCode": "5250",
+          "accountName": "Professional Fees",
+          "side": "debit",
+          "amount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-fcab-74a9-9a5b-1cf72535e15e",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7b91-ad12-538d58adaf53",
+          "accountCode": "2120",
+          "accountName": "Accrued Expenses",
+          "side": "credit",
+          "amount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-da86-7bd4-be28-da7d6abf733b",
+      "entryNo": null,
+      "entryRef": null,
+      "entryDate": "2026-06-28",
+      "periodId": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "status": "draft",
+      "sourceModule": "manual",
+      "memo": "Accrual awaiting supporting document — left as a draft on purpose",
+      "baseCurrency": "JOD",
+      "postedAt": null,
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "1200.000",
+        "minor": "1200000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "1200.000",
+        "minor": "1200000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-da86-7966-88aa-75499656284a",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-7aa5-8d81-452fc72397b2",
+          "accountCode": "5250",
+          "accountName": "Professional Fees",
+          "side": "debit",
+          "amount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-da87-735e-b08b-7d28f61a6e7e",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7b91-ad12-538d58adaf53",
+          "accountCode": "2120",
+          "accountName": "Accrued Expenses",
+          "side": "credit",
+          "amount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-c63b-72f7-9ad5-caf803de6d94",
+      "entryNo": null,
+      "entryRef": null,
+      "entryDate": "2026-06-28",
+      "periodId": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "status": "draft",
+      "sourceModule": "manual",
+      "memo": "Accrual awaiting supporting document — left as a draft on purpose",
+      "baseCurrency": "JOD",
+      "postedAt": null,
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "1200.000",
+        "minor": "1200000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "1200.000",
+        "minor": "1200000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-c63b-7a95-a820-9a6376f53a84",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-7aa5-8d81-452fc72397b2",
+          "accountCode": "5250",
+          "accountName": "Professional Fees",
+          "side": "debit",
+          "amount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-c63c-7242-9ddb-9e7be8d928d3",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7b91-ad12-538d58adaf53",
+          "accountCode": "2120",
+          "accountName": "Accrued Expenses",
+          "side": "credit",
+          "amount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b59e-7a16-aaf5-5f832a302796",
+      "entryNo": 28,
+      "entryRef": "JE-2026-00028",
+      "entryDate": "2026-06-30",
+      "periodId": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "status": "posted",
+      "sourceModule": "depreciation",
+      "memo": "Depreciation for the period ending 2026-06-30",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:49.04959+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "1062.966",
+        "minor": "1062966",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "1062.966",
+        "minor": "1062966",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b59e-7d62-911f-40e98a89cb17",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b59f-7e22-963c-da97ad2369ab",
+          "lineNo": 2,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b59f-73a3-b99f-14272fe47176",
+          "lineNo": 3,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "392.133",
+            "minor": "392133",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "392.133",
+            "minor": "392133",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b5a0-78ae-9f7e-ede56cdc1d62",
+          "lineNo": 4,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "392.133",
+            "minor": "392133",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "392.133",
+            "minor": "392133",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b5a0-7605-b857-158ecb1bc57a",
+          "lineNo": 5,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b5a0-74d4-95e6-41ade3936be2",
+          "lineNo": 6,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b592-7615-89ae-31c71c479293",
+      "entryNo": 27,
+      "entryRef": "JE-2026-00027",
+      "entryDate": "2026-05-31",
+      "periodId": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "status": "posted",
+      "sourceModule": "depreciation",
+      "memo": "Depreciation for the period ending 2026-05-31",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:49.036901+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "1073.021",
+        "minor": "1073021",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "1073.021",
+        "minor": "1073021",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b592-727d-9874-6db46c430421",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b593-7995-a851-9d51b3e09a25",
+          "lineNo": 2,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b593-7ca2-bdc8-77226e0b4438",
+          "lineNo": 3,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "402.188",
+            "minor": "402188",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "402.188",
+            "minor": "402188",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b594-716d-8e34-bbeef4273f5b",
+          "lineNo": 4,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "402.188",
+            "minor": "402188",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "402.188",
+            "minor": "402188",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b594-76ad-a596-ee0c0bd93f2e",
+          "lineNo": 5,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b594-7db1-85f7-671c7f051e88",
+          "lineNo": 6,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b586-7fea-a5bc-0286f8be8381",
+      "entryNo": 26,
+      "entryRef": "JE-2026-00026",
+      "entryDate": "2026-04-30",
+      "periodId": "01a04352-9f1d-7d0a-97e8-c39215bee614",
+      "status": "posted",
+      "sourceModule": "depreciation",
+      "memo": "Depreciation for the period ending 2026-04-30",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:49.020512+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "1083.333",
+        "minor": "1083333",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "1083.333",
+        "minor": "1083333",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b586-7630-9969-f14a68d91b15",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b587-7f99-9e38-81842a16e6e1",
+          "lineNo": 2,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "400.000",
+            "minor": "400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b587-7a3d-bf78-ecbb552957a8",
+          "lineNo": 3,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "412.500",
+            "minor": "412500",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "412.500",
+            "minor": "412500",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b587-7af5-9704-73e512471f4a",
+          "lineNo": 4,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "412.500",
+            "minor": "412500",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "412.500",
+            "minor": "412500",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b588-7eab-9b6d-5a63c750224f",
+          "lineNo": 5,
+          "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+          "accountCode": "5260",
+          "accountName": "Depreciation Expense",
+          "side": "debit",
+          "amount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b588-7b33-b801-baf50e752a67",
+          "lineNo": 6,
+          "accountId": "01a04352-9f29-76bc-93c9-40326ca65b33",
+          "accountCode": "1220",
+          "accountName": "Accumulated Depreciation",
+          "side": "credit",
+          "amount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "270.833",
+            "minor": "270833",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b562-73b9-92c7-bdeecf380dd6",
+      "entryNo": 25,
+      "entryRef": "JE-2026-00025",
+      "entryDate": "2026-06-02",
+      "periodId": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "status": "posted",
+      "sourceModule": "inventory",
+      "memo": "Goods issued: UPS-3K",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.991615+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "1820.000",
+        "minor": "1820000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "1820.000",
+        "minor": "1820000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b563-7411-abb8-4c642aabc589",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7b46-95be-4b071bd4dd67",
+          "accountCode": "5100",
+          "accountName": "Cost of Goods Sold",
+          "side": "debit",
+          "amount": {
+            "amount": "1820.000",
+            "minor": "1820000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1820.000",
+            "minor": "1820000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b563-7cf1-936b-6d94f14aa1d4",
+          "lineNo": 2,
+          "accountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+          "accountCode": "1150",
+          "accountName": "Inventory",
+          "side": "credit",
+          "amount": {
+            "amount": "1820.000",
+            "minor": "1820000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1820.000",
+            "minor": "1820000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b558-709b-9511-4d4754639b55",
+      "entryNo": 24,
+      "entryRef": "JE-2026-00024",
+      "entryDate": "2026-05-20",
+      "periodId": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "status": "posted",
+      "sourceModule": "inventory",
+      "memo": "Goods issued: SWT-24",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.9827+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "7523.077",
+        "minor": "7523077",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "7523.077",
+        "minor": "7523077",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b559-7ee3-ad4b-0374e8514619",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7b46-95be-4b071bd4dd67",
+          "accountCode": "5100",
+          "accountName": "Cost of Goods Sold",
+          "side": "debit",
+          "amount": {
+            "amount": "7523.077",
+            "minor": "7523077",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "7523.077",
+            "minor": "7523077",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b55a-73c7-8997-0e1aa1722582",
+          "lineNo": 2,
+          "accountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+          "accountCode": "1150",
+          "accountName": "Inventory",
+          "side": "credit",
+          "amount": {
+            "amount": "7523.077",
+            "minor": "7523077",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "7523.077",
+            "minor": "7523077",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b54f-7e92-b92c-706e20c1f3f3",
+      "entryNo": 23,
+      "entryRef": "JE-2026-00023",
+      "entryDate": "2026-05-18",
+      "periodId": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "status": "posted",
+      "sourceModule": "inventory",
+      "memo": "Goods issued: SRV-100",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.970226+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "8820.000",
+        "minor": "8820000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "8820.000",
+        "minor": "8820000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b54f-7d5f-b6d5-32194b301364",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7b46-95be-4b071bd4dd67",
+          "accountCode": "5100",
+          "accountName": "Cost of Goods Sold",
+          "side": "debit",
+          "amount": {
+            "amount": "8820.000",
+            "minor": "8820000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8820.000",
+            "minor": "8820000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b54f-7d70-b29b-a0f218913d7b",
+          "lineNo": 2,
+          "accountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+          "accountCode": "1150",
+          "accountName": "Inventory",
+          "side": "credit",
+          "amount": {
+            "amount": "8820.000",
+            "minor": "8820000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8820.000",
+            "minor": "8820000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b542-72b2-b0a1-f5e1dd716678",
+      "entryNo": 22,
+      "entryRef": "JE-2026-00022",
+      "entryDate": "2026-03-03",
+      "periodId": "01a04352-9f1a-7546-aef6-1a7edf3514b3",
+      "status": "posted",
+      "sourceModule": "inventory",
+      "memo": "Goods received: UPS-3K",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.959005+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "6825.000",
+        "minor": "6825000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "6825.000",
+        "minor": "6825000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b543-7844-a997-1d280ea40da6",
+          "lineNo": 1,
+          "accountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+          "accountCode": "1150",
+          "accountName": "Inventory",
+          "side": "debit",
+          "amount": {
+            "amount": "6825.000",
+            "minor": "6825000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "6825.000",
+            "minor": "6825000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b543-78d1-8de2-b33ccf7b1394",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7865-bd8c-f843c4fef28f",
+          "accountCode": "2110",
+          "accountName": "Accounts Payable",
+          "side": "credit",
+          "amount": {
+            "amount": "6825.000",
+            "minor": "6825000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "6825.000",
+            "minor": "6825000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b538-72c7-be79-337708dc24c7",
+      "entryNo": 21,
+      "entryRef": "JE-2026-00021",
+      "entryDate": "2026-05-09",
+      "periodId": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "status": "posted",
+      "sourceModule": "inventory",
+      "memo": "Goods received: SWT-24",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.949506+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "6700.000",
+        "minor": "6700000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "6700.000",
+        "minor": "6700000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b538-7e5b-a533-64ae09fb3a69",
+          "lineNo": 1,
+          "accountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+          "accountCode": "1150",
+          "accountName": "Inventory",
+          "side": "debit",
+          "amount": {
+            "amount": "6700.000",
+            "minor": "6700000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "6700.000",
+            "minor": "6700000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b539-7d7e-bbfb-a57f8e2526e7",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7865-bd8c-f843c4fef28f",
+          "accountCode": "2110",
+          "accountName": "Accounts Payable",
+          "side": "credit",
+          "amount": {
+            "amount": "6700.000",
+            "minor": "6700000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "6700.000",
+            "minor": "6700000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b52e-74e0-80c1-55160b9ccc68",
+      "entryNo": 20,
+      "entryRef": "JE-2026-00020",
+      "entryDate": "2026-02-14",
+      "periodId": "01a04352-9f1a-7db4-90a8-9c57412d67f2",
+      "status": "posted",
+      "sourceModule": "inventory",
+      "memo": "Goods received: SWT-24",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.938972+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "9600.000",
+        "minor": "9600000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "9600.000",
+        "minor": "9600000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b52e-7fa2-a279-87f560ffcb36",
+          "lineNo": 1,
+          "accountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+          "accountCode": "1150",
+          "accountName": "Inventory",
+          "side": "debit",
+          "amount": {
+            "amount": "9600.000",
+            "minor": "9600000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "9600.000",
+            "minor": "9600000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b52f-7fdf-957f-8332107fd799",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7865-bd8c-f843c4fef28f",
+          "accountCode": "2110",
+          "accountName": "Accounts Payable",
+          "side": "credit",
+          "amount": {
+            "amount": "9600.000",
+            "minor": "9600000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "9600.000",
+            "minor": "9600000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b520-72af-ae8e-2151892965c2",
+      "entryNo": 19,
+      "entryRef": "JE-2026-00019",
+      "entryDate": "2026-04-12",
+      "periodId": "01a04352-9f1d-7d0a-97e8-c39215bee614",
+      "status": "posted",
+      "sourceModule": "inventory",
+      "memo": "Goods received: SRV-100",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.924762+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "8320.000",
+        "minor": "8320000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "8320.000",
+        "minor": "8320000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b521-74a8-b7c2-735364daa1a4",
+          "lineNo": 1,
+          "accountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+          "accountCode": "1150",
+          "accountName": "Inventory",
+          "side": "debit",
+          "amount": {
+            "amount": "8320.000",
+            "minor": "8320000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8320.000",
+            "minor": "8320000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b521-7771-bc1a-6767e4702d09",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7865-bd8c-f843c4fef28f",
+          "accountCode": "2110",
+          "accountName": "Accounts Payable",
+          "side": "credit",
+          "amount": {
+            "amount": "8320.000",
+            "minor": "8320000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8320.000",
+            "minor": "8320000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b510-783d-a468-0eae1655f436",
+      "entryNo": 18,
+      "entryRef": "JE-2026-00018",
+      "entryDate": "2026-02-10",
+      "periodId": "01a04352-9f1a-7db4-90a8-9c57412d67f2",
+      "status": "posted",
+      "sourceModule": "inventory",
+      "memo": "Goods received: SRV-100",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.905964+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "11760.000",
+        "minor": "11760000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "11760.000",
+        "minor": "11760000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b511-744a-9677-d6387ffa9776",
+          "lineNo": 1,
+          "accountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+          "accountCode": "1150",
+          "accountName": "Inventory",
+          "side": "debit",
+          "amount": {
+            "amount": "11760.000",
+            "minor": "11760000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "11760.000",
+            "minor": "11760000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b511-78d6-8abb-4287f3c8953c",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7865-bd8c-f843c4fef28f",
+          "accountCode": "2110",
+          "accountName": "Accounts Payable",
+          "side": "credit",
+          "amount": {
+            "amount": "11760.000",
+            "minor": "11760000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "11760.000",
+            "minor": "11760000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4e3-7bb2-b853-8f52e27297c0",
+      "entryNo": null,
+      "entryRef": null,
+      "entryDate": "2026-06-28",
+      "periodId": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "status": "draft",
+      "sourceModule": "manual",
+      "memo": "Accrual awaiting supporting document — left as a draft on purpose",
+      "baseCurrency": "JOD",
+      "postedAt": null,
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "1200.000",
+        "minor": "1200000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "1200.000",
+        "minor": "1200000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4e4-7810-9e94-7d0c66975c3a",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-7aa5-8d81-452fc72397b2",
+          "accountCode": "5250",
+          "accountName": "Professional Fees",
+          "side": "debit",
+          "amount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4e4-7754-bbfa-7baa8771d186",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7b91-ad12-538d58adaf53",
+          "accountCode": "2120",
+          "accountName": "Accrued Expenses",
+          "side": "credit",
+          "amount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4dc-72cf-9853-b3b6e6a438f0",
+      "entryNo": 17,
+      "entryRef": "JE-2026-00017",
+      "entryDate": "2026-06-30",
+      "periodId": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Salaries — June",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.859945+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "8400.000",
+        "minor": "8400000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "8400.000",
+        "minor": "8400000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4dd-7272-a3ee-aeb7c359d7d4",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7882-928e-f88726ff075d",
+          "accountCode": "5210",
+          "accountName": "Salaries and Wages",
+          "side": "debit",
+          "amount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4dd-7b3d-850c-8168f9d294de",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4d5-70ce-81c5-5cfb6ee52fe3",
+      "entryNo": 16,
+      "entryRef": "JE-2026-00016",
+      "entryDate": "2026-06-11",
+      "periodId": "01a04352-9f1f-7595-bf15-b3c35edf23de",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Service revenue — implementation",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.851619+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "21500.000",
+        "minor": "21500000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "21500.000",
+        "minor": "21500000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4d6-7873-85c4-0cc2734e60a9",
+          "lineNo": 1,
+          "accountId": "01a04352-9f26-7b8f-8540-1166e10e736a",
+          "accountCode": "1130",
+          "accountName": "Accounts Receivable",
+          "side": "debit",
+          "amount": {
+            "amount": "21500.000",
+            "minor": "21500000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "21500.000",
+            "minor": "21500000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4d6-773c-b1c1-0d95f38b0972",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2e-7cae-a546-4f24d962bf8b",
+          "accountCode": "4020",
+          "accountName": "Service Revenue",
+          "side": "credit",
+          "amount": {
+            "amount": "21500.000",
+            "minor": "21500000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "21500.000",
+            "minor": "21500000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4cb-71e5-9c6a-8aaf063991d7",
+      "entryNo": 15,
+      "entryRef": "JE-2026-00015",
+      "entryDate": "2026-05-31",
+      "periodId": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Salaries — May",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.842237+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "8400.000",
+        "minor": "8400000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "8400.000",
+        "minor": "8400000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4cc-7b6f-be3b-f3168199501e",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7882-928e-f88726ff075d",
+          "accountCode": "5210",
+          "accountName": "Salaries and Wages",
+          "side": "debit",
+          "amount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4cd-7de2-a930-d4c6b7ae7905",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4c3-7a61-b1cf-1bc7468929d3",
+      "entryNo": 14,
+      "entryRef": "JE-2026-00014",
+      "entryDate": "2026-05-22",
+      "periodId": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Supplier settled",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.833996+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "2750.000",
+        "minor": "2750000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "2750.000",
+        "minor": "2750000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4c4-7eff-bed6-2b7bad82df94",
+          "lineNo": 1,
+          "accountId": "01a04352-9f2a-7865-bd8c-f843c4fef28f",
+          "accountCode": "2110",
+          "accountName": "Accounts Payable",
+          "side": "debit",
+          "amount": {
+            "amount": "2750.000",
+            "minor": "2750000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "2750.000",
+            "minor": "2750000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4c4-7721-815b-814f4fe82aaa",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "2750.000",
+            "minor": "2750000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "2750.000",
+            "minor": "2750000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4ba-728a-a190-c9fe2cf738fa",
+      "entryNo": 13,
+      "entryRef": "JE-2026-00013",
+      "entryDate": "2026-05-06",
+      "periodId": "01a04352-9f1e-7988-8b63-caeb2763fb0b",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Office rent, second quarter",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.825364+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "4500.000",
+        "minor": "4500000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "4500.000",
+        "minor": "4500000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4bb-7bf0-9199-31c01b93ace6",
+          "lineNo": 1,
+          "accountId": "01a04352-9f31-7851-affa-3447c8b8d07f",
+          "accountCode": "5220",
+          "accountName": "Rent",
+          "side": "debit",
+          "amount": {
+            "amount": "4500.000",
+            "minor": "4500000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "4500.000",
+            "minor": "4500000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4bb-740f-ac11-6cdcbe00242c",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "4500.000",
+            "minor": "4500000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "4500.000",
+            "minor": "4500000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4b2-739d-a5ab-1d66a12d2fc8",
+      "entryNo": 12,
+      "entryRef": "JE-2026-00012",
+      "entryDate": "2026-04-30",
+      "periodId": "01a04352-9f1d-7d0a-97e8-c39215bee614",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Salaries — April",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.817245+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "8400.000",
+        "minor": "8400000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "8400.000",
+        "minor": "8400000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4b2-7c39-b003-32ff6ca9746c",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7882-928e-f88726ff075d",
+          "accountCode": "5210",
+          "accountName": "Salaries and Wages",
+          "side": "debit",
+          "amount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4b3-7341-8e52-fc1d2fe2b045",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8400.000",
+            "minor": "8400000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4aa-79e1-887d-2b7177f3cbd0",
+      "entryNo": 11,
+      "entryRef": "JE-2026-00011",
+      "entryDate": "2026-04-15",
+      "periodId": "01a04352-9f1d-7d0a-97e8-c39215bee614",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Service revenue — retainer",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.80898+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "9500.000",
+        "minor": "9500000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "9500.000",
+        "minor": "9500000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4aa-7a68-a2e0-6a7cb86c0908",
+          "lineNo": 1,
+          "accountId": "01a04352-9f26-7b8f-8540-1166e10e736a",
+          "accountCode": "1130",
+          "accountName": "Accounts Receivable",
+          "side": "debit",
+          "amount": {
+            "amount": "9500.000",
+            "minor": "9500000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "9500.000",
+            "minor": "9500000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4aa-7f44-bfcc-68f248139dcd",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2e-7cae-a546-4f24d962bf8b",
+          "accountCode": "4020",
+          "accountName": "Service Revenue",
+          "side": "credit",
+          "amount": {
+            "amount": "9500.000",
+            "minor": "9500000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "9500.000",
+            "minor": "9500000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b4a2-789f-9bbe-937315bdcd74",
+      "entryNo": 10,
+      "entryRef": "JE-2026-00010",
+      "entryDate": "2026-04-07",
+      "periodId": "01a04352-9f1d-7d0a-97e8-c39215bee614",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Bank charges",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.801044+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "85.000",
+        "minor": "85000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "85.000",
+        "minor": "85000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b4a2-720c-8884-8c6d8d16ef4c",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-714b-ab48-c8d911169544",
+          "accountCode": "5280",
+          "accountName": "Bank Charges",
+          "side": "debit",
+          "amount": {
+            "amount": "85.000",
+            "minor": "85000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "85.000",
+            "minor": "85000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b4a3-7243-a78a-71785c11e287",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "85.000",
+            "minor": "85000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "85.000",
+            "minor": "85000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b49a-76fe-8a54-d166cb722ff2",
+      "entryNo": 9,
+      "entryRef": "JE-2026-00009",
+      "entryDate": "2026-03-31",
+      "periodId": "01a04352-9f1a-7546-aef6-1a7edf3514b3",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Salaries — March",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.793471+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "8200.000",
+        "minor": "8200000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "8200.000",
+        "minor": "8200000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b49b-7118-807e-00374c7c1e3b",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7882-928e-f88726ff075d",
+          "accountCode": "5210",
+          "accountName": "Salaries and Wages",
+          "side": "debit",
+          "amount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b49b-7e6d-b520-e5a902cc28b2",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b492-7a12-b89d-4ad2b7038938",
+      "entryNo": 8,
+      "entryRef": "JE-2026-00008",
+      "entryDate": "2026-03-20",
+      "periodId": "01a04352-9f1a-7546-aef6-1a7edf3514b3",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Professional fees — audit",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.785218+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "2750.000",
+        "minor": "2750000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "2750.000",
+        "minor": "2750000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b493-72b3-82a7-95a09ee7ddf3",
+          "lineNo": 1,
+          "accountId": "01a04352-9f32-7aa5-8d81-452fc72397b2",
+          "accountCode": "5250",
+          "accountName": "Professional Fees",
+          "side": "debit",
+          "amount": {
+            "amount": "2750.000",
+            "minor": "2750000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "2750.000",
+            "minor": "2750000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b493-74e8-b1b0-a753ec1bed81",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2a-7865-bd8c-f843c4fef28f",
+          "accountCode": "2110",
+          "accountName": "Accounts Payable",
+          "side": "credit",
+          "amount": {
+            "amount": "2750.000",
+            "minor": "2750000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "2750.000",
+            "minor": "2750000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b487-7c8a-b591-48cca7dc040a",
+      "entryNo": 7,
+      "entryRef": "JE-2026-00007",
+      "entryDate": "2026-03-09",
+      "periodId": "01a04352-9f1a-7546-aef6-1a7edf3514b3",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Customer settled invoice",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.774885+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "14000.000",
+        "minor": "14000000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "14000.000",
+        "minor": "14000000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b488-7bef-b407-8e702286a679",
+          "lineNo": 1,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "debit",
+          "amount": {
+            "amount": "14000.000",
+            "minor": "14000000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "14000.000",
+            "minor": "14000000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b489-796f-916f-78733fbde25c",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-7b8f-8540-1166e10e736a",
+          "accountCode": "1130",
+          "accountName": "Accounts Receivable",
+          "side": "credit",
+          "amount": {
+            "amount": "14000.000",
+            "minor": "14000000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "14000.000",
+            "minor": "14000000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b47e-708e-9f0e-3f593f8cce84",
+      "entryNo": 6,
+      "entryRef": "JE-2026-00006",
+      "entryDate": "2026-02-28",
+      "periodId": "01a04352-9f1a-7db4-90a8-9c57412d67f2",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Salaries — February",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.764971+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "8200.000",
+        "minor": "8200000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "8200.000",
+        "minor": "8200000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b47e-7b42-b90d-40340ae8178d",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7882-928e-f88726ff075d",
+          "accountCode": "5210",
+          "accountName": "Salaries and Wages",
+          "side": "debit",
+          "amount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b47f-7962-8083-8414205157d1",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b474-7c39-b5cc-71c0035af2e0",
+      "entryNo": 5,
+      "entryRef": "JE-2026-00005",
+      "entryDate": "2026-02-18",
+      "periodId": "01a04352-9f1a-7db4-90a8-9c57412d67f2",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Utilities and telecoms",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.755632+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "950.000",
+        "minor": "950000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "950.000",
+        "minor": "950000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b475-799d-a4be-ea078d570ec5",
+          "lineNo": 1,
+          "accountId": "01a04352-9f31-725d-9848-d163f0cbf96b",
+          "accountCode": "5230",
+          "accountName": "Utilities",
+          "side": "debit",
+          "amount": {
+            "amount": "640.000",
+            "minor": "640000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "640.000",
+            "minor": "640000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b476-752c-8b92-8456c46811c4",
+          "lineNo": 2,
+          "accountId": "01a04352-9f31-7bc3-ae00-122ae71a0b4d",
+          "accountCode": "5240",
+          "accountName": "Telecommunications",
+          "side": "debit",
+          "amount": {
+            "amount": "310.000",
+            "minor": "310000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "310.000",
+            "minor": "310000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b476-7866-9d7a-757f30e01608",
+          "lineNo": 3,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "950.000",
+            "minor": "950000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "950.000",
+            "minor": "950000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b46b-7cd6-9beb-a5d120b69e08",
+      "entryNo": 4,
+      "entryRef": "JE-2026-00004",
+      "entryDate": "2026-02-03",
+      "periodId": "01a04352-9f1a-7db4-90a8-9c57412d67f2",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Consultancy invoiced to Amman Trading",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.746234+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "14000.000",
+        "minor": "14000000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "14000.000",
+        "minor": "14000000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b46c-72c1-8d2c-4bff9b8b09ff",
+          "lineNo": 1,
+          "accountId": "01a04352-9f26-7b8f-8540-1166e10e736a",
+          "accountCode": "1130",
+          "accountName": "Accounts Receivable",
+          "side": "debit",
+          "amount": {
+            "amount": "14000.000",
+            "minor": "14000000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "14000.000",
+            "minor": "14000000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b46c-7139-9ce2-a9075a104d59",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2e-7cae-a546-4f24d962bf8b",
+          "accountCode": "4020",
+          "accountName": "Service Revenue",
+          "side": "credit",
+          "amount": {
+            "amount": "14000.000",
+            "minor": "14000000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "14000.000",
+            "minor": "14000000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b461-74f3-a9f0-e16df4ce4103",
+      "entryNo": 3,
+      "entryRef": "JE-2026-00003",
+      "entryDate": "2026-01-31",
+      "periodId": "01a04352-9f19-760c-8fa6-3ad2165fc91b",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Salaries — January",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.73561+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "8200.000",
+        "minor": "8200000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "8200.000",
+        "minor": "8200000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b462-7c81-b6db-feb9e60f735b",
+          "lineNo": 1,
+          "accountId": "01a04352-9f30-7882-928e-f88726ff075d",
+          "accountCode": "5210",
+          "accountName": "Salaries and Wages",
+          "side": "debit",
+          "amount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b462-7e56-bc7c-4fe2e9bebd3f",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "8200.000",
+            "minor": "8200000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b455-7147-8050-de78de99d472",
+      "entryNo": 2,
+      "entryRef": "JE-2026-00002",
+      "entryDate": "2026-01-05",
+      "periodId": "01a04352-9f19-760c-8fa6-3ad2165fc91b",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Office rent, first quarter",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.723268+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "4500.000",
+        "minor": "4500000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "4500.000",
+        "minor": "4500000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b456-720f-bf41-57910ee5b3c8",
+          "lineNo": 1,
+          "accountId": "01a04352-9f31-7851-affa-3447c8b8d07f",
+          "accountCode": "5220",
+          "accountName": "Rent",
+          "side": "debit",
+          "amount": {
+            "amount": "4500.000",
+            "minor": "4500000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "4500.000",
+            "minor": "4500000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b456-77c9-9fe6-9791f2c1086c",
+          "lineNo": 2,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "credit",
+          "amount": {
+            "amount": "4500.000",
+            "minor": "4500000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "4500.000",
+            "minor": "4500000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    },
+    {
+      "id": "01a04352-b440-79a9-bd3c-89e25249bdcf",
+      "entryNo": 1,
+      "entryRef": "JE-2026-00001",
+      "entryDate": "2026-01-02",
+      "periodId": "01a04352-9f19-760c-8fa6-3ad2165fc91b",
+      "status": "posted",
+      "sourceModule": "manual",
+      "memo": "Shareholder capital injected",
+      "baseCurrency": "JOD",
+      "postedAt": "2026-08-27 13:04:48.700236+00",
+      "reversesEntryId": null,
+      "reversedByEntryId": null,
+      "totalDebit": {
+        "amount": "60000.000",
+        "minor": "60000000",
+        "currency": "JOD"
+      },
+      "totalCredit": {
+        "amount": "60000.000",
+        "minor": "60000000",
+        "currency": "JOD"
+      },
+      "lines": [
+        {
+          "id": "01a04352-b444-7e00-8f16-e30296c608bf",
+          "lineNo": 1,
+          "accountId": "01a04352-9f26-79fa-96c7-5f59594c8645",
+          "accountCode": "1120",
+          "accountName": "Bank — Current Account",
+          "side": "debit",
+          "amount": {
+            "amount": "60000.000",
+            "minor": "60000000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "60000.000",
+            "minor": "60000000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        },
+        {
+          "id": "01a04352-b447-7087-9fb4-28ba4a52dc55",
+          "lineNo": 2,
+          "accountId": "01a04352-9f2c-7450-b350-6571ca917ab7",
+          "accountCode": "3010",
+          "accountName": "Share Capital",
+          "side": "credit",
+          "amount": {
+            "amount": "60000.000",
+            "minor": "60000000",
+            "currency": "JOD"
+          },
+          "baseAmount": {
+            "amount": "60000.000",
+            "minor": "60000000",
+            "currency": "JOD"
+          },
+          "fxRate": "1.0000000000",
+          "description": null
+        }
+      ]
+    }
+  ],
+  "inventory": {
+    "valuation": {
+      "asOfDate": null,
+      "currency": "JOD",
+      "items": [
+        {
+          "itemId": "01a04352-b4fb-72e3-8daf-d9486a9d3cdd",
+          "sku": "SRV-100",
+          "name": "Rack Server 1U",
+          "warehouseId": "01a04352-b4ee-748a-a745-7b7d802dda1c",
+          "warehouse": "MAIN",
+          "costingMethod": "fifo",
+          "quantity": "11.000000",
+          "value": {
+            "amount": "11260.000",
+            "minor": "11260000",
+            "currency": "JOD"
+          }
+        },
+        {
+          "itemId": "01a04352-b500-7545-bf24-0302a1ad52e9",
+          "sku": "SWT-24",
+          "name": "24-Port Switch",
+          "warehouseId": "01a04352-b4ee-748a-a745-7b7d802dda1c",
+          "warehouse": "MAIN",
+          "costingMethod": "weighted_average",
+          "quantity": "35.000000",
+          "value": {
+            "amount": "8776.923",
+            "minor": "8776923",
+            "currency": "JOD"
+          }
+        },
+        {
+          "itemId": "01a04352-b504-7cb2-a1b4-4800182fa5d7",
+          "sku": "UPS-3K",
+          "name": "UPS 3kVA",
+          "warehouseId": "01a04352-b4f3-79ee-9dc1-533eadac77ff",
+          "warehouse": "AQB",
+          "costingMethod": "fifo",
+          "quantity": "11.000000",
+          "value": {
+            "amount": "5005.000",
+            "minor": "5005000",
+            "currency": "JOD"
+          }
+        }
+      ],
+      "totalValue": {
+        "amount": "25041.923",
+        "minor": "25041923",
+        "currency": "JOD"
+      },
+      "ledgerInventoryValue": {
+        "amount": "25041.923",
+        "minor": "25041923",
+        "currency": "JOD"
+      },
+      "agreesWithLedger": true
+    },
+    "items": [
+      {
+        "id": "01a04352-b4fb-72e3-8daf-d9486a9d3cdd",
+        "sku": "SRV-100",
+        "name": "Rack Server 1U",
+        "nameAr": null,
+        "isStocked": true,
+        "costingMethod": "fifo",
+        "unitOfMeasure": "PCE",
+        "standardCost": {
+          "amount": "0.000",
+          "minor": "0",
+          "currency": "JOD"
+        },
+        "salePrice": {
+          "amount": "1450.000",
+          "minor": "1450000",
+          "currency": "JOD"
+        },
+        "inventoryAccountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+        "cogsAccountId": "01a04352-9f30-7b46-95be-4b071bd4dd67",
+        "varianceAccountId": null,
+        "isActive": true
+      },
+      {
+        "id": "01a04352-b500-7545-bf24-0302a1ad52e9",
+        "sku": "SWT-24",
+        "name": "24-Port Switch",
+        "nameAr": null,
+        "isStocked": true,
+        "costingMethod": "weighted_average",
+        "unitOfMeasure": "PCE",
+        "standardCost": {
+          "amount": "0.000",
+          "minor": "0",
+          "currency": "JOD"
+        },
+        "salePrice": {
+          "amount": "390.000",
+          "minor": "390000",
+          "currency": "JOD"
+        },
+        "inventoryAccountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+        "cogsAccountId": "01a04352-9f30-7b46-95be-4b071bd4dd67",
+        "varianceAccountId": null,
+        "isActive": true
+      },
+      {
+        "id": "01a04352-b504-7cb2-a1b4-4800182fa5d7",
+        "sku": "UPS-3K",
+        "name": "UPS 3kVA",
+        "nameAr": null,
+        "isStocked": true,
+        "costingMethod": "fifo",
+        "unitOfMeasure": "PCE",
+        "standardCost": {
+          "amount": "0.000",
+          "minor": "0",
+          "currency": "JOD"
+        },
+        "salePrice": {
+          "amount": "720.000",
+          "minor": "720000",
+          "currency": "JOD"
+        },
+        "inventoryAccountId": "01a04352-9f27-7c92-95e2-d93cc61e3084",
+        "cogsAccountId": "01a04352-9f30-7b46-95be-4b071bd4dd67",
+        "varianceAccountId": null,
+        "isActive": true
+      }
+    ],
+    "warehouses": [
+      {
+        "id": "01a04352-b4f3-79ee-9dc1-533eadac77ff",
+        "code": "AQB",
+        "name": "Aqaba Depot",
+        "is_active": true
+      },
+      {
+        "id": "01a04352-b4ee-748a-a745-7b7d802dda1c",
+        "code": "MAIN",
+        "name": "Main Warehouse",
+        "is_active": true
+      }
+    ],
+    "movements": {
+      "01a04352-b4fb-72e3-8daf-d9486a9d3cdd": [
+        {
+          "id": "01a04352-b50e-75b4-98a3-e013c4dc96dc",
+          "kind": "receipt",
+          "movementDate": "2026-02-10",
+          "quantity": "12.000000",
+          "unitCost": {
+            "amount": "980.000",
+            "minor": "980000",
+            "currency": "JOD"
+          },
+          "value": {
+            "amount": "11760.000",
+            "minor": "11760000",
+            "currency": "JOD"
+          },
+          "warehouse": "MAIN",
+          "entryId": "01a04352-b510-783d-a468-0eae1655f436",
+          "reference": "GRN-0041"
+        },
+        {
+          "id": "01a04352-b51f-7676-84ce-d5d53593f14a",
+          "kind": "receipt",
+          "movementDate": "2026-04-12",
+          "quantity": "8.000000",
+          "unitCost": {
+            "amount": "1040.000",
+            "minor": "1040000",
+            "currency": "JOD"
+          },
+          "value": {
+            "amount": "8320.000",
+            "minor": "8320000",
+            "currency": "JOD"
+          },
+          "warehouse": "MAIN",
+          "entryId": "01a04352-b520-72af-ae8e-2151892965c2",
+          "reference": "GRN-0067"
+        },
+        {
+          "id": "01a04352-b54d-7232-b3c7-3c39becd4ea5",
+          "kind": "issue",
+          "movementDate": "2026-05-18",
+          "quantity": "9.000000",
+          "unitCost": {
+            "amount": "980.000",
+            "minor": "980000",
+            "currency": "JOD"
+          },
+          "value": {
+            "amount": "8820.000",
+            "minor": "8820000",
+            "currency": "JOD"
+          },
+          "warehouse": "MAIN",
+          "entryId": "01a04352-b54f-7e92-b92c-706e20c1f3f3",
+          "reference": "SO-0112"
+        }
+      ],
+      "01a04352-b500-7545-bf24-0302a1ad52e9": [
+        {
+          "id": "01a04352-b52d-7247-b9f8-6e34933ee82e",
+          "kind": "receipt",
+          "movementDate": "2026-02-14",
+          "quantity": "40.000000",
+          "unitCost": {
+            "amount": "240.000",
+            "minor": "240000",
+            "currency": "JOD"
+          },
+          "value": {
+            "amount": "9600.000",
+            "minor": "9600000",
+            "currency": "JOD"
+          },
+          "warehouse": "MAIN",
+          "entryId": "01a04352-b52e-74e0-80c1-55160b9ccc68",
+          "reference": "GRN-0043"
+        },
+        {
+          "id": "01a04352-b537-728c-9843-ebb237b6fa37",
+          "kind": "receipt",
+          "movementDate": "2026-05-09",
+          "quantity": "25.000000",
+          "unitCost": {
+            "amount": "268.000",
+            "minor": "268000",
+            "currency": "JOD"
+          },
+          "value": {
+            "amount": "6700.000",
+            "minor": "6700000",
+            "currency": "JOD"
+          },
+          "warehouse": "MAIN",
+          "entryId": "01a04352-b538-72c7-be79-337708dc24c7",
+          "reference": "GRN-0072"
+        },
+        {
+          "id": "01a04352-b558-71c4-98f5-312d1ae7d76f",
+          "kind": "issue",
+          "movementDate": "2026-05-20",
+          "quantity": "30.000000",
+          "unitCost": {
+            "amount": "250.769",
+            "minor": "250769",
+            "currency": "JOD"
+          },
+          "value": {
+            "amount": "7523.077",
+            "minor": "7523077",
+            "currency": "JOD"
+          },
+          "warehouse": "MAIN",
+          "entryId": "01a04352-b558-709b-9511-4d4754639b55",
+          "reference": "SO-0114"
+        }
+      ],
+      "01a04352-b504-7cb2-a1b4-4800182fa5d7": [
+        {
+          "id": "01a04352-b541-73b3-90ed-bcdec695e075",
+          "kind": "receipt",
+          "movementDate": "2026-03-03",
+          "quantity": "15.000000",
+          "unitCost": {
+            "amount": "455.000",
+            "minor": "455000",
+            "currency": "JOD"
+          },
+          "value": {
+            "amount": "6825.000",
+            "minor": "6825000",
+            "currency": "JOD"
+          },
+          "warehouse": "AQB",
+          "entryId": "01a04352-b542-72b2-b0a1-f5e1dd716678",
+          "reference": "GRN-0055"
+        },
+        {
+          "id": "01a04352-b561-75cb-be04-75d301874c2c",
+          "kind": "issue",
+          "movementDate": "2026-06-02",
+          "quantity": "4.000000",
+          "unitCost": {
+            "amount": "455.000",
+            "minor": "455000",
+            "currency": "JOD"
+          },
+          "value": {
+            "amount": "1820.000",
+            "minor": "1820000",
+            "currency": "JOD"
+          },
+          "warehouse": "AQB",
+          "entryId": "01a04352-b562-73b9-92c7-bdeecf380dd6",
+          "reference": "SO-0121"
+        }
+      ]
+    }
+  },
+  "assets": {
+    "register": {
+      "currency": "JOD",
+      "assets": [
+        {
+          "id": "01a04352-b56c-7852-b257-f6a4a9917ad7",
+          "assetNo": "FA-0001",
+          "name": "Delivery Van",
+          "category": "Vehicles",
+          "status": "in_service",
+          "method": "straight_line",
+          "cost": {
+            "amount": "28000.000",
+            "minor": "28000000",
+            "currency": "JOD"
+          },
+          "residual": {
+            "amount": "4000.000",
+            "minor": "4000000",
+            "currency": "JOD"
+          },
+          "accumulated": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "netBookValue": {
+            "amount": "26800.000",
+            "minor": "26800000",
+            "currency": "JOD"
+          },
+          "usefulLifeMonths": 60,
+          "inServiceOn": "2026-02-01",
+          "disposedOn": null
+        },
+        {
+          "id": "01a04352-b572-7b16-bca5-45153f086e34",
+          "assetNo": "FA-0002",
+          "name": "Server Rack and Network Core",
+          "category": "IT Equipment",
+          "status": "in_service",
+          "method": "reducing_balance",
+          "cost": {
+            "amount": "16500.000",
+            "minor": "16500000",
+            "currency": "JOD"
+          },
+          "residual": {
+            "amount": "500.000",
+            "minor": "500000",
+            "currency": "JOD"
+          },
+          "accumulated": {
+            "amount": "1206.821",
+            "minor": "1206821",
+            "currency": "JOD"
+          },
+          "netBookValue": {
+            "amount": "15293.179",
+            "minor": "15293179",
+            "currency": "JOD"
+          },
+          "usefulLifeMonths": 48,
+          "inServiceOn": "2026-03-01",
+          "disposedOn": null
+        },
+        {
+          "id": "01a04352-b578-785d-8a03-9f5805b3eee3",
+          "assetNo": "FA-0003",
+          "name": "Office Fit-out",
+          "category": "Leasehold",
+          "status": "in_service",
+          "method": "straight_line",
+          "cost": {
+            "amount": "9750.000",
+            "minor": "9750000",
+            "currency": "JOD"
+          },
+          "residual": {
+            "amount": "0.000",
+            "minor": "0",
+            "currency": "JOD"
+          },
+          "accumulated": {
+            "amount": "812.499",
+            "minor": "812499",
+            "currency": "JOD"
+          },
+          "netBookValue": {
+            "amount": "8937.501",
+            "minor": "8937501",
+            "currency": "JOD"
+          },
+          "usefulLifeMonths": 36,
+          "inServiceOn": "2026-04-01",
+          "disposedOn": null
+        }
+      ],
+      "totalCost": {
+        "amount": "54250.000",
+        "minor": "54250000",
+        "currency": "JOD"
+      },
+      "totalAccumulated": {
+        "amount": "3219.320",
+        "minor": "3219320",
+        "currency": "JOD"
+      },
+      "totalNetBookValue": {
+        "amount": "51030.680",
+        "minor": "51030680",
+        "currency": "JOD"
+      }
+    },
+    "schedules": {
+      "01a04352-b56c-7852-b257-f6a4a9917ad7": {
+        "asset": {
+          "id": "01a04352-b56c-7852-b257-f6a4a9917ad7",
+          "assetNo": "FA-0001",
+          "name": "Delivery Van",
+          "category": "Vehicles",
+          "status": "in_service",
+          "method": "straight_line",
+          "cost": {
+            "amount": "28000.000",
+            "minor": "28000000",
+            "currency": "JOD"
+          },
+          "residual": {
+            "amount": "4000.000",
+            "minor": "4000000",
+            "currency": "JOD"
+          },
+          "accumulated": {
+            "amount": "1200.000",
+            "minor": "1200000",
+            "currency": "JOD"
+          },
+          "netBookValue": {
+            "amount": "26800.000",
+            "minor": "26800000",
+            "currency": "JOD"
+          },
+          "usefulLifeMonths": 60,
+          "inServiceOn": "2026-02-01",
+          "disposedOn": null
+        },
+        "rows": [
+          {
+            "periodNo": 1,
+            "periodEnd": "2026-02-28",
+            "openingNetBookValueMinor": "28000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "400000",
+            "closingNetBookValueMinor": "27600000"
+          },
+          {
+            "periodNo": 2,
+            "periodEnd": "2026-03-31",
+            "openingNetBookValueMinor": "27600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "800000",
+            "closingNetBookValueMinor": "27200000"
+          },
+          {
+            "periodNo": 3,
+            "periodEnd": "2026-04-30",
+            "openingNetBookValueMinor": "27200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "1200000",
+            "closingNetBookValueMinor": "26800000"
+          },
+          {
+            "periodNo": 4,
+            "periodEnd": "2026-05-31",
+            "openingNetBookValueMinor": "26800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "1600000",
+            "closingNetBookValueMinor": "26400000"
+          },
+          {
+            "periodNo": 5,
+            "periodEnd": "2026-06-30",
+            "openingNetBookValueMinor": "26400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "2000000",
+            "closingNetBookValueMinor": "26000000"
+          },
+          {
+            "periodNo": 6,
+            "periodEnd": "2026-07-31",
+            "openingNetBookValueMinor": "26000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "2400000",
+            "closingNetBookValueMinor": "25600000"
+          },
+          {
+            "periodNo": 7,
+            "periodEnd": "2026-08-31",
+            "openingNetBookValueMinor": "25600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "2800000",
+            "closingNetBookValueMinor": "25200000"
+          },
+          {
+            "periodNo": 8,
+            "periodEnd": "2026-09-30",
+            "openingNetBookValueMinor": "25200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "3200000",
+            "closingNetBookValueMinor": "24800000"
+          },
+          {
+            "periodNo": 9,
+            "periodEnd": "2026-10-31",
+            "openingNetBookValueMinor": "24800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "3600000",
+            "closingNetBookValueMinor": "24400000"
+          },
+          {
+            "periodNo": 10,
+            "periodEnd": "2026-11-30",
+            "openingNetBookValueMinor": "24400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "4000000",
+            "closingNetBookValueMinor": "24000000"
+          },
+          {
+            "periodNo": 11,
+            "periodEnd": "2026-12-31",
+            "openingNetBookValueMinor": "24000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "4400000",
+            "closingNetBookValueMinor": "23600000"
+          },
+          {
+            "periodNo": 12,
+            "periodEnd": "2027-01-31",
+            "openingNetBookValueMinor": "23600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "4800000",
+            "closingNetBookValueMinor": "23200000"
+          },
+          {
+            "periodNo": 13,
+            "periodEnd": "2027-02-28",
+            "openingNetBookValueMinor": "23200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "5200000",
+            "closingNetBookValueMinor": "22800000"
+          },
+          {
+            "periodNo": 14,
+            "periodEnd": "2027-03-31",
+            "openingNetBookValueMinor": "22800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "5600000",
+            "closingNetBookValueMinor": "22400000"
+          },
+          {
+            "periodNo": 15,
+            "periodEnd": "2027-04-30",
+            "openingNetBookValueMinor": "22400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "6000000",
+            "closingNetBookValueMinor": "22000000"
+          },
+          {
+            "periodNo": 16,
+            "periodEnd": "2027-05-31",
+            "openingNetBookValueMinor": "22000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "6400000",
+            "closingNetBookValueMinor": "21600000"
+          },
+          {
+            "periodNo": 17,
+            "periodEnd": "2027-06-30",
+            "openingNetBookValueMinor": "21600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "6800000",
+            "closingNetBookValueMinor": "21200000"
+          },
+          {
+            "periodNo": 18,
+            "periodEnd": "2027-07-31",
+            "openingNetBookValueMinor": "21200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "7200000",
+            "closingNetBookValueMinor": "20800000"
+          },
+          {
+            "periodNo": 19,
+            "periodEnd": "2027-08-31",
+            "openingNetBookValueMinor": "20800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "7600000",
+            "closingNetBookValueMinor": "20400000"
+          },
+          {
+            "periodNo": 20,
+            "periodEnd": "2027-09-30",
+            "openingNetBookValueMinor": "20400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "8000000",
+            "closingNetBookValueMinor": "20000000"
+          },
+          {
+            "periodNo": 21,
+            "periodEnd": "2027-10-31",
+            "openingNetBookValueMinor": "20000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "8400000",
+            "closingNetBookValueMinor": "19600000"
+          },
+          {
+            "periodNo": 22,
+            "periodEnd": "2027-11-30",
+            "openingNetBookValueMinor": "19600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "8800000",
+            "closingNetBookValueMinor": "19200000"
+          },
+          {
+            "periodNo": 23,
+            "periodEnd": "2027-12-31",
+            "openingNetBookValueMinor": "19200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "9200000",
+            "closingNetBookValueMinor": "18800000"
+          },
+          {
+            "periodNo": 24,
+            "periodEnd": "2028-01-31",
+            "openingNetBookValueMinor": "18800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "9600000",
+            "closingNetBookValueMinor": "18400000"
+          },
+          {
+            "periodNo": 25,
+            "periodEnd": "2028-02-29",
+            "openingNetBookValueMinor": "18400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "10000000",
+            "closingNetBookValueMinor": "18000000"
+          },
+          {
+            "periodNo": 26,
+            "periodEnd": "2028-03-31",
+            "openingNetBookValueMinor": "18000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "10400000",
+            "closingNetBookValueMinor": "17600000"
+          },
+          {
+            "periodNo": 27,
+            "periodEnd": "2028-04-30",
+            "openingNetBookValueMinor": "17600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "10800000",
+            "closingNetBookValueMinor": "17200000"
+          },
+          {
+            "periodNo": 28,
+            "periodEnd": "2028-05-31",
+            "openingNetBookValueMinor": "17200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "11200000",
+            "closingNetBookValueMinor": "16800000"
+          },
+          {
+            "periodNo": 29,
+            "periodEnd": "2028-06-30",
+            "openingNetBookValueMinor": "16800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "11600000",
+            "closingNetBookValueMinor": "16400000"
+          },
+          {
+            "periodNo": 30,
+            "periodEnd": "2028-07-31",
+            "openingNetBookValueMinor": "16400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "12000000",
+            "closingNetBookValueMinor": "16000000"
+          },
+          {
+            "periodNo": 31,
+            "periodEnd": "2028-08-31",
+            "openingNetBookValueMinor": "16000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "12400000",
+            "closingNetBookValueMinor": "15600000"
+          },
+          {
+            "periodNo": 32,
+            "periodEnd": "2028-09-30",
+            "openingNetBookValueMinor": "15600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "12800000",
+            "closingNetBookValueMinor": "15200000"
+          },
+          {
+            "periodNo": 33,
+            "periodEnd": "2028-10-31",
+            "openingNetBookValueMinor": "15200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "13200000",
+            "closingNetBookValueMinor": "14800000"
+          },
+          {
+            "periodNo": 34,
+            "periodEnd": "2028-11-30",
+            "openingNetBookValueMinor": "14800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "13600000",
+            "closingNetBookValueMinor": "14400000"
+          },
+          {
+            "periodNo": 35,
+            "periodEnd": "2028-12-31",
+            "openingNetBookValueMinor": "14400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "14000000",
+            "closingNetBookValueMinor": "14000000"
+          },
+          {
+            "periodNo": 36,
+            "periodEnd": "2029-01-31",
+            "openingNetBookValueMinor": "14000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "14400000",
+            "closingNetBookValueMinor": "13600000"
+          },
+          {
+            "periodNo": 37,
+            "periodEnd": "2029-02-28",
+            "openingNetBookValueMinor": "13600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "14800000",
+            "closingNetBookValueMinor": "13200000"
+          },
+          {
+            "periodNo": 38,
+            "periodEnd": "2029-03-31",
+            "openingNetBookValueMinor": "13200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "15200000",
+            "closingNetBookValueMinor": "12800000"
+          },
+          {
+            "periodNo": 39,
+            "periodEnd": "2029-04-30",
+            "openingNetBookValueMinor": "12800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "15600000",
+            "closingNetBookValueMinor": "12400000"
+          },
+          {
+            "periodNo": 40,
+            "periodEnd": "2029-05-31",
+            "openingNetBookValueMinor": "12400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "16000000",
+            "closingNetBookValueMinor": "12000000"
+          },
+          {
+            "periodNo": 41,
+            "periodEnd": "2029-06-30",
+            "openingNetBookValueMinor": "12000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "16400000",
+            "closingNetBookValueMinor": "11600000"
+          },
+          {
+            "periodNo": 42,
+            "periodEnd": "2029-07-31",
+            "openingNetBookValueMinor": "11600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "16800000",
+            "closingNetBookValueMinor": "11200000"
+          },
+          {
+            "periodNo": 43,
+            "periodEnd": "2029-08-31",
+            "openingNetBookValueMinor": "11200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "17200000",
+            "closingNetBookValueMinor": "10800000"
+          },
+          {
+            "periodNo": 44,
+            "periodEnd": "2029-09-30",
+            "openingNetBookValueMinor": "10800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "17600000",
+            "closingNetBookValueMinor": "10400000"
+          },
+          {
+            "periodNo": 45,
+            "periodEnd": "2029-10-31",
+            "openingNetBookValueMinor": "10400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "18000000",
+            "closingNetBookValueMinor": "10000000"
+          },
+          {
+            "periodNo": 46,
+            "periodEnd": "2029-11-30",
+            "openingNetBookValueMinor": "10000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "18400000",
+            "closingNetBookValueMinor": "9600000"
+          },
+          {
+            "periodNo": 47,
+            "periodEnd": "2029-12-31",
+            "openingNetBookValueMinor": "9600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "18800000",
+            "closingNetBookValueMinor": "9200000"
+          },
+          {
+            "periodNo": 48,
+            "periodEnd": "2030-01-31",
+            "openingNetBookValueMinor": "9200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "19200000",
+            "closingNetBookValueMinor": "8800000"
+          },
+          {
+            "periodNo": 49,
+            "periodEnd": "2030-02-28",
+            "openingNetBookValueMinor": "8800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "19600000",
+            "closingNetBookValueMinor": "8400000"
+          },
+          {
+            "periodNo": 50,
+            "periodEnd": "2030-03-31",
+            "openingNetBookValueMinor": "8400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "20000000",
+            "closingNetBookValueMinor": "8000000"
+          },
+          {
+            "periodNo": 51,
+            "periodEnd": "2030-04-30",
+            "openingNetBookValueMinor": "8000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "20400000",
+            "closingNetBookValueMinor": "7600000"
+          },
+          {
+            "periodNo": 52,
+            "periodEnd": "2030-05-31",
+            "openingNetBookValueMinor": "7600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "20800000",
+            "closingNetBookValueMinor": "7200000"
+          },
+          {
+            "periodNo": 53,
+            "periodEnd": "2030-06-30",
+            "openingNetBookValueMinor": "7200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "21200000",
+            "closingNetBookValueMinor": "6800000"
+          },
+          {
+            "periodNo": 54,
+            "periodEnd": "2030-07-31",
+            "openingNetBookValueMinor": "6800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "21600000",
+            "closingNetBookValueMinor": "6400000"
+          },
+          {
+            "periodNo": 55,
+            "periodEnd": "2030-08-31",
+            "openingNetBookValueMinor": "6400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "22000000",
+            "closingNetBookValueMinor": "6000000"
+          },
+          {
+            "periodNo": 56,
+            "periodEnd": "2030-09-30",
+            "openingNetBookValueMinor": "6000000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "22400000",
+            "closingNetBookValueMinor": "5600000"
+          },
+          {
+            "periodNo": 57,
+            "periodEnd": "2030-10-31",
+            "openingNetBookValueMinor": "5600000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "22800000",
+            "closingNetBookValueMinor": "5200000"
+          },
+          {
+            "periodNo": 58,
+            "periodEnd": "2030-11-30",
+            "openingNetBookValueMinor": "5200000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "23200000",
+            "closingNetBookValueMinor": "4800000"
+          },
+          {
+            "periodNo": 59,
+            "periodEnd": "2030-12-31",
+            "openingNetBookValueMinor": "4800000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "23600000",
+            "closingNetBookValueMinor": "4400000"
+          },
+          {
+            "periodNo": 60,
+            "periodEnd": "2031-01-31",
+            "openingNetBookValueMinor": "4400000",
+            "chargeMinor": "400000",
+            "accumulatedMinor": "24000000",
+            "closingNetBookValueMinor": "4000000"
+          }
+        ]
+      },
+      "01a04352-b572-7b16-bca5-45153f086e34": {
+        "asset": {
+          "id": "01a04352-b572-7b16-bca5-45153f086e34",
+          "assetNo": "FA-0002",
+          "name": "Server Rack and Network Core",
+          "category": "IT Equipment",
+          "status": "in_service",
+          "method": "reducing_balance",
+          "cost": {
+            "amount": "16500.000",
+            "minor": "16500000",
+            "currency": "JOD"
+          },
+          "residual": {
+            "amount": "500.000",
+            "minor": "500000",
+            "currency": "JOD"
+          },
+          "accumulated": {
+            "amount": "1206.821",
+            "minor": "1206821",
+            "currency": "JOD"
+          },
+          "netBookValue": {
+            "amount": "15293.179",
+            "minor": "15293179",
+            "currency": "JOD"
+          },
+          "usefulLifeMonths": 48,
+          "inServiceOn": "2026-03-01",
+          "disposedOn": null
+        },
+        "rows": [
+          {
+            "periodNo": 1,
+            "periodEnd": "2026-03-31",
+            "openingNetBookValueMinor": "16500000",
+            "chargeMinor": "412500",
+            "accumulatedMinor": "412500",
+            "closingNetBookValueMinor": "16087500"
+          },
+          {
+            "periodNo": 2,
+            "periodEnd": "2026-04-30",
+            "openingNetBookValueMinor": "16087500",
+            "chargeMinor": "402188",
+            "accumulatedMinor": "814688",
+            "closingNetBookValueMinor": "15685312"
+          },
+          {
+            "periodNo": 3,
+            "periodEnd": "2026-05-31",
+            "openingNetBookValueMinor": "15685312",
+            "chargeMinor": "392133",
+            "accumulatedMinor": "1206821",
+            "closingNetBookValueMinor": "15293179"
+          },
+          {
+            "periodNo": 4,
+            "periodEnd": "2026-06-30",
+            "openingNetBookValueMinor": "15293179",
+            "chargeMinor": "382329",
+            "accumulatedMinor": "1589150",
+            "closingNetBookValueMinor": "14910850"
+          },
+          {
+            "periodNo": 5,
+            "periodEnd": "2026-07-31",
+            "openingNetBookValueMinor": "14910850",
+            "chargeMinor": "372771",
+            "accumulatedMinor": "1961921",
+            "closingNetBookValueMinor": "14538079"
+          },
+          {
+            "periodNo": 6,
+            "periodEnd": "2026-08-31",
+            "openingNetBookValueMinor": "14538079",
+            "chargeMinor": "363452",
+            "accumulatedMinor": "2325373",
+            "closingNetBookValueMinor": "14174627"
+          },
+          {
+            "periodNo": 7,
+            "periodEnd": "2026-09-30",
+            "openingNetBookValueMinor": "14174627",
+            "chargeMinor": "354366",
+            "accumulatedMinor": "2679739",
+            "closingNetBookValueMinor": "13820261"
+          },
+          {
+            "periodNo": 8,
+            "periodEnd": "2026-10-31",
+            "openingNetBookValueMinor": "13820261",
+            "chargeMinor": "345507",
+            "accumulatedMinor": "3025246",
+            "closingNetBookValueMinor": "13474754"
+          },
+          {
+            "periodNo": 9,
+            "periodEnd": "2026-11-30",
+            "openingNetBookValueMinor": "13474754",
+            "chargeMinor": "336869",
+            "accumulatedMinor": "3362115",
+            "closingNetBookValueMinor": "13137885"
+          },
+          {
+            "periodNo": 10,
+            "periodEnd": "2026-12-31",
+            "openingNetBookValueMinor": "13137885",
+            "chargeMinor": "328447",
+            "accumulatedMinor": "3690562",
+            "closingNetBookValueMinor": "12809438"
+          },
+          {
+            "periodNo": 11,
+            "periodEnd": "2027-01-31",
+            "openingNetBookValueMinor": "12809438",
+            "chargeMinor": "320236",
+            "accumulatedMinor": "4010798",
+            "closingNetBookValueMinor": "12489202"
+          },
+          {
+            "periodNo": 12,
+            "periodEnd": "2027-02-28",
+            "openingNetBookValueMinor": "12489202",
+            "chargeMinor": "312230",
+            "accumulatedMinor": "4323028",
+            "closingNetBookValueMinor": "12176972"
+          },
+          {
+            "periodNo": 13,
+            "periodEnd": "2027-03-31",
+            "openingNetBookValueMinor": "12176972",
+            "chargeMinor": "304424",
+            "accumulatedMinor": "4627452",
+            "closingNetBookValueMinor": "11872548"
+          },
+          {
+            "periodNo": 14,
+            "periodEnd": "2027-04-30",
+            "openingNetBookValueMinor": "11872548",
+            "chargeMinor": "296814",
+            "accumulatedMinor": "4924266",
+            "closingNetBookValueMinor": "11575734"
+          },
+          {
+            "periodNo": 15,
+            "periodEnd": "2027-05-31",
+            "openingNetBookValueMinor": "11575734",
+            "chargeMinor": "289393",
+            "accumulatedMinor": "5213659",
+            "closingNetBookValueMinor": "11286341"
+          },
+          {
+            "periodNo": 16,
+            "periodEnd": "2027-06-30",
+            "openingNetBookValueMinor": "11286341",
+            "chargeMinor": "282159",
+            "accumulatedMinor": "5495818",
+            "closingNetBookValueMinor": "11004182"
+          },
+          {
+            "periodNo": 17,
+            "periodEnd": "2027-07-31",
+            "openingNetBookValueMinor": "11004182",
+            "chargeMinor": "275105",
+            "accumulatedMinor": "5770923",
+            "closingNetBookValueMinor": "10729077"
+          },
+          {
+            "periodNo": 18,
+            "periodEnd": "2027-08-31",
+            "openingNetBookValueMinor": "10729077",
+            "chargeMinor": "268227",
+            "accumulatedMinor": "6039150",
+            "closingNetBookValueMinor": "10460850"
+          },
+          {
+            "periodNo": 19,
+            "periodEnd": "2027-09-30",
+            "openingNetBookValueMinor": "10460850",
+            "chargeMinor": "261521",
+            "accumulatedMinor": "6300671",
+            "closingNetBookValueMinor": "10199329"
+          },
+          {
+            "periodNo": 20,
+            "periodEnd": "2027-10-31",
+            "openingNetBookValueMinor": "10199329",
+            "chargeMinor": "254983",
+            "accumulatedMinor": "6555654",
+            "closingNetBookValueMinor": "9944346"
+          },
+          {
+            "periodNo": 21,
+            "periodEnd": "2027-11-30",
+            "openingNetBookValueMinor": "9944346",
+            "chargeMinor": "248609",
+            "accumulatedMinor": "6804263",
+            "closingNetBookValueMinor": "9695737"
+          },
+          {
+            "periodNo": 22,
+            "periodEnd": "2027-12-31",
+            "openingNetBookValueMinor": "9695737",
+            "chargeMinor": "242393",
+            "accumulatedMinor": "7046656",
+            "closingNetBookValueMinor": "9453344"
+          },
+          {
+            "periodNo": 23,
+            "periodEnd": "2028-01-31",
+            "openingNetBookValueMinor": "9453344",
+            "chargeMinor": "236334",
+            "accumulatedMinor": "7282990",
+            "closingNetBookValueMinor": "9217010"
+          },
+          {
+            "periodNo": 24,
+            "periodEnd": "2028-02-29",
+            "openingNetBookValueMinor": "9217010",
+            "chargeMinor": "230425",
+            "accumulatedMinor": "7513415",
+            "closingNetBookValueMinor": "8986585"
+          },
+          {
+            "periodNo": 25,
+            "periodEnd": "2028-03-31",
+            "openingNetBookValueMinor": "8986585",
+            "chargeMinor": "224665",
+            "accumulatedMinor": "7738080",
+            "closingNetBookValueMinor": "8761920"
+          },
+          {
+            "periodNo": 26,
+            "periodEnd": "2028-04-30",
+            "openingNetBookValueMinor": "8761920",
+            "chargeMinor": "219048",
+            "accumulatedMinor": "7957128",
+            "closingNetBookValueMinor": "8542872"
+          },
+          {
+            "periodNo": 27,
+            "periodEnd": "2028-05-31",
+            "openingNetBookValueMinor": "8542872",
+            "chargeMinor": "213572",
+            "accumulatedMinor": "8170700",
+            "closingNetBookValueMinor": "8329300"
+          },
+          {
+            "periodNo": 28,
+            "periodEnd": "2028-06-30",
+            "openingNetBookValueMinor": "8329300",
+            "chargeMinor": "208233",
+            "accumulatedMinor": "8378933",
+            "closingNetBookValueMinor": "8121067"
+          },
+          {
+            "periodNo": 29,
+            "periodEnd": "2028-07-31",
+            "openingNetBookValueMinor": "8121067",
+            "chargeMinor": "203027",
+            "accumulatedMinor": "8581960",
+            "closingNetBookValueMinor": "7918040"
+          },
+          {
+            "periodNo": 30,
+            "periodEnd": "2028-08-31",
+            "openingNetBookValueMinor": "7918040",
+            "chargeMinor": "197951",
+            "accumulatedMinor": "8779911",
+            "closingNetBookValueMinor": "7720089"
+          },
+          {
+            "periodNo": 31,
+            "periodEnd": "2028-09-30",
+            "openingNetBookValueMinor": "7720089",
+            "chargeMinor": "193002",
+            "accumulatedMinor": "8972913",
+            "closingNetBookValueMinor": "7527087"
+          },
+          {
+            "periodNo": 32,
+            "periodEnd": "2028-10-31",
+            "openingNetBookValueMinor": "7527087",
+            "chargeMinor": "188177",
+            "accumulatedMinor": "9161090",
+            "closingNetBookValueMinor": "7338910"
+          },
+          {
+            "periodNo": 33,
+            "periodEnd": "2028-11-30",
+            "openingNetBookValueMinor": "7338910",
+            "chargeMinor": "183473",
+            "accumulatedMinor": "9344563",
+            "closingNetBookValueMinor": "7155437"
+          },
+          {
+            "periodNo": 34,
+            "periodEnd": "2028-12-31",
+            "openingNetBookValueMinor": "7155437",
+            "chargeMinor": "178886",
+            "accumulatedMinor": "9523449",
+            "closingNetBookValueMinor": "6976551"
+          },
+          {
+            "periodNo": 35,
+            "periodEnd": "2029-01-31",
+            "openingNetBookValueMinor": "6976551",
+            "chargeMinor": "174414",
+            "accumulatedMinor": "9697863",
+            "closingNetBookValueMinor": "6802137"
+          },
+          {
+            "periodNo": 36,
+            "periodEnd": "2029-02-28",
+            "openingNetBookValueMinor": "6802137",
+            "chargeMinor": "170053",
+            "accumulatedMinor": "9867916",
+            "closingNetBookValueMinor": "6632084"
+          },
+          {
+            "periodNo": 37,
+            "periodEnd": "2029-03-31",
+            "openingNetBookValueMinor": "6632084",
+            "chargeMinor": "165802",
+            "accumulatedMinor": "10033718",
+            "closingNetBookValueMinor": "6466282"
+          },
+          {
+            "periodNo": 38,
+            "periodEnd": "2029-04-30",
+            "openingNetBookValueMinor": "6466282",
+            "chargeMinor": "161657",
+            "accumulatedMinor": "10195375",
+            "closingNetBookValueMinor": "6304625"
+          },
+          {
+            "periodNo": 39,
+            "periodEnd": "2029-05-31",
+            "openingNetBookValueMinor": "6304625",
+            "chargeMinor": "157616",
+            "accumulatedMinor": "10352991",
+            "closingNetBookValueMinor": "6147009"
+          },
+          {
+            "periodNo": 40,
+            "periodEnd": "2029-06-30",
+            "openingNetBookValueMinor": "6147009",
+            "chargeMinor": "153675",
+            "accumulatedMinor": "10506666",
+            "closingNetBookValueMinor": "5993334"
+          },
+          {
+            "periodNo": 41,
+            "periodEnd": "2029-07-31",
+            "openingNetBookValueMinor": "5993334",
+            "chargeMinor": "149833",
+            "accumulatedMinor": "10656499",
+            "closingNetBookValueMinor": "5843501"
+          },
+          {
+            "periodNo": 42,
+            "periodEnd": "2029-08-31",
+            "openingNetBookValueMinor": "5843501",
+            "chargeMinor": "146088",
+            "accumulatedMinor": "10802587",
+            "closingNetBookValueMinor": "5697413"
+          },
+          {
+            "periodNo": 43,
+            "periodEnd": "2029-09-30",
+            "openingNetBookValueMinor": "5697413",
+            "chargeMinor": "142435",
+            "accumulatedMinor": "10945022",
+            "closingNetBookValueMinor": "5554978"
+          },
+          {
+            "periodNo": 44,
+            "periodEnd": "2029-10-31",
+            "openingNetBookValueMinor": "5554978",
+            "chargeMinor": "138874",
+            "accumulatedMinor": "11083896",
+            "closingNetBookValueMinor": "5416104"
+          },
+          {
+            "periodNo": 45,
+            "periodEnd": "2029-11-30",
+            "openingNetBookValueMinor": "5416104",
+            "chargeMinor": "135403",
+            "accumulatedMinor": "11219299",
+            "closingNetBookValueMinor": "5280701"
+          },
+          {
+            "periodNo": 46,
+            "periodEnd": "2029-12-31",
+            "openingNetBookValueMinor": "5280701",
+            "chargeMinor": "132018",
+            "accumulatedMinor": "11351317",
+            "closingNetBookValueMinor": "5148683"
+          },
+          {
+            "periodNo": 47,
+            "periodEnd": "2030-01-31",
+            "openingNetBookValueMinor": "5148683",
+            "chargeMinor": "128717",
+            "accumulatedMinor": "11480034",
+            "closingNetBookValueMinor": "5019966"
+          },
+          {
+            "periodNo": 48,
+            "periodEnd": "2030-02-28",
+            "openingNetBookValueMinor": "5019966",
+            "chargeMinor": "125499",
+            "accumulatedMinor": "11605533",
+            "closingNetBookValueMinor": "4894467"
+          }
+        ]
+      },
+      "01a04352-b578-785d-8a03-9f5805b3eee3": {
+        "asset": {
+          "id": "01a04352-b578-785d-8a03-9f5805b3eee3",
+          "assetNo": "FA-0003",
+          "name": "Office Fit-out",
+          "category": "Leasehold",
+          "status": "in_service",
+          "method": "straight_line",
+          "cost": {
+            "amount": "9750.000",
+            "minor": "9750000",
+            "currency": "JOD"
+          },
+          "residual": {
+            "amount": "0.000",
+            "minor": "0",
+            "currency": "JOD"
+          },
+          "accumulated": {
+            "amount": "812.499",
+            "minor": "812499",
+            "currency": "JOD"
+          },
+          "netBookValue": {
+            "amount": "8937.501",
+            "minor": "8937501",
+            "currency": "JOD"
+          },
+          "usefulLifeMonths": 36,
+          "inServiceOn": "2026-04-01",
+          "disposedOn": null
+        },
+        "rows": [
+          {
+            "periodNo": 1,
+            "periodEnd": "2026-04-30",
+            "openingNetBookValueMinor": "9750000",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "270833",
+            "closingNetBookValueMinor": "9479167"
+          },
+          {
+            "periodNo": 2,
+            "periodEnd": "2026-05-31",
+            "openingNetBookValueMinor": "9479167",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "541666",
+            "closingNetBookValueMinor": "9208334"
+          },
+          {
+            "periodNo": 3,
+            "periodEnd": "2026-06-30",
+            "openingNetBookValueMinor": "9208334",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "812499",
+            "closingNetBookValueMinor": "8937501"
+          },
+          {
+            "periodNo": 4,
+            "periodEnd": "2026-07-31",
+            "openingNetBookValueMinor": "8937501",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "1083332",
+            "closingNetBookValueMinor": "8666668"
+          },
+          {
+            "periodNo": 5,
+            "periodEnd": "2026-08-31",
+            "openingNetBookValueMinor": "8666668",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "1354165",
+            "closingNetBookValueMinor": "8395835"
+          },
+          {
+            "periodNo": 6,
+            "periodEnd": "2026-09-30",
+            "openingNetBookValueMinor": "8395835",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "1624998",
+            "closingNetBookValueMinor": "8125002"
+          },
+          {
+            "periodNo": 7,
+            "periodEnd": "2026-10-31",
+            "openingNetBookValueMinor": "8125002",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "1895831",
+            "closingNetBookValueMinor": "7854169"
+          },
+          {
+            "periodNo": 8,
+            "periodEnd": "2026-11-30",
+            "openingNetBookValueMinor": "7854169",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "2166664",
+            "closingNetBookValueMinor": "7583336"
+          },
+          {
+            "periodNo": 9,
+            "periodEnd": "2026-12-31",
+            "openingNetBookValueMinor": "7583336",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "2437497",
+            "closingNetBookValueMinor": "7312503"
+          },
+          {
+            "periodNo": 10,
+            "periodEnd": "2027-01-31",
+            "openingNetBookValueMinor": "7312503",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "2708330",
+            "closingNetBookValueMinor": "7041670"
+          },
+          {
+            "periodNo": 11,
+            "periodEnd": "2027-02-28",
+            "openingNetBookValueMinor": "7041670",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "2979163",
+            "closingNetBookValueMinor": "6770837"
+          },
+          {
+            "periodNo": 12,
+            "periodEnd": "2027-03-31",
+            "openingNetBookValueMinor": "6770837",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "3249996",
+            "closingNetBookValueMinor": "6500004"
+          },
+          {
+            "periodNo": 13,
+            "periodEnd": "2027-04-30",
+            "openingNetBookValueMinor": "6500004",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "3520829",
+            "closingNetBookValueMinor": "6229171"
+          },
+          {
+            "periodNo": 14,
+            "periodEnd": "2027-05-31",
+            "openingNetBookValueMinor": "6229171",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "3791662",
+            "closingNetBookValueMinor": "5958338"
+          },
+          {
+            "periodNo": 15,
+            "periodEnd": "2027-06-30",
+            "openingNetBookValueMinor": "5958338",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "4062495",
+            "closingNetBookValueMinor": "5687505"
+          },
+          {
+            "periodNo": 16,
+            "periodEnd": "2027-07-31",
+            "openingNetBookValueMinor": "5687505",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "4333328",
+            "closingNetBookValueMinor": "5416672"
+          },
+          {
+            "periodNo": 17,
+            "periodEnd": "2027-08-31",
+            "openingNetBookValueMinor": "5416672",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "4604161",
+            "closingNetBookValueMinor": "5145839"
+          },
+          {
+            "periodNo": 18,
+            "periodEnd": "2027-09-30",
+            "openingNetBookValueMinor": "5145839",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "4874994",
+            "closingNetBookValueMinor": "4875006"
+          },
+          {
+            "periodNo": 19,
+            "periodEnd": "2027-10-31",
+            "openingNetBookValueMinor": "4875006",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "5145827",
+            "closingNetBookValueMinor": "4604173"
+          },
+          {
+            "periodNo": 20,
+            "periodEnd": "2027-11-30",
+            "openingNetBookValueMinor": "4604173",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "5416660",
+            "closingNetBookValueMinor": "4333340"
+          },
+          {
+            "periodNo": 21,
+            "periodEnd": "2027-12-31",
+            "openingNetBookValueMinor": "4333340",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "5687493",
+            "closingNetBookValueMinor": "4062507"
+          },
+          {
+            "periodNo": 22,
+            "periodEnd": "2028-01-31",
+            "openingNetBookValueMinor": "4062507",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "5958326",
+            "closingNetBookValueMinor": "3791674"
+          },
+          {
+            "periodNo": 23,
+            "periodEnd": "2028-02-29",
+            "openingNetBookValueMinor": "3791674",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "6229159",
+            "closingNetBookValueMinor": "3520841"
+          },
+          {
+            "periodNo": 24,
+            "periodEnd": "2028-03-31",
+            "openingNetBookValueMinor": "3520841",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "6499992",
+            "closingNetBookValueMinor": "3250008"
+          },
+          {
+            "periodNo": 25,
+            "periodEnd": "2028-04-30",
+            "openingNetBookValueMinor": "3250008",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "6770825",
+            "closingNetBookValueMinor": "2979175"
+          },
+          {
+            "periodNo": 26,
+            "periodEnd": "2028-05-31",
+            "openingNetBookValueMinor": "2979175",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "7041658",
+            "closingNetBookValueMinor": "2708342"
+          },
+          {
+            "periodNo": 27,
+            "periodEnd": "2028-06-30",
+            "openingNetBookValueMinor": "2708342",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "7312491",
+            "closingNetBookValueMinor": "2437509"
+          },
+          {
+            "periodNo": 28,
+            "periodEnd": "2028-07-31",
+            "openingNetBookValueMinor": "2437509",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "7583324",
+            "closingNetBookValueMinor": "2166676"
+          },
+          {
+            "periodNo": 29,
+            "periodEnd": "2028-08-31",
+            "openingNetBookValueMinor": "2166676",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "7854157",
+            "closingNetBookValueMinor": "1895843"
+          },
+          {
+            "periodNo": 30,
+            "periodEnd": "2028-09-30",
+            "openingNetBookValueMinor": "1895843",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "8124990",
+            "closingNetBookValueMinor": "1625010"
+          },
+          {
+            "periodNo": 31,
+            "periodEnd": "2028-10-31",
+            "openingNetBookValueMinor": "1625010",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "8395823",
+            "closingNetBookValueMinor": "1354177"
+          },
+          {
+            "periodNo": 32,
+            "periodEnd": "2028-11-30",
+            "openingNetBookValueMinor": "1354177",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "8666656",
+            "closingNetBookValueMinor": "1083344"
+          },
+          {
+            "periodNo": 33,
+            "periodEnd": "2028-12-31",
+            "openingNetBookValueMinor": "1083344",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "8937489",
+            "closingNetBookValueMinor": "812511"
+          },
+          {
+            "periodNo": 34,
+            "periodEnd": "2029-01-31",
+            "openingNetBookValueMinor": "812511",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "9208322",
+            "closingNetBookValueMinor": "541678"
+          },
+          {
+            "periodNo": 35,
+            "periodEnd": "2029-02-28",
+            "openingNetBookValueMinor": "541678",
+            "chargeMinor": "270833",
+            "accumulatedMinor": "9479155",
+            "closingNetBookValueMinor": "270845"
+          },
+          {
+            "periodNo": 36,
+            "periodEnd": "2029-03-31",
+            "openingNetBookValueMinor": "270845",
+            "chargeMinor": "270845",
+            "accumulatedMinor": "9750000",
+            "closingNetBookValueMinor": "0"
+          }
+        ]
+      }
+    }
+  },
+  "budgets": {
+    "list": [
+      {
+        "id": "01a04352-b5b6-7fca-b2dc-3e82414792db",
+        "name": "Operating Budget 2026",
+        "fiscalYearId": "01a04352-9f18-76b6-b6b3-47a200e8e03f",
+        "status": "approved",
+        "lineCount": 96,
+        "total": {
+          "amount": "258800.000",
+          "minor": "258800000",
+          "currency": "JOD"
+        }
+      }
+    ],
+    "variance": {
+      "01a04352-b5b6-7fca-b2dc-3e82414792db": {
+        "currency": "JOD",
+        "fromDate": "2026-01-01",
+        "toDate": "2026-12-31",
+        "lines": [
+          {
+            "accountId": "01a04352-9f2e-7cae-a546-4f24d962bf8b",
+            "code": "4020",
+            "name": "Service Revenue",
+            "type": "revenue",
+            "budget": {
+              "amount": "120000.000",
+              "minor": "120000000",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "45000.000",
+              "minor": "45000000",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "-75000.000",
+              "minor": "-75000000",
+              "currency": "JOD"
+            },
+            "isFavourable": false,
+            "variancePercent": "-62.50"
+          },
+          {
+            "accountId": "01a04352-9f30-7b46-95be-4b071bd4dd67",
+            "code": "5100",
+            "name": "Cost of Goods Sold",
+            "type": "expense",
+            "budget": {
+              "amount": "0.000",
+              "minor": "0",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "18163.077",
+              "minor": "18163077",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "18163.077",
+              "minor": "18163077",
+              "currency": "JOD"
+            },
+            "isFavourable": false,
+            "variancePercent": null
+          },
+          {
+            "accountId": "01a04352-9f30-7882-928e-f88726ff075d",
+            "code": "5210",
+            "name": "Salaries and Wages",
+            "type": "expense",
+            "budget": {
+              "amount": "100000.000",
+              "minor": "100000000",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "49800.000",
+              "minor": "49800000",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "-50200.000",
+              "minor": "-50200000",
+              "currency": "JOD"
+            },
+            "isFavourable": true,
+            "variancePercent": "-50.20"
+          },
+          {
+            "accountId": "01a04352-9f31-7851-affa-3447c8b8d07f",
+            "code": "5220",
+            "name": "Rent",
+            "type": "expense",
+            "budget": {
+              "amount": "18000.000",
+              "minor": "18000000",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "9000.000",
+              "minor": "9000000",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "-9000.000",
+              "minor": "-9000000",
+              "currency": "JOD"
+            },
+            "isFavourable": true,
+            "variancePercent": "-50.00"
+          },
+          {
+            "accountId": "01a04352-9f31-725d-9848-d163f0cbf96b",
+            "code": "5230",
+            "name": "Utilities",
+            "type": "expense",
+            "budget": {
+              "amount": "3600.000",
+              "minor": "3600000",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "640.000",
+              "minor": "640000",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "-2960.000",
+              "minor": "-2960000",
+              "currency": "JOD"
+            },
+            "isFavourable": true,
+            "variancePercent": "-82.22"
+          },
+          {
+            "accountId": "01a04352-9f31-7bc3-ae00-122ae71a0b4d",
+            "code": "5240",
+            "name": "Telecommunications",
+            "type": "expense",
+            "budget": {
+              "amount": "1800.000",
+              "minor": "1800000",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "310.000",
+              "minor": "310000",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "-1490.000",
+              "minor": "-1490000",
+              "currency": "JOD"
+            },
+            "isFavourable": true,
+            "variancePercent": "-82.78"
+          },
+          {
+            "accountId": "01a04352-9f32-7aa5-8d81-452fc72397b2",
+            "code": "5250",
+            "name": "Professional Fees",
+            "type": "expense",
+            "budget": {
+              "amount": "6000.000",
+              "minor": "6000000",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "2750.000",
+              "minor": "2750000",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "-3250.000",
+              "minor": "-3250000",
+              "currency": "JOD"
+            },
+            "isFavourable": true,
+            "variancePercent": "-54.17"
+          },
+          {
+            "accountId": "01a04352-9f32-7cfb-9885-0370981b1207",
+            "code": "5260",
+            "name": "Depreciation Expense",
+            "type": "expense",
+            "budget": {
+              "amount": "9000.000",
+              "minor": "9000000",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "3219.320",
+              "minor": "3219320",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "-5780.680",
+              "minor": "-5780680",
+              "currency": "JOD"
+            },
+            "isFavourable": true,
+            "variancePercent": "-64.23"
+          },
+          {
+            "accountId": "01a04352-9f32-714b-ab48-c8d911169544",
+            "code": "5280",
+            "name": "Bank Charges",
+            "type": "expense",
+            "budget": {
+              "amount": "400.000",
+              "minor": "400000",
+              "currency": "JOD"
+            },
+            "actual": {
+              "amount": "85.000",
+              "minor": "85000",
+              "currency": "JOD"
+            },
+            "variance": {
+              "amount": "-315.000",
+              "minor": "-315000",
+              "currency": "JOD"
+            },
+            "isFavourable": true,
+            "variancePercent": "-78.75"
+          }
+        ],
+        "totalBudget": {
+          "amount": "258800.000",
+          "minor": "258800000",
+          "currency": "JOD"
+        },
+        "totalActual": {
+          "amount": "128967.397",
+          "minor": "128967397",
+          "currency": "JOD"
+        },
+        "totalVariance": {
+          "amount": "-129832.603",
+          "minor": "-129832603",
+          "currency": "JOD"
+        }
+      }
+    }
+  }
+}

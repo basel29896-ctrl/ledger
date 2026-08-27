@@ -2,10 +2,10 @@
 /**
  * Builds the static documentation site published to GitHub Pages.
  *
- * The application itself cannot run on Pages — it needs PostgreSQL, Redis and
- * the NestJS API — so what we publish is the written record: the README, the
- * milestone notes and the decision log. That is the part of the project that is
- * useful to read without a database behind it.
+ * Pages carries two things: the demo application at the root, and — built here
+ * — the written record beneath it at /docs. The README, the milestone notes and
+ * the decision log explain what the demo cannot show on its own, which is why
+ * the system is built the way it is.
  *
  * The site is deliberately dependency-light: one markdown renderer, one
  * stylesheet, no client-side framework. It uses the same palette as the
@@ -18,7 +18,8 @@ import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const outDir = join(root, 'site');
+// The demo application owns the site root; the written record lives under it.
+const outDir = join(root, 'site', 'docs');
 
 /** Milestone order is chronological, not lexicographic: M2 comes before M10. */
 const milestoneOrder = (name) => {
@@ -61,7 +62,8 @@ const layout = ({ title, nav, body, depth }) => `<!doctype html>
       <span><strong>Ledger</strong><small>double-entry accounting</small></span>
     </a>
     ${nav}
-    <a class="repo" href="https://github.com/basel29896-ctrl/ledger">Source on GitHub →</a>
+    <a class="repo" href="../">← Back to the demo</a>
+    <a class="repo repo-last" href="https://github.com/basel29896-ctrl/ledger">Source on GitHub →</a>
   </nav>
   <main id="main" class="page">
     <article class="prose">${body}</article>
@@ -120,6 +122,7 @@ body {
 .rail a.item:hover { background: rgba(255,255,255,.07); }
 .rail a.item[aria-current="page"] { background: var(--mint-300); color: var(--ink-800); font-weight: 600; }
 .repo { margin-top: auto; padding: .75rem .5rem 0; font-size: .78rem; color: var(--mint-300); text-decoration: none; }
+.repo-last { margin-top: 0; padding-top: .35rem; }
 .repo:hover { text-decoration: underline; }
 .page { flex: 1 1 auto; min-width: 0; padding: 2.5rem clamp(1rem, 4vw, 3.5rem) 5rem; }
 .prose { max-width: 46rem; }
@@ -199,9 +202,6 @@ const build = async () => {
 
   await mkdir(outDir, { recursive: true });
   await writeFile(join(outDir, 'style.css'), style, 'utf8');
-  // Pages would otherwise run the output through Jekyll and drop nothing we
-  // need, but skipping it keeps the build honest about what is published.
-  await writeFile(join(outDir, '.nojekyll'), '', 'utf8');
 
   for (const page of rendered) {
     await writeFile(
@@ -211,7 +211,7 @@ const build = async () => {
     );
   }
 
-  console.log(`docs site — ${rendered.length} page(s) written to site/`);
+  console.log(`docs site — ${rendered.length} page(s) written to site/docs/`);
 };
 
 await build();

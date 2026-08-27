@@ -5,12 +5,15 @@ import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { Button, ErrorBanner, Field, Input } from '../../components/ui';
+import { DEMO } from '../../lib/demo-flag';
 
 export default function LoginPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [email, setEmail] = useState('admin@demo.local');
-  const [password, setPassword] = useState('');
+  // The demo has no credential to check, so it hands the visitor the one that
+  // works rather than making them guess at a sign-in that is pure ceremony.
+  const [password, setPassword] = useState(DEMO ? 'demo' : '');
   const [totpCode, setTotpCode] = useState('');
   const [needsTotp, setNeedsTotp] = useState(false);
   const [error, setError] = useState<unknown>(null);

@@ -1,4 +1,5 @@
 import type { ProblemDto } from '@acct/shared';
+import { DEMO } from './demo-flag';
 
 /**
  * The API client.
@@ -33,6 +34,32 @@ function csrfToken(): string {
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const method = init.method ?? 'GET';
+
+  // The static demo build has no server to talk to, so requests are answered in
+  // the browser instead. The screens are unchanged and unaware: the seam is
+  // here, at the transport, and nowhere else.
+  if (DEMO) {
+    const { handle, DemoError } = await import('../demo/backend');
+    try {
+      const parsedBody: unknown =
+        typeof init.body === 'string' ? JSON.parse(init.body) : undefined;
+      return handle(method, path, parsedBody) as T;
+    } catch (error) {
+      if (error instanceof DemoError) {
+        throw new ApiError(
+          {
+            type: 'about:blank',
+            title: error.message,
+            status: error.status,
+            code: error.code,
+          } as ProblemDto,
+          error.status,
+        );
+      }
+      throw error;
+    }
+  }
+
   const headers = new Headers(init.headers);
   if (init.body) headers.set('Content-Type', 'application/json');
   if (method !== 'GET' && method !== 'HEAD') headers.set('X-CSRF-Token', csrfToken());
@@ -82,6 +109,7 @@ export const api = {
  * one GET must happen before the first mutation of a session.
  */
 export async function primeCsrf(): Promise<void> {
+  if (DEMO) return;
   try {
     await api.get('/auth/me');
   } catch {
