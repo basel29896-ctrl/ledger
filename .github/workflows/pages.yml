@@ -35,7 +35,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Build the demo export
-        run: pnpm --filter @acct/web build
+        # Through turbo, so the workspace packages the web app imports —
+        # @acct/domain above all — are built first.
+        run: pnpm exec turbo run build --filter=@acct/web
 
       - name: Assemble the site
         run: |
