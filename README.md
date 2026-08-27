@@ -4,6 +4,22 @@ Self-hosted, multi-tenant, double-entry accounting. TypeScript end to end.
 Ledger correctness outranks every other concern: the invariants in
 `docs/DECISIONS.md` are enforced by PostgreSQL, not by application code alone.
 
+## Live demo
+
+**<https://basel29896-ctrl.github.io/ledger/>** — the application itself, running
+entirely in your browser. No sign-in, nothing to install.
+
+It is a static export whose API client answers requests locally. The trial
+balance, general ledger and financial statements are computed live by the same
+`@acct/domain` package the server uses, so posting an entry moves every report;
+inventory costing, depreciation and budget variance are replayed from a dataset
+captured through the real API, because those belong to a database transaction.
+The demo says which is which on screen, and none of the database-level
+invariants apply there — those need the server.
+
+The written record is published alongside it at
+[`/docs`](https://basel29896-ctrl.github.io/ledger/docs/).
+
 ## Quick start
 
 ```bash
